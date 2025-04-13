@@ -73,3 +73,7 @@ gem "activeadmin", "~> 3.3"
 gem "devise", "~> 4.9"
 
 gem "sassc-rails", "~> 2.1"
+
+gem "rubocop", "~> 1.75", :group => :development
+
+gem "rubocop-rails", "~> 2.31", :group => :development
