@@ -6,5 +6,10 @@ class Entry < ApplicationRecord
   validates :title, :source_url, presence: true
   validates :source_url, uniqueness: true
 
-  # Add any additional logic or associations as needed
+  def self.ransackable_associations(auth_object = nil)
+    ["site"]
+  end
+  def self.ransackable_attributes(auth_object = nil)
+    ["ai_content", "ai_summary", "author", "category", "content", "created_at", "id", "id_value", "image_url", "published_at", "site_id", "source_name", "source_url", "summary", "title", "updated_at"]
+  end
 end
