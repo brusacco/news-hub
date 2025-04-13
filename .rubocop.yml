@@ -1,0 +1,7 @@
+plugins:
+  - rubocop-rails
+
+AllCops:
+  SuggestExtensions: false
+  TargetRubyVersion: 3.2
+  NewCops: enable

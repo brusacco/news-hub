@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,30 +10,61 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 20_250_413_221_044) do
-  create_table 'active_admin_comments', force: :cascade do |t|
-    t.string 'namespace'
-    t.text 'body'
-    t.string 'resource_type'
-    t.integer 'resource_id'
-    t.string 'author_type'
-    t.integer 'author_id'
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.index %w[author_type author_id], name: 'index_active_admin_comments_on_author'
-    t.index ['namespace'], name: 'index_active_admin_comments_on_namespace'
-    t.index %w[resource_type resource_id], name: 'index_active_admin_comments_on_resource'
+ActiveRecord::Schema[7.1].define(version: 2025_04_13_221044) do
+  create_table "active_admin_comments", force: :cascade do |t|
+    t.string "namespace"
+    t.text "body"
+    t.string "resource_type"
+    t.integer "resource_id"
+    t.string "author_type"
+    t.integer "author_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author"
+    t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
+    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource"
   end
 
-  create_table 'admin_users', force: :cascade do |t|
-    t.string 'email', default: '', null: false
-    t.string 'encrypted_password', default: '', null: false
-    t.string 'reset_password_token'
-    t.datetime 'reset_password_sent_at'
-    t.datetime 'remember_created_at'
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.index ['email'], name: 'index_admin_users_on_email', unique: true
-    t.index ['reset_password_token'], name: 'index_admin_users_on_reset_password_token', unique: true
+  create_table "admin_users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_admin_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
+
+  create_table "entries", force: :cascade do |t|
+    t.string "title"
+    t.text "summary"
+    t.text "content"
+    t.text "ai_summary"
+    t.text "ai_content"
+    t.string "source_url"
+    t.string "source_name"
+    t.datetime "published_at"
+    t.string "author"
+    t.string "image_url"
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "site_id", null: false
+    t.index ["category"], name: "index_entries_on_category"
+    t.index ["published_at"], name: "index_entries_on_published_at"
+    t.index ["site_id"], name: "index_entries_on_site_id"
+    t.index ["source_url"], name: "index_entries_on_source_url", unique: true
+  end
+
+  create_table "sites", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "url", null: false
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "entries", "sites"
 end
