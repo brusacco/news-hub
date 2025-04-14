@@ -21,13 +21,12 @@ module WebExtractorServices
     #-------------------------------------------------------------
     def extract_title
       if @doc.at('meta[property="og:title"]')
-        title = @doc.at('meta[property="og:title"]')[:content]
+        @doc.at('meta[property="og:title"]')[:content]
       elsif @doc.title && title.blank?
-        title = @doc.title
+        @doc.title
       else
-        title = ''
+        ''
       end
-      title
     end
 
     #-------------------------------------------------------------
@@ -35,13 +34,12 @@ module WebExtractorServices
     #-------------------------------------------------------------
     def extract_description
       if @doc.at('meta[property="og:description"]')
-        description = @doc.at('meta[property="og:description"]')[:content]&.strip
+        @doc.at('meta[property="og:description"]')[:content]&.strip
       elsif @doc.at('meta[name="description"]')
-        description = @doc.at('meta[name="description"]')[:content]&.strip
+        @doc.at('meta[name="description"]')[:content]&.strip
       else
-        description = ''
+        ''
       end
-      description
     end
 
     #-------------------------------------------------------------

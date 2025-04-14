@@ -12,11 +12,11 @@ module WebExtractorServices
       content = "#{entry.title} #{entry.description} #{entry.content}"
       tags_found = []
 
-      if @tag_id.nil?
-        tags = Tag.all
-      else
-        tags = Tag.where(id: @tag_id)
-      end
+      tags = if @tag_id.nil?
+               Tag.all
+             else
+               Tag.where(id: @tag_id)
+             end
 
       tags.each do |tag|
         tags_found << tag.name if content.match(/\b#{tag.name}\b/)

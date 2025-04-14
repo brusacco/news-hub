@@ -24,7 +24,7 @@ task crawler: :environment do
     guides
   ]
   directory_pattern = /#{directories.join('|')}/
-  Site.all.each do |site|
+  Site.find_each do |site|
     puts "Start test processing site #{site.name}..."
     puts '--------------------------------------------------------------------"'
     Anemone.crawl(

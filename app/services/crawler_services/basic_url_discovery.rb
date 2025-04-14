@@ -2,8 +2,8 @@
 
 module CrawlerServices
   class BasicUrlDiscovery < ApplicationService
-    require "httparty"
-    require "nokogiri"
+    require 'httparty'
+    require 'nokogiri'
 
     def initialize(url, validation_options = {})
       @url = url
@@ -31,9 +31,13 @@ module CrawlerServices
 
     def extract_urls(html, base_url)
       document = Nokogiri::HTML(html)
-      document.css("a[href]").map do |link|
-        href = link["href"]
-        URI.join(base_url, href).to_s rescue nil
+      document.css('a[href]').map do |link|
+        href = link['href']
+        begin
+          URI.join(base_url, href).to_s
+        rescue StandardError
+          nil
+        end
       end.compact.uniq
     end
 
