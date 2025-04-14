@@ -16,6 +16,7 @@ task crawler: :environment do
     feed
     users
     games
+    game
     letter
     forum
     forums
@@ -54,7 +55,7 @@ task crawler: :environment do
       verbose: true,
       user_agent: random_user_agent
     ) do |anemone|
-      anemone.skip_links_like(/.*\.(jpeg|jpg|gif|png|pdf|mp3|mp4|mpeg)/, directory_pattern, /[\?#].+/)
+      anemone.skip_links_like(/.*\.(jpeg|jpg|gif|png|pdf|mp3|mp4|mpeg)/, directory_pattern, /\?/, /#.*/)
 
       anemone.focus_crawl do |page|
         page.links.delete_if { |href| Entry.exists?(source_url: href.to_s) }

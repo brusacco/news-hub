@@ -2,6 +2,7 @@
 
 Rails.application.routes.draw do
   resources :entries, only: %i[index show]
+  resources :tags, only: %i[index show]
   get 'home/index'
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)

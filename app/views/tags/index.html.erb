@@ -1,0 +1,24 @@
+<div class="bg-white">
+  <div class="mx-auto max-w-2xl px-4 py-2 sm:px-6 sm:py-10 lg:max-w-7xl lg:px-8">
+    
+      
+      <!-- Entry info -->
+     
+        <div class="mt-6">
+          <h3 class="sr-only">Description</h3>
+
+          <div class="space-y-6 text-base text-gray-700">
+            <p>Tags</p>
+            <p>
+              <% @tags.each do |tag| %>
+              <span class="inline-flex mb-2 items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                <%= link_to tag.name, tag_path(tag) %>
+              </span>
+              <%end%>
+            </p>
+          </div>
+        </div>
+     
+
+  </div>
+</div>
