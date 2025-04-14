@@ -1,5 +1,7 @@
 class HomeController < ApplicationController
+  include Pagy::Backend
+
   def index
-    @entries = Entry.all.order(published_at: :desc).limit(10)
+    @pagy, @entries = pagy(Entry.all.order(published_at: :desc))
   end
 end
