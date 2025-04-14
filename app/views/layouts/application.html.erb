@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="dark">
   <head>
     <title>NewsHub</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -12,7 +12,8 @@
   </head>
 
   <body>
-    <div class="container mx-auto px-4">
+    <div class="mx-auto">
+      <%= render 'layouts/navbar' %>
       <%= yield %>
     </div>
   </body>

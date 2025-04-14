@@ -1,6 +1,5 @@
-<%# filepath: /Users/brusacco/Rails/news-hub/app/views/home/_entry.html.erb %>
 <div class="group relative">
-  <%= link_to entries_path(entry) do%>
+  <%= link_to entry_path(entry) do%>
   <img src="<%= entry.image_url %>" alt="<%= entry.title %>" class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80">
   <% end %>
   <div class="mt-4 flex justify-between">
