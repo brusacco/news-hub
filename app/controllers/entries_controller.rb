@@ -1,6 +1,6 @@
+# frozen_string_literal: true
 class EntriesController < ApplicationController
-  def index
-  end
+  def index; end
 
   def show
     @entry = Entry.find(params[:id])
