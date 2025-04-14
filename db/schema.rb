@@ -100,6 +100,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_14_141347) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "tags_topics", id: false, force: :cascade do |t|
+    t.integer "tag_id"
+    t.integer "topic_id"
+    t.index ["tag_id"], name: "index_tags_topics_on_tag_id"
+    t.index ["topic_id"], name: "index_tags_topics_on_topic_id"
+  end
+
+  create_table "topics", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   add_foreign_key "entries", "sites"
   add_foreign_key "taggings", "tags"
 end

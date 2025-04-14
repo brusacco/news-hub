@@ -90,12 +90,12 @@ gem 'webrick', '~> 1.9'
 
 gem 'colorize', '~> 1.1'
 
-gem "chronic", "~> 0.10.2"
+gem 'chronic', '~> 0.10.2'
 
-gem "tailwindcss-ruby", "~> 4.1"
+gem 'tailwindcss-ruby', '~> 4.1'
 
-gem "tailwindcss-rails", "~> 4.2"
+gem 'tailwindcss-rails', '~> 4.2'
 
-gem "pagy", "~> 9.3"
+gem 'pagy', '~> 9.3'
 
-gem "acts-as-taggable-on", "~> 11.0"
+gem 'acts-as-taggable-on', '~> 11.0'

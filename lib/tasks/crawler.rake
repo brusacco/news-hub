@@ -84,7 +84,6 @@ task crawler: :environment do
           else
             puts "ERROR DATE: #{result&.error}"
           end
-
         end
       rescue StandardError => e
         puts "Error processing page #{page.url}: #{e.message}".colorize(:red)

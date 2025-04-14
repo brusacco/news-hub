@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddCrawlDeepToSites < ActiveRecord::Migration[7.1]
   def change
     add_column :sites, :crawl_deep, :integer
