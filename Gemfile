@@ -91,3 +91,7 @@ gem 'webrick', '~> 1.9'
 gem 'colorize', '~> 1.1'
 
 gem "chronic", "~> 0.10.2"
+
+gem "tailwindcss-ruby", "~> 4.1"
+
+gem "tailwindcss-rails", "~> 4.2"

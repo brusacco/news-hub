@@ -8,4 +8,12 @@ ActiveAdmin.register Entry do
   filter :source_url
   filter :published_at
 
+  index do
+    selectable_column
+    column :id
+    column :title
+    column :source_url
+    column :published_at
+    actions
+  end
 end
