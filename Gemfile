@@ -83,3 +83,9 @@ gem 'rubocop-rails', '~> 2.31', group: :development
 gem 'httparty', '~> 0.23.1'
 
 gem 'nokogiri', '~> 1.18'
+
+gem "anemone", "~> 0.7.2"
+
+gem "webrick", "~> 1.9"
+
+gem "colorize", "~> 1.1"
