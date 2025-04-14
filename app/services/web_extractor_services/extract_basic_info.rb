@@ -25,7 +25,7 @@ module WebExtractorServices
       elsif @doc.title && title.blank?
         @doc.title
       else
-        ''
+        'none'
       end
     end
 

@@ -89,3 +89,5 @@ gem 'anemone', '~> 0.7.2'
 gem 'webrick', '~> 1.9'
 
 gem 'colorize', '~> 1.1'
+
+gem "chronic", "~> 0.10.2"

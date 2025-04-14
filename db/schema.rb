@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_13_231929) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_14_005736) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -52,6 +52,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_13_231929) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "site_id", null: false
+    t.text "description"
     t.index ["category"], name: "index_entries_on_category"
     t.index ["published_at"], name: "index_entries_on_published_at"
     t.index ["site_id"], name: "index_entries_on_site_id"
@@ -65,6 +66,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_13_231929) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "url_filter"
+    t.integer "crawl_deep", default: 1
   end
 
   add_foreign_key "entries", "sites"
