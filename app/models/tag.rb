@@ -13,7 +13,11 @@ class Tag < ApplicationRecord
   attr_accessor :interactions
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[created_at id id_value name taggings_count updated_at]
+    %w[created_at id id_value name taggings_count updated_at variations]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["taggings", "topics"]
   end
 
   def belongs_to_any_topic?

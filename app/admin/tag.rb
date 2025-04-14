@@ -27,13 +27,10 @@ ActiveAdmin.register Tag do
   index do
     selectable_column
     id_column
-    column 'Name' do |tag|
-      link_to tag.name, tag_path(tag), target: :blank
-    end
+    column :name
     column :variations
     column :created_at
     column :taggings_count
-    column :topics
     actions
   end
 
@@ -41,7 +38,6 @@ ActiveAdmin.register Tag do
     f.inputs do
       f.input :name
       f.input :variations
-      f.input :topics
     end
     f.actions
   end

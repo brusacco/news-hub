@@ -12,7 +12,7 @@ ActiveAdmin.register Entry do
     selectable_column
     column :id
     column :title
-    column :source_url
+    column :tags
     column :published_at
     actions
   end
