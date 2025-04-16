@@ -7,8 +7,9 @@ class HomeController < ApplicationController
     @entries = Entry.order(published_at: :desc)
     @pagy, @entries = pagy(@entries, limit: 60)
 
-    set_meta_tags title: 'OE & Aftermarket Transmission Parts | Rostra Powertrain Controls',
-                  description: 'Leading supplier of sensors, switches, modulators and wire harnesses and connectors for quality transmission repair.',
+    set_meta_tags title: 'Nintendo News Hub',
+                  description: 'Best Nintendo News Aggregator',
+                  keywords: 'Nintendo, News, Aggregator, Switch, Wii U',
                   og: {
                     title: :title,
                     description: :description,

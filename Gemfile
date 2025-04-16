@@ -100,10 +100,10 @@ gem 'pagy', '~> 9.3'
 
 gem 'acts-as-taggable-on', '~> 11.0'
 
-gem "puma-daemon", "~> 0.5.0"
+gem 'puma-daemon', '~> 0.5.0'
 
-gem "redis", "~> 5.4"
+gem 'redis', '~> 5.4'
 
-gem "parallel", "~> 1.26"
+gem 'parallel', '~> 1.26'
 
-gem "meta-tags", "~> 2.22"
+gem 'meta-tags', '~> 2.22'
