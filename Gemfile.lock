@@ -205,6 +205,8 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.2)
+    meta-tags (2.22.1)
+      actionpack (>= 6.0.0, < 8.1)
     mini_mime (1.1.5)
     minitest (5.25.5)
     msgpack (1.8.0)
@@ -432,6 +434,7 @@ DEPENDENCIES
   httparty (~> 0.23.1)
   importmap-rails
   jbuilder
+  meta-tags (~> 2.22)
   nokogiri (~> 1.18)
   pagy (~> 9.3)
   parallel (~> 1.26)

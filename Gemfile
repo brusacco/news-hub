@@ -105,3 +105,5 @@ gem "puma-daemon", "~> 0.5.0"
 gem "redis", "~> 5.4"
 
 gem "parallel", "~> 1.26"
+
+gem "meta-tags", "~> 2.22"
