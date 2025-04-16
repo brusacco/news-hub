@@ -54,24 +54,6 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
 
-  config.action_dispatch.trusted_proxies = [
-    IPAddr.new('173.245.48.0/20'),
-    IPAddr.new('103.21.244.0/22'),
-    IPAddr.new('103.22.200.0/22'),
-    IPAddr.new('103.31.4.0/22'),
-    IPAddr.new('141.101.64.0/18'),
-    IPAddr.new('108.162.192.0/18'),
-    IPAddr.new('190.93.240.0/20'),
-    IPAddr.new('188.114.96.0/20'),
-    IPAddr.new('197.234.240.0/22'),
-    IPAddr.new('198.41.128.0/17'),
-    IPAddr.new('162.158.0.0/15'),
-    IPAddr.new('104.16.0.0/13'),
-    IPAddr.new('104.24.0.0/14'),
-    IPAddr.new('172.64.0.0/13'),
-    IPAddr.new('131.0.72.0/22')
-  ]
-
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new($stdout)
                                        .tap  { |logger| logger.formatter = Logger::Formatter.new }
@@ -101,7 +83,7 @@ Rails.application.configure do
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
-  config.i18n.fallbacks = true
+  config.i18n.fallbacks = false
 
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
