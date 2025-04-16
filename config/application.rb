@@ -19,6 +19,7 @@ module NewsHub
     config.autoload_lib(ignore: %w[assets tasks])
 
     config.hosts << 'www.nintendonewshub.com'
+    config.hosts << 'localhost:3300'
 
     # Configuration for the application, engines, and railties goes here.
     #
