@@ -103,3 +103,5 @@ gem 'acts-as-taggable-on', '~> 11.0'
 gem "puma-daemon", "~> 0.5.0"
 
 gem "redis", "~> 5.4"
+
+gem "parallel", "~> 1.26"

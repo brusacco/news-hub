@@ -434,6 +434,7 @@ DEPENDENCIES
   jbuilder
   nokogiri (~> 1.18)
   pagy (~> 9.3)
+  parallel (~> 1.26)
   puma (>= 5.0)
   puma-daemon (~> 0.5.0)
   rails (~> 7.1.3)
