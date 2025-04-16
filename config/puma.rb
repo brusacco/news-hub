@@ -39,4 +39,4 @@ pidfile ENV.fetch('PIDFILE', 'tmp/pids/server.pid')
 plugin :tmp_restart
 
 plugin :tailwindcss if ENV.fetch('RAILS_ENV', 'development') == 'development'
-daemonize ENV.fetch('RAILS_ENV', 'development') == 'production'
+daemonize ENV.fetch('RAILS_ENV', 'production') == 'production'
