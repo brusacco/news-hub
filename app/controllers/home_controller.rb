@@ -7,4 +7,9 @@ class HomeController < ApplicationController
     @entries = Entry.order(published_at: :desc)
     @pagy, @entries = pagy(@entries, limit: 60)
   end
+
+  def trending
+    @entries = Entry.a_week_ago.order(total_count: :desc)
+    @pagy, @entries = pagy(@entries, limit: 60)
+  end
 end

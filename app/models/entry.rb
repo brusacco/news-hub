@@ -7,6 +7,8 @@ class Entry < ApplicationRecord
   validates :title, :source_url, presence: true
   validates :source_url, uniqueness: true
 
+  scope :a_week_ago, -> { where(published_at: 1.week.ago..Time.current) }
+
   def self.ransackable_associations(_auth_object = nil)
     ['site']
   end

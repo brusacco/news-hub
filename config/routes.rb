@@ -3,7 +3,10 @@
 Rails.application.routes.draw do
   resources :entries, only: %i[index show]
   resources :tags, only: %i[index show]
+
   get 'home/index'
+  get 'trending' => 'home#trending', as: :trending
+
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
