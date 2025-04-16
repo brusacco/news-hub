@@ -8,7 +8,7 @@ module FacebookServices
 
     def call
       entry = Entry.find(@entry_id)
-      response = fetch_facebook_data(entry.url)
+      response = fetch_facebook_data(entry.source_url)
       data = parse_response(response)
       engagement = calculate_engagement(data['engagement'])
       handle_success(engagement)
