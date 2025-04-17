@@ -22,7 +22,7 @@ module WebExtractorServices
     def extract_title
       if @doc.at('meta[property="og:title"]')
         @doc.at('meta[property="og:title"]')[:content]
-      elsif @doc.title && title.blank?
+      elsif @doc.title
         @doc.title
       else
         'none'

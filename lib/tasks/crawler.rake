@@ -23,6 +23,7 @@ task crawler: :environment do
     reviews
     features
     guides
+    archive
   ]
   directory_pattern = /#{directories.join('|')}/
 
