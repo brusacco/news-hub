@@ -24,6 +24,7 @@ task crawler: :environment do
     features
     guides
     archive
+    store
   ]
   directory_pattern = /#{directories.join('|')}/
 
