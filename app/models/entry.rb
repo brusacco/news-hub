@@ -8,6 +8,8 @@ class Entry < ApplicationRecord
   validates :source_url, uniqueness: true
 
   scope :a_week_ago, -> { where(published_at: 1.week.ago..Time.current) }
+  scope :no_image, -> { where(image_url: nil) }
+  scope :no_published_at, -> { where(published_at: nil) }
 
   def self.ransackable_associations(_auth_object = nil)
     ['site']

@@ -40,14 +40,3 @@ task retagger: :environment do
     retry
   end
 end
-
-task generate_tags: :environment do
-  NAME_REGEX = /([A-ZÀ-Ö][a-zø-ÿ]{3,}\s[A-ZÀ-Ö][a-zØ-öø-ÿ]{3,}?\s[A-ZÀ-Ö][a-zØ-öø-ÿ]{3,})/
-  Entry.enabled.limit(50).each do |entry|
-    content = "#{entry.title} #{entry.description}"
-    names = content.scan(NAME_REGEX)
-    puts content
-    puts "Names: #{names}"
-    puts '---------------------------------------------------'
-  end
-end

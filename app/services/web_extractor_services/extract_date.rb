@@ -19,7 +19,9 @@ module WebExtractorServices
         @date = @doc.at('meta[property="og:article:published_time"]')[:content]
         @parsed = true
       elsif @doc.at_css('.when') && @date.nil?
-        @date = @doc.at_css('.when')
+        date_text = @doc.at_css('.when').text
+        @date = date_text.split('am').first if date_text.include?('am')
+        @date = date_text.split('pm').first if date_text.include?('pm')
         @parsed = false
       else
         @date = nil

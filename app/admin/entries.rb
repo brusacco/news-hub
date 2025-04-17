@@ -8,6 +8,10 @@ ActiveAdmin.register Entry do
   filter :source_url
   filter :published_at
 
+  scope :all, default: true
+  scope :a_week_ago
+  scope :no_image
+
   index do
     selectable_column
     column :id
