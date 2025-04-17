@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Entry < ApplicationRecord
+  extend FriendlyId
+  friendly_id :title, use: :slugged
+
   acts_as_taggable_on :tags
   belongs_to :site
 

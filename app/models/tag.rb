@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Tag < ApplicationRecord
+  extend FriendlyId
+  friendly_id :name, use: :slugged
+
   has_and_belongs_to_many :topics
   accepts_nested_attributes_for :topics
 

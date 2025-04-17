@@ -2,7 +2,7 @@
 
 ActiveAdmin.register Entry do
   permit_params :title, :summary, :content, :ai_summary, :ai_content, :source_url, :source_name, :published_at,
-                :author, :image_url, :category, :site_id
+                :author, :image_url, :category, :site_id, :slug
 
   filter :title
   filter :source_url
@@ -11,6 +11,12 @@ ActiveAdmin.register Entry do
   scope :all, default: true
   scope :a_week_ago
   scope :no_image
+
+  controller do
+    def find_resource
+      scoped_collection.friendly.find(params[:id])
+    end
+  end
 
   index do
     selectable_column

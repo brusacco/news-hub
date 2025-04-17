@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register Tag do
-  permit_params :name, :variations, topic_ids: []
+  permit_params :name, :slug, :variations, topic_ids: []
 
   #------------------------------------------------------------------
   #
@@ -20,6 +20,12 @@ ActiveAdmin.register Tag do
 
   filter :name
   filter :variations
+
+  controller do
+    def find_resource
+      scoped_collection.friendly.find(params[:id])
+    end
+  end
 
   #------------------------------------------------------------------
   #

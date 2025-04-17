@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_16_120100) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_17_162012) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -58,10 +58,23 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_16_120100) do
     t.integer "share_count", default: 0, null: false
     t.integer "comment_plugin_count", default: 0, null: false
     t.integer "total_count", default: 0, null: false
+    t.string "slug"
     t.index ["category"], name: "index_entries_on_category"
     t.index ["published_at"], name: "index_entries_on_published_at"
     t.index ["site_id"], name: "index_entries_on_site_id"
+    t.index ["slug"], name: "index_entries_on_slug", unique: true
     t.index ["source_url"], name: "index_entries_on_source_url", unique: true
+  end
+
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "sluggable_id", null: false
+    t.string "sluggable_type", limit: 50
+    t.string "scope"
+    t.datetime "created_at"
+    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
+    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
+    t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
   end
 
   create_table "sites", force: :cascade do |t|
@@ -103,7 +116,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_16_120100) do
     t.datetime "updated_at", null: false
     t.integer "taggings_count", default: 0
     t.string "variations"
+    t.string "slug"
     t.index ["name"], name: "index_tags_on_name", unique: true
+    t.index ["slug"], name: "index_tags_on_slug", unique: true
   end
 
   create_table "tags_topics", id: false, force: :cascade do |t|

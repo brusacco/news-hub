@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :entries, only: %i[index show]
+  resources :entries, path: 'news', only: %i[index show]
   resources :tags, only: %i[index show]
 
   get 'home/index'

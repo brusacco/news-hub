@@ -107,3 +107,5 @@ gem 'redis', '~> 5.4'
 gem 'parallel', '~> 1.26'
 
 gem 'meta-tags', '~> 2.22'
+
+gem 'friendly_id', '~> 5.5'
