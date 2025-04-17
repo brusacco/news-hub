@@ -41,6 +41,3 @@ plugin :tmp_restart
 
 plugin :tailwindcss if ENV.fetch('RAILS_ENV', 'development') == 'development'
 daemonize ENV.fetch('RAILS_ENV', 'production') == 'production'
-
-state_path 'tmp/pids/puma.state'
-control_app 'unix://tmp/sockets/pumactl.sock'
