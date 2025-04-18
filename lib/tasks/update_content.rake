@@ -5,7 +5,7 @@ task update_content: :environment do
   require 'httparty'
 
   Entry.find_each do |entry|
-    next if entry.content.present?
+    # next if entry.content.present?
 
     response = HTTParty.get(entry.source_url)
     if response.success?

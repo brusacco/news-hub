@@ -12,11 +12,7 @@ module WebExtractorServices
     def call
       script_path = Rails.root.join('lib/readability.js')
       args = [@url]
-      if @html
-        require 'base64'
-        args << Base64.strict_encode64(@html)
-      end
-      stdout, _stderr, status = Open3.capture3('node', script_path.to_s, *args)
+      stdout, _stderr, status = Open3.capture3('node', script_path.to_s, *args, stdin_data: @html)
       if status.success?
         begin
           doc = JSON.parse(stdout)
