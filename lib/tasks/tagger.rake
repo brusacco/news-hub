@@ -11,8 +11,7 @@ task tagger: :environment do
     puts entry.tag_list
     puts '---------------------------------------------------'
 
-    entry.save!
-    entry.touch
+    entry.save
   rescue StandardError => e
     puts e.message
     sleep 1
@@ -21,21 +20,17 @@ task tagger: :environment do
 end
 
 task retagger: :environment do
-  Entry.enabled.where(published_at: 3.months.ago..Time.current).find_each do |entry|
-    next if entry.tags.any?
+  Entry.find_each do |entry|
+    next if entry.entities.blank?
 
-    result = WebExtractorServices::ExtractTags.call(entry.id)
-    next unless result.success?
-
-    entry.tag_list = result.data
-    puts entry.url
+    entry.tag_list.add(entry.entities, parse: true)
+    puts entry.source_url
     puts entry.tag_list
     puts '---------------------------------------------------'
 
-    entry.save!
-    entry.touch
+    entry.save
   rescue StandardError => e
-    puts e.message
+    puts "Error: #{e.message}"
     sleep 1
     retry
   end
