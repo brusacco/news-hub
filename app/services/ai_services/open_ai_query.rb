@@ -8,22 +8,23 @@ module AiServices
 
     def call
       client = OpenAI::Client.new(access_token: Rails.application.credentials.openai_access_token)
-      response = nil
 
-      loop do
-        response = client.chat(
-          parameters: {
-            model: 'gpt-4-turbo',
-            messages: [{ role: 'user', content: @text }],
-            temperature: 0.7
-          }
-        )
-
-        break unless response['error']&.dig('code') == 'unsupported_country_region_territory'
-      end
+      response = client.chat(
+        parameters: {
+          model: 'gpt-4.1',
+          messages: [{ role: 'user', content: @text }]
+        }
+      )
 
       result = response.dig('choices', 0, 'message', 'content')
-      handle_success(result)
+      data = parse_response(result)
+      handle_success(data)
+    end
+
+    private
+
+    def parse_response(data)
+      JSON.parse(data)
     end
   end
 end

@@ -10,3 +10,5 @@ Lint/MissingSuper:
   Enabled: false
 Style/Documentation:
   Enabled: false
+Metrics/MethodLength:
+  Enabled: false

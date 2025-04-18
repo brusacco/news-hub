@@ -115,3 +115,5 @@ gem 'byebug', '~> 12.0', groups: %i[development test]
 gem 'whenever', '~> 1.0'
 
 gem 'rack-cors', '~> 2.0'
+
+gem "ruby-openai", "~> 8.1"
