@@ -85,6 +85,17 @@ task crawler: :environment do
           else
             puts "ERROR DATE: #{result&.error}"
           end
+
+          #---------------------------------------------------------------------------
+          # Content extractor
+          #---------------------------------------------------------------------------
+          result = WebExtractorServices::ArticleExtractor.call(page.url.to_s, page.doc.to_html)
+          if result.success?
+            entry.update!(result.data)
+            puts result.data
+          else
+            puts "ERROR CONTENT: #{result&.error}"
+          end
         end
       rescue StandardError => e
         puts "Error processing page #{page.url}: #{e.message}".colorize(:red)
