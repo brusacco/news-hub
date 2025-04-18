@@ -40,3 +40,4 @@
 !/app/assets/builds/.keep
 /.Gemfile.lock
 Gemfile.lock
+public/sitemap.xml.gz
