@@ -45,6 +45,7 @@ class Entry < ApplicationRecord
     ai_content: 'Your article content here'}.
     Do not include any additional text or commentary outside of the JSON structure and remove any trailing spaces
     from the keywords and entities JSON fields content(remove the space after the commnas).
+    Always check the JSON structure for errors and ensure it is valid.
 
     The text to rewrite is:
     #{content}
