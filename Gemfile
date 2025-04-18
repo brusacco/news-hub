@@ -109,3 +109,5 @@ gem 'parallel', '~> 1.26'
 gem 'meta-tags', '~> 2.22'
 
 gem 'friendly_id', '~> 5.5'
+
+gem 'byebug', '~> 12.0', groups: %i[development test]

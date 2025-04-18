@@ -4,6 +4,7 @@ ActiveAdmin.register Entry do
   permit_params :title, :summary, :content, :ai_summary, :ai_content, :source_url, :source_name, :published_at,
                 :author, :image_url, :category, :site_id, :slug
 
+  filter :id
   filter :title
   filter :source_url
   filter :published_at

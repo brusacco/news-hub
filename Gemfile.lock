@@ -108,6 +108,7 @@ GEM
     bootsnap (1.18.4)
       msgpack (~> 1.2)
     builder (3.3.0)
+    byebug (12.0.0)
     capybara (3.40.0)
       addressable
       matrix
@@ -427,6 +428,7 @@ DEPENDENCIES
   acts-as-taggable-on (~> 11.0)
   anemone (~> 0.7.2)
   bootsnap
+  byebug (~> 12.0)
   capybara
   chronic (~> 0.10.2)
   colorize (~> 1.1)
