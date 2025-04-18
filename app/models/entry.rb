@@ -51,4 +51,16 @@ class Entry < ApplicationRecord
     #{content}
     "
   end
+
+  def final_title
+    ai_title || title
+  end
+
+  def final_description
+    ai_description || description
+  end
+
+  def final_keywords
+    keywords || 'Nintendo, News, Aggregator, Switch, Wii U'
+  end
 end

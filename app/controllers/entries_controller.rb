@@ -8,9 +8,9 @@ class EntriesController < ApplicationController
     @entries = Entry.tagged_with(@entry.tags, any: true).order(published_at: :desc).limit(9)
     @entries = Entry.where.not(id: @entry.id).order(published_at: :desc).limit(9) unless @entries.any?
 
-    set_meta_tags title: @entry.title,
-                  description: @entry.description,
-                  keywords: 'Nintendo, News, Aggregator, Switch, Wii U',
+    set_meta_tags title: @entry.final_title,
+                  description: @entry.final_description,
+                  keywords: @entry.final_keywords,
                   og: {
                     title: :title,
                     description: :description,
