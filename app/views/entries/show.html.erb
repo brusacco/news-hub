@@ -5,7 +5,11 @@
       <div class="flex flex-col-reverse">
         <div>
           <div id="tabs-1-panel-1" aria-labelledby="tabs-1-tab-1" role="tabpanel" tabindex="0">
+            <%if @entry.site.id == 11%>
+            <img src="https://nintendoeverything.com/wp-content/uploads/Switch-demos.jpg" alt="<%= @entry.title %>" class="aspect-square w-full object-cover sm:rounded-lg">
+            <%else%>
             <img src="<%= @entry.image_url %>" alt="<%= @entry.title %>" class="aspect-square w-full object-cover sm:rounded-lg">
+            <%end%>
           </div>
         </div>
       </div>
