@@ -2,7 +2,7 @@
 
 desc 'Update AI content based on the content of the entry'
 task update_ai: :environment do
-  Entry.where.not(content: nil).order(published_at: :desc).find_each do |entry|
+  Entry.where.not(content: nil).order(published_at: :desc).each do |entry|
     prompt = entry.prompt
     result = AiServices::OpenAiQuery.call(prompt)
     next unless result.success?
