@@ -2,7 +2,7 @@
 
 desc 'Update AI content based on the content of the entry'
 task update_ai: :environment do
-  Entry.needs_ai_generation.each do |entry|
+  Parallel.each(Entry.needs_ai_generation.each, in_threads: 5) do |entry|
     prompt = entry.prompt
     result = AiServices::OpenAiQuery.call(prompt)
     next unless result.success?
