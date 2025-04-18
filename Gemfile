@@ -112,4 +112,6 @@ gem 'friendly_id', '~> 5.5'
 
 gem 'byebug', '~> 12.0', groups: %i[development test]
 
-gem "whenever", "~> 1.0"
+gem 'whenever', '~> 1.0'
+
+gem 'rack-cors', '~> 2.0'
