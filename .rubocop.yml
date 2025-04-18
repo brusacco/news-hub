@@ -5,3 +5,8 @@ AllCops:
   SuggestExtensions: false
   TargetRubyVersion: 3.2
   NewCops: enable
+
+Lint/MissingSuper:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
