@@ -1,12 +1,25 @@
 # frozen_string_literal: true
 
 class EntriesController < ApplicationController
+  MAX_RELATED_ENTRIES = 6
   def index; end
 
   def show
     @entry = Entry.friendly.find(params[:id])
-    @entries = Entry.tagged_with(@entry.tags, any: true).where.not(id: @entry.id).order(published_at: :desc).limit(6)
-    @entries = Entry.where.not(id: @entry.id).order(published_at: :desc).limit(9) unless @entries.any?
+
+    blacklist = ['Nintendo',
+                 'Nintendo Switch',
+                 'Switch',
+                 'Nintendo Switch 2',
+                 'Switch 2',
+                 '2025']
+
+    @main_tags = @entry.tags.pluck(:name) - blacklist
+    @entries = Entry.tagged_with(@main_tags, any: true)
+                    .where.not(id: @entry.id)
+                    .order(published_at: :desc).limit(MAX_RELATED_ENTRIES)
+
+    @entries = Entry.tagged_with(@entry.tags, any: true).order(published_at: :desc).limit(MAX_RELATED_ENTRIES) unless @entries.any?
 
     set_meta_tags title: @entry.final_title,
                   description: @entry.final_description,
