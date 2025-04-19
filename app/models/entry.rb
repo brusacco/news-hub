@@ -14,6 +14,7 @@ class Entry < ApplicationRecord
   scope :no_image, -> { where(image_url: nil) }
   scope :no_published_at, -> { where(published_at: nil) }
   scope :needs_ai_generation, -> { where.not(content: nil).where(ai_content: nil).order(published_at: :desc) }
+  scope :tagger_scope, -> { where(published_at: 4.years.ago..Time.current).order(published_at: :desc) }
 
   def self.ransackable_associations(_auth_object = nil)
     ['site']
