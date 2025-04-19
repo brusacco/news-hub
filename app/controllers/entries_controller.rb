@@ -5,7 +5,7 @@ class EntriesController < ApplicationController
 
   def show
     @entry = Entry.friendly.find(params[:id])
-    @entries = Entry.tagged_with(@entry.tags, any: true).order(published_at: :desc).limit(9)
+    @entries = Entry.tagged_with(@entry.tags, any: true).where.not(id: @entry.id).order(published_at: :desc).limit(6)
     @entries = Entry.where.not(id: @entry.id).order(published_at: :desc).limit(9) unless @entries.any?
 
     set_meta_tags title: @entry.final_title,
