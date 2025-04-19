@@ -1,20 +1,7 @@
 <div class="bg-white">
   <div class="mx-auto max-w-full px-4 py-2 sm:px-6 sm:py-10 lg:max-w-7xl lg:px-8">
     <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
-      <!-- Image gallery -->
-      <div class="flex flex-col-reverse">
-        <div>
-          <div id="tabs-1-panel-1" aria-labelledby="tabs-1-tab-1" role="tabpanel" tabindex="0">
-            <%if @entry.site.id == 11%>
-            <img src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg" alt="<%= @entry.title %>" class="aspect-square w-full object-cover sm:rounded-lg">
-            <%else%>
-            <img src="<%= @entry.image_url %>" alt="<%= @entry.title %>" class="aspect-square w-full object-cover sm:rounded-lg">
-            <%end%>
-          </div>
-        </div>
-      </div>
-
-      <!-- Entry info -->
+       <!-- Entry info -->
       <div class="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900"><%= @entry.ai_title || @entry.title %></h1>
 
@@ -38,6 +25,20 @@
           </div>
         </div>
       </div>
+      <!-- Image gallery -->
+      <div class="flex flex-col-reverse">
+        <div>
+          <div id="tabs-1-panel-1" aria-labelledby="tabs-1-tab-1" role="tabpanel" tabindex="0">
+            <%if @entry.site.id == 11%>
+            <img src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg" alt="<%= @entry.title %>" class="aspect-square w-full object-cover sm:rounded-lg">
+            <%else%>
+            <img src="<%= @entry.image_url %>" alt="<%= @entry.title %>" class="aspect-square w-full object-cover sm:rounded-lg">
+            <%end%>
+          </div>
+        </div>
+      </div>
+
+     
     </div>
     <div class="mx-auto max-w-2xl py-4 sm:py-12 lg:max-w-7xl ">
       <h2 class="text-2xl font-bold tracking-tight text-gray-900">Related</h2>
