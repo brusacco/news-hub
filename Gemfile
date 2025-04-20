@@ -119,3 +119,5 @@ gem 'rack-cors', '~> 2.0'
 gem "ruby-openai", "~> 8.1"
 
 gem "sitemap_generator", "~> 6.3"
+
+gem "koala", "~> 3.6"
