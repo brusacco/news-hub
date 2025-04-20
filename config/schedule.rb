@@ -12,5 +12,8 @@ every :hour do
   rake 'update_stats'
   rake 'update_content'
   rake 'update_entries'
+end
+
+every 1.day, at: '5:00 am' do
   rake 'sitemap:refresh:no_ping'
 end
