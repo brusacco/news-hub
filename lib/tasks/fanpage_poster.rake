@@ -15,14 +15,15 @@ task fanpage_poster: :environment do
 
   Entry.where.not(ai_title: nil).find_each do |entry|
     begin
-      url = "https://nintendonewshub.com/news/#{entry.slug}"
+      puts "Posting to Facebook: #{entry.ai_title}"
+      url = "https://www.nintendonewshub.com/news/#{entry.slug}"
       page_graph.put_connections(page_id, 'feed', message: entry.ai_title, link: url)
       entry.posted = true
       entry.save
+      sleep(rand(60..150))
     rescue StandardError => e
       puts e.message
       next
     end
-    sleep(rand(60..150))
   end
 end
