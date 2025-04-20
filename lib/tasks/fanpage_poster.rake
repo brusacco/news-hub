@@ -13,17 +13,14 @@ task fanpage_poster: :environment do
   page_graph.get_connection('me', 'feed') # the page's wall
   page_id = '661560777030650'
 
-  Entry.where.not(ai_title: nil).order(published_at: :desc).limit(2).each do |entry|
-    begin
-      puts "Posting to Facebook: #{entry.ai_title}"
-      url = entry_url(entry, host: 'https://www.nintendonewshub.com')
-      page_graph.put_connections(page_id, 'feed', message: entry.ai_title, link: url)
-      entry.posted = true
-      entry.save
-      sleep(rand(60..150))
-    rescue StandardError => e
-      puts e.message
-      next
-    end
+  Entry.where(fb_posted: false).where.not(ai_title: nil).order(published_at: :desc).limit(100).each do |entry|
+    puts "Posting to Facebook: #{entry.ai_title}"
+    url = entry_url(entry, host: 'https://www.nintendonewshub.com')
+    page_graph.put_connections(page_id, 'feed', message: entry.ai_title, link: url)
+    entry.update(fb_posted: true)
+    sleep(rand(60..120))
+  rescue StandardError => e
+    puts e.message
+    next
   end
 end
