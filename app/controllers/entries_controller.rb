@@ -15,11 +15,17 @@ class EntriesController < ApplicationController
                  '2025']
 
     @main_tags = @entry.tags.pluck(:name) - blacklist
-    @entries = Entry.tagged_with(@main_tags, any: true)
+    @entries = Entry.a_week_ago
+                    .tagged_with(@main_tags, any: true)
                     .where.not(id: @entry.id)
                     .order(published_at: :desc).limit(MAX_RELATED_ENTRIES)
 
-    @entries = Entry.tagged_with(@entry.tags, any: true).order(published_at: :desc).limit(MAX_RELATED_ENTRIES) unless @entries.any?
+    if @entries.empty?
+      @entries = Entry.a_week_ago
+                      .tagged_with(@entry.tags, any: true)
+                      .order(published_at: :desc)
+                      .limit(MAX_RELATED_ENTRIES)
+    end
 
     set_meta_tags title: @entry.final_title,
                   description: @entry.final_description,
