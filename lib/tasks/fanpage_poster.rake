@@ -2,7 +2,6 @@
 
 require 'koala'
 
-
 desc 'Post to Game new Hub fanpage'
 task fanpage_poster: :environment do
   token = 'EAAUflRsiNdYBOxsrHp6OH4k0v3AmXKpi4gJUWVs8vklarUyatBiFZCUtYCxNQsFT085CZCfO8qdhO4M4tJgbjWqopIoe8gvZCxZCrGY10gFBGqCt6EvI3qSOwFQ0seDiaR5NZAZAh6t48PlZCr9wA8Ft0onoWtigSwA1OrQ3xkWhSciWbaKnpcSFzZBigZAkIMgZDZD'
@@ -13,7 +12,7 @@ task fanpage_poster: :environment do
   page_graph.get_connection('me', 'feed') # the page's wall
   page_id = '661560777030650'
 
-  Entry.where.not(ai_title: nil).find_each do |entry|
+  Entry.where.not(ai_title: nil).order(posted_at: :desc).limit(2).each do |entry|
     begin
       puts "Posting to Facebook: #{entry.ai_title}"
       url = "https://www.nintendonewshub.com/news/#{entry.slug}"
