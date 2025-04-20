@@ -8,7 +8,7 @@ class HomeController < ApplicationController
     @pagy, @entries = pagy(@entries, limit: 60)
 
     set_meta_tags title: 'Nintendo News Hub',
-                  description: 'Best Nintendo News Aggregator',
+                  description: 'Best Nintendo News Online',
                   keywords: 'Nintendo, News, Aggregator, Switch, Wii U',
                   og: {
                     title: :title,
