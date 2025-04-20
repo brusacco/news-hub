@@ -4,7 +4,7 @@ require 'koala'
 
 desc 'Post to Game new Hub fanpage'
 task fanpage_poster: :environment do
-  token = 'EAAUflRsiNdYBAKVFkQO2p8ywoQ6O1BZBfTG5ZB3W7JizMO3gyZBbKInG9sZCzCn01p5gZByWtleV7iE8GoP7uqdqpGvi21ZADJ0cZAaV0WIr5dbqG4ZAZCRIlSiHxuyAg3Iqif2GaBvpjRNgs3ZAwSI6Aa6MPqsKHCXmOreIdgRvpitwZDZD'
+  token = 'EAAUflRsiNdYBOxsrHp6OH4k0v3AmXKpi4gJUWVs8vklarUyatBiFZCUtYCxNQsFT085CZCfO8qdhO4M4tJgbjWqopIoe8gvZCxZCrGY10gFBGqCt6EvI3qSOwFQ0seDiaR5NZAZAh6t48PlZCr9wA8Ft0onoWtigSwA1OrQ3xkWhSciWbaKnpcSFzZBigZAkIMgZDZD'
   user_graph = Koala::Facebook::API.new(token)
   page_token = user_graph.get_page_access_token('61575674214440')
   page_graph = Koala::Facebook::API.new(page_token)
