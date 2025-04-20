@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'koala'
-require 'action_controller'
-require 'rails'
+require 'rails.application.routes.url_helpers'
+
 include Rails.application.routes.url_helpers
-Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 
 desc 'Post to Game new Hub fanpage'
 task fanpage_poster: :environment do
@@ -14,12 +13,12 @@ task fanpage_poster: :environment do
   page_graph = Koala::Facebook::API.new(page_token)
   page_graph.get_object('me') # I'm a page
   page_graph.get_connection('me', 'feed') # the page's wall
-  page_id = '61575674214440'
+  page_id = '661560777030650'
 
-  Entry.where.not(ai_title: nil).limit(100).each do |entry|
+  Entry.where.not(ai_title: nil).find_each do |entry|
     begin
-      url = "https://www.nintendonewshub.com#{entry_path(entry)}"
-      page_graph.put_connections(page_id, 'feed', message: entry.ai_title, link: url)
+      url = entry_url(entry, host: 'https://www.nintendonewshub.com')
+      page_graph.put_connections(page_id, 'feed', message: ai_title, link: url)
       entry.posted = true
       entry.save
     rescue StandardError => e
