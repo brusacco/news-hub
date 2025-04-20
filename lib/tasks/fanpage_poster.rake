@@ -16,7 +16,7 @@ task fanpage_poster: :environment do
   Entry.where(fb_posted: false).where.not(ai_title: nil).order(published_at: :desc).limit(100).each do |entry|
     puts "Posting to Facebook: #{entry.ai_title}"
     url = entry_url(entry, host: 'https://www.nintendonewshub.com')
-    page_graph.put_connections(page_id, 'feed', message: entry.ai_title, link: url)
+    page_graph.put_connections(page_id, 'feed', message: entry.ai_description, link: url)
     entry.update(fb_posted: true)
     sleep(rand(60..120))
   rescue StandardError => e
