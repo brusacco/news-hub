@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :tags, only: %i[index show]
 
   get 'home/index'
+  get 'search', to: 'home#search', as: :search
   get 'trending' => 'home#trending', as: :trending
 
   devise_for :admin_users, ActiveAdmin::Devise.config
