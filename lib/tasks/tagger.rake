@@ -18,21 +18,3 @@ task tagger: :environment do
     retry
   end
 end
-
-task tagger_all: :environment do
-  Entry.tagger_scope.find_each do |entry|
-    result = WebExtractorServices::ExtractTags.call(entry.id)
-    next unless result.success?
-
-    entry.tag_list = result.data
-    puts entry.source_url
-    puts entry.tag_list
-    puts '---------------------------------------------------'
-
-    entry.save
-  rescue StandardError => e
-    puts e.message
-    sleep 1
-    retry
-  end
-end
