@@ -33,6 +33,9 @@ class EntriesController < ApplicationController
                     url: entry_url(@entry),
                     image: @entry.image_url
                   },
+                  article: {
+                    published_time: @entry.published_at
+                  },
                   twitter: { card: 'summary' }
   end
 end
