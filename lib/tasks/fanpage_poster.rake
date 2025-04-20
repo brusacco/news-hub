@@ -18,7 +18,8 @@ task fanpage_poster: :environment do
 
   Entry.where.not(ai_title: nil).limit(100).each do |entry|
     begin
-      page_graph.put_connections(page_id, 'feed', message: entry.ai_title, link: entry_path(entry))
+      url = "https://www.nintendonewshub.com#{entry_path(entry)}"
+      page_graph.put_connections(page_id, 'feed', message: entry.ai_title, link: url)
       entry.posted = true
       entry.save
     rescue StandardError => e
