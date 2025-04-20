@@ -2,7 +2,7 @@
 
 desc 'Tagger'
 task tagger: :environment do
-  Entry.tagger_scope.find_each do |entry|
+  Entry.order(id: :desc).limit(100).find_each do |entry|
     result = WebExtractorServices::ExtractTags.call(entry.id)
     next unless result.success?
 
@@ -19,18 +19,19 @@ task tagger: :environment do
   end
 end
 
-task retagger: :environment do
-  Entry.find_each do |entry|
-    next if entry.entities.blank?
+task tagger_all: :environment do
+  Entry.tagger_scope.find_each do |entry|
+    result = WebExtractorServices::ExtractTags.call(entry.id)
+    next unless result.success?
 
-    entry.tag_list.add(entry.entities, parse: true)
+    entry.tag_list = result.data
     puts entry.source_url
     puts entry.tag_list
     puts '---------------------------------------------------'
 
     entry.save
   rescue StandardError => e
-    puts "Error: #{e.message}"
+    puts e.message
     sleep 1
     retry
   end
