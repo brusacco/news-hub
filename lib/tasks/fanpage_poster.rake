@@ -12,7 +12,7 @@ task fanpage_poster: :environment do
   page_graph.get_connection('me', 'feed') # the page's wall
   page_id = '61575674214440'
 
-  Entry.where.not(ai_title: nil).find_each do |entry|
+  Entry.where.not(ai_title: nil).limit(100).each do |entry|
     begin
       page_graph.put_connections(page_id, 'feed', message: ai_title, link: entry_path(entry))
       entry.posted = true
