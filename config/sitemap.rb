@@ -15,13 +15,14 @@ SitemapGenerator::Sitemap.create do
   #
   # Examples:
   #
-  # Add '/articles'
-  #
   add tags_path, priority: 0.7, changefreq: 'daily'
+  Tag.find_each do |tag|
+    add tag_path(tag), lastmod: Time.zone.now, changefreq: 'daily', priority: 0.8
+  end
   #
   # Add all articles:
   #
   Entry.find_each do |entry|
-    add entry_path(entry), lastmod: entry.updated_at
+    add entry_path(entry), lastmod: entry.updated_at, priority: 1.0, changefreq: 'daily'
   end
 end

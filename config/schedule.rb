@@ -12,4 +12,5 @@ every :hour do
   rake 'update_stats'
   rake 'update_content'
   rake 'update_entries'
+  rake 'sitemap:refresh:no_ping'
 end
