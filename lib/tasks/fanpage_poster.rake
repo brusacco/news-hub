@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 require 'koala'
-require 'rails.application.routes.url_helpers'
 
-include Rails.application.routes.url_helpers
 
 desc 'Post to Game new Hub fanpage'
 task fanpage_poster: :environment do
@@ -17,7 +15,7 @@ task fanpage_poster: :environment do
 
   Entry.where.not(ai_title: nil).find_each do |entry|
     begin
-      url = entry_url(entry, host: 'https://www.nintendonewshub.com')
+      url = "https://nintendonewshub.com/news/#{entry.slug}"
       page_graph.put_connections(page_id, 'feed', message: ai_title, link: url)
       entry.posted = true
       entry.save
