@@ -2,6 +2,10 @@
 
 set :environment, 'production'
 
+every 5.minutes do
+  rake 'update_ai'
+end
+
 every :hour do
   rake 'crawler'
   rake 'tagger'

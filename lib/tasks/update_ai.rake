@@ -8,6 +8,13 @@ task update_ai: :environment do
     next unless result.success?
 
     entry.update!(result.data)
+
+    result = WebExtractorServices::ExtractTags.call(entry.id)
+    next unless result.success?
+
+    entry.tag_list = result.data
+    entry.save
+
     puts "Updated AI content for entry ##{entry.id}"
   rescue StandardError => e
     puts "Error processing entry ##{entry.id}: #{e.message}"
