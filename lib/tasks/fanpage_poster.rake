@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 require 'koala'
+require 'action_controller'
+require 'rails'
+include Rails.application.routes.url_helpers
+Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 
 desc 'Post to Game new Hub fanpage'
 task fanpage_poster: :environment do
