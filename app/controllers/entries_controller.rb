@@ -24,6 +24,7 @@ class EntriesController < ApplicationController
     set_meta_tags title: @entry.final_title,
                   description: @entry.final_description,
                   keywords: @entry.final_keywords,
+                  canonical: entry_url(@entry),
                   og: {
                     title: :title,
                     description: :description,
