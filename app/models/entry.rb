@@ -11,6 +11,7 @@ class Entry < ApplicationRecord
   validates :source_url, uniqueness: true
 
   scope :a_week_ago, -> { where(published_at: 1.week.ago..Time.current) }
+  scope :a_day_ago, -> { where(published_at: 1.day.ago..Time.current) }
   scope :no_image, -> { where(image_url: nil) }
   scope :no_published_at, -> { where(published_at: nil) }
   scope :needs_ai_generation, -> { where.not(content: nil).where(ai_content: nil).order(published_at: :desc) }

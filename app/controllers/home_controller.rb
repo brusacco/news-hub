@@ -22,7 +22,7 @@ class HomeController < ApplicationController
   end
 
   def trending
-    @entries = Entry.a_week_ago.order(total_count: :desc)
+    @entries = Entry.a_day_ago.order(total_count: :desc)
     @pagy, @entries = pagy(@entries, limit: 60)
   end
 
