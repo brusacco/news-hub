@@ -114,10 +114,8 @@ gem 'byebug', '~> 12.0', groups: %i[development test]
 
 gem 'whenever', '~> 1.0'
 
-gem 'rack-cors', '~> 2.0'
+gem 'ruby-openai', '~> 8.1'
 
-gem "ruby-openai", "~> 8.1"
+gem 'sitemap_generator', '~> 6.3'
 
-gem "sitemap_generator", "~> 6.3"
-
-gem "koala", "~> 3.6"
+# gem 'koala', '~> 3.6', require: false
