@@ -106,6 +106,8 @@ task crawler: :environment do
     end
   rescue StandardError => e
     puts "Error processing site #{site.name}: #{e.message}".colorize(:red)
+    puts e.backtrace.join("\n").colorize(:red)
+    puts '--------------------------------------------------------------------"'
     next
   end
 end
