@@ -6,4 +6,4 @@ Instalar als dependedncias de NODE
 npm install
 
 
-EDITOR="mcedit --wait" bin/rails credentials:edit
+EDITOR="mcedit" bin/rails credentials:edit

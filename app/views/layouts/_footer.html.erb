@@ -27,9 +27,11 @@
               <%Entry.tag_counts_on(:tags).limit(5).each do |tag|%>
               <li class="text-sm">
                 <%= link_to tag.name, tag_path(tag), class: 'text-gray-500 hover:text-gray-600' %>
-              
               </li>
               <%end%>
+              <li class="text-sm">
+                <%= link_to 'All Topics', tags_path, class: 'text-gray-500 hover:text-gray-600' %>
+              </li>
             </ul>
           </div>
         </div>
