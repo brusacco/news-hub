@@ -1,3 +1,6 @@
 Categorias interesantes para usar de fuente de sitios:
 https://www.businessseek.biz/link_submit.php
 https://info-listings.com/
+
+Instalar als dependedncias de NODE
+npm install

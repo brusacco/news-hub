@@ -16,7 +16,7 @@ task update_content: :environment do
         entry.update(result.data)
         puts "Updated entry ##{entry.id}"
       else
-        puts "Failed to extract content for entry ##{entry.id}"
+        puts "Failed to extract content for entry ##{entry.id} #{result}"
       end
     else
       puts "Failed to fetch URL for entry ##{entry.id}: HTTP #{response.code}"
