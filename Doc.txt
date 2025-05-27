@@ -4,3 +4,6 @@ https://info-listings.com/
 
 Instalar als dependedncias de NODE
 npm install
+
+
+EDITOR="mcedit --wait" bin/rails credentials:edit
