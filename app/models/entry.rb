@@ -43,8 +43,8 @@ class Entry < ApplicationRecord
     Return the article in a JSON structure like this,
     {ai_title: 'Your Title Here',
     ai_description: 'Short description for meta tags',
-    keywords: 'Reach SEO keywords for this article',
-    entities:'Extract importante entities from the content, like company names, developers, games',
+    keywords: 'Comma-separated Rich SEO keywords for this article',
+    entities:'Comma-separated Extract importante entities from the content, like company names, developers, games',
     ai_content: 'Your article content here'}.
     Do not include any additional text or commentary outside of the JSON structure and remove any trailing spaces
     from the keywords and entities JSON fields content(remove the space after the commnas).
