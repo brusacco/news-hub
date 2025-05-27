@@ -7,3 +7,6 @@ npm install
 
 
 EDITOR="mcedit" bin/rails credentials:edit
+
+
+kill -9 $(ps wuax | grep nintendo | awk {'print $2'})
