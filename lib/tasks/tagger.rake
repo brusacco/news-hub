@@ -6,7 +6,10 @@ task tagger: :environment do
     result = WebExtractorServices::ExtractTags.call(entry.id)
     next unless result.success?
 
-    entry.tag_list = result.data
+    tags = result.data
+    tags << entry.entities.split(',') if entry.entities.present?
+
+    entry.tag_list = tags.flatten.uniq
     puts entry.source_url
     puts entry.tag_list
     puts '---------------------------------------------------'
