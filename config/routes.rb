@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   get 'home/index'
   get 'search', to: 'home#search', as: :search
   get 'trending' => 'home#trending', as: :trending
+  get '/who-we-are', to: 'home#who', as: :who
+  get '/terms-of-service', to: 'home#terms', as: :terms
+  get '/privacy-policy', to: 'home#privacy', as: :privacy
 
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)

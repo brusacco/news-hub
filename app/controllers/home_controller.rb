@@ -26,10 +26,20 @@ class HomeController < ApplicationController
     @pagy, @entries = pagy(@entries, limit: 60)
   end
 
+  def who
+  end
+
+  def terms
+  end
+
+  def privacy
+  end
+
   def search
     @keyword = params[:keyword]
     @entries = if @keyword.present?
-                 Entry.where('LOWER(title) LIKE :keyword OR LOWER(description) LIKE :keyword', keyword: "%#{@keyword.downcase}%")
+                 Entry.where('LOWER(title) LIKE :keyword OR LOWER(description) LIKE :keyword',
+                             keyword: "%#{@keyword.downcase}%")
                       .order(published_at: :desc)
                else
                  Entry.none
