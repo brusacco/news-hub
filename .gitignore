@@ -41,3 +41,4 @@
 /.Gemfile.lock
 Gemfile.lock
 public/sitemap.xml.gz
+config/credentials.yml.enc
