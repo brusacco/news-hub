@@ -2,7 +2,7 @@
 
 desc 'Tagger'
 task tagger: :environment do
-  Entry.order(id: :desc).limit(100).each do |entry|
+  Entry.order(id: :desc).limit(1000).each do |entry|
     result = WebExtractorServices::ExtractTags.call(entry.id)
     next unless result.success?
 
