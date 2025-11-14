@@ -23,14 +23,14 @@
     <!-- Tags Grid -->
     <div class="flex flex-wrap gap-3">
       <% @tags.each do |tag| %>
-        <%= link_to tag_path(tag), class: "group inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-slate-200 transition-all hover:bg-indigo-50 hover:text-indigo-700 hover:ring-indigo-300" do %>
+        <%= link_to tag_path(tag), class: "group inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-[#E60012]/30 transition-all hover:bg-[#FFE5E7] hover:text-[#E60012] hover:ring-[#E60012]" do %>
           <span><%= tag.name %></span>
           <% if tag.taggings_count && tag.taggings_count > 0 %>
-            <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 group-hover:bg-indigo-100 group-hover:text-indigo-700">
+            <span class="inline-flex items-center rounded-full bg-[#FFE5E7] px-2 py-0.5 text-xs font-medium text-[#E60012] group-hover:bg-[#FFCCCF]">
               <%= number_with_delimiter(tag.taggings_count) %>
             </span>
           <% end %>
-          <svg class="ml-auto h-4 w-4 text-slate-400 transition-colors group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+          <svg class="ml-auto h-4 w-4 text-[#E60012]/60 transition-colors group-hover:text-[#E60012]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
         <% end %>

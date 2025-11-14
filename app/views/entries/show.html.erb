@@ -28,7 +28,7 @@
         <% end %>
         
         <% if @entry.category.present? %>
-          <span class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/20">
+          <span class="inline-flex items-center rounded-full bg-[#FFE5E7] px-3 py-1 text-xs font-medium text-[#E60012] ring-1 ring-inset ring-[#E60012]/20">
             <%= @entry.category %>
           </span>
         <% end %>
@@ -91,7 +91,7 @@
         </p>
         <div class="flex flex-wrap gap-2" itemprop="keywords">
           <% @entry.tags.each do |tag| %>
-            <%= link_to tag_path(tag), class: "inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/20 transition-colors hover:bg-indigo-100", rel: "tag" do %>
+            <%= link_to tag_path(tag), class: "inline-flex items-center rounded-full bg-[#FFE5E7] px-3 py-1 text-sm font-medium text-[#E60012] ring-1 ring-inset ring-[#E60012]/20 transition-colors hover:bg-[#FFCCCF]", rel: "tag" do %>
               <%= tag.name %>
             <% end %>
           <% end %>
@@ -106,7 +106,7 @@
           <% if @entry.source_name.present? %>
             Source: 
             <% if @entry.source_url.present? %>
-              <a href="<%= @entry.source_url %>" target="_blank" rel="nofollow noopener" class="text-indigo-600 hover:text-indigo-500">
+              <a href="<%= @entry.source_url %>" target="_blank" rel="nofollow noopener" class="text-[#E60012] hover:text-[#CC0010]">
                 <%= @entry.source_name %>
               </a>
             <% else %>
@@ -114,7 +114,7 @@
             <% end %>
           <% elsif @entry.source_url.present? %>
             Source: 
-            <a href="<%= @entry.source_url %>" target="_blank" rel="nofollow noopener" class="text-indigo-600 hover:text-indigo-500">
+            <a href="<%= @entry.source_url %>" target="_blank" rel="nofollow noopener" class="text-[#E60012] hover:text-[#CC0010]">
               Original Article
             </a>
           <% end %>
