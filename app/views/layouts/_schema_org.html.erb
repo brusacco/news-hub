@@ -22,20 +22,29 @@
   "@type": "NewsArticle",
   "headline": "<%= j(@entry.final_title) %>",
   "description": "<%= j(@entry.final_description || @entry.description || '') %>",
-  "image": "<%= @entry.image_url.presence || root_url + 'apple-touch-icon.png' %>",
+  "image": {
+    "@type": "ImageObject",
+    "url": "<%= @entry.image_url.presence || root_url + 'apple-touch-icon.png' %>",
+    "width": 1200,
+    "height": 675
+  },
   "datePublished": "<%= @entry.published_at&.iso8601 %>",
   "dateModified": "<%= @entry.updated_at&.iso8601 %>",
   "author": {
     "@type": "Organization",
-    "name": "Nintendo News Hub"
+    "name": "Nintendo News Hub",
+    "url": "<%= root_url %>"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Nintendo News Hub",
     "logo": {
       "@type": "ImageObject",
-      "url": "<%= root_url %>apple-touch-icon.png"
-    }
+      "url": "<%= root_url %>apple-touch-icon.png",
+      "width": 180,
+      "height": 180
+    },
+    "url": "<%= root_url %>"
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -43,8 +52,23 @@
   },
   <% if @entry.tags.any? %>
   "keywords": "<%= @entry.tags.map(&:name).join(', ') %>",
+  "about": [
+    <% @entry.tags.each_with_index do |tag, index| %>
+    {
+      "@type": "Thing",
+      "name": "<%= j(tag.name) %>"
+    }<%= index < @entry.tags.length - 1 ? ',' : '' %>
+    <% end %>
+  ],
   <% end %>
-  "articleSection": "<%= @entry.category || 'Gaming News' %>"
+  "articleSection": "<%= @entry.category || 'Gaming News' %>",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "copyrightYear": "<%= @entry.published_at&.year || Date.current.year %>",
+  "copyrightHolder": {
+    "@type": "Organization",
+    "name": "Nintendo News Hub"
+  }
 }
 </script>
 <% end %>

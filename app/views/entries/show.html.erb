@@ -5,24 +5,43 @@
   </div>
   
   <!-- Article Header -->
-  <article class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+  <article class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16" itemscope itemtype="https://schema.org/NewsArticle">
     <!-- Header -->
     <header class="mb-8">
-      <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-        <%= @entry.ai_title || @entry.title %>
+      <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl" itemprop="headline">
+        <%= @entry.final_title %>
       </h1>
-      <div class="mt-6 flex items-center gap-4 text-sm text-slate-600">
-        <time datetime="<%= @entry.published_at.iso8601 %>" class="flex items-center">
-          <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      
+      <!-- SEO-rich metadata -->
+      <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-600">
+        <time datetime="<%= @entry.published_at.iso8601 %>" class="flex items-center" itemprop="datePublished" content="<%= @entry.published_at.iso8601 %>">
+          <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 005.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
           </svg>
-          <%= @entry.published_at.strftime('%B %d, %Y') %>
+          <span>Published: <%= @entry.published_at.strftime('%B %d, %Y') %></span>
         </time>
+        
+        <% if @entry.updated_at != @entry.published_at %>
+          <time datetime="<%= @entry.updated_at.iso8601 %>" class="flex items-center" itemprop="dateModified" content="<%= @entry.updated_at.iso8601 %>">
+            <span class="text-slate-500">Updated: <%= @entry.updated_at.strftime('%B %d, %Y') %></span>
+          </time>
+        <% end %>
+        
+        <% if @entry.category.present? %>
+          <span class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/20">
+            <%= @entry.category %>
+          </span>
+        <% end %>
+      </div>
+      
+      <!-- Author info for SEO -->
+      <div class="mt-4 text-sm text-slate-600" itemprop="author" itemscope itemtype="https://schema.org/Organization">
+        <span itemprop="name">Nintendo News Hub</span>
       </div>
     </header>
 
     <!-- Featured Image -->
-    <div class="mb-12 overflow-hidden rounded-2xl bg-slate-100">
+    <div class="mb-12 overflow-hidden rounded-2xl bg-slate-100" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
       <% if @entry.site.id == 11 %>
         <img 
           src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg" 
@@ -31,6 +50,7 @@
           loading="eager"
           width="1200"
           height="675"
+          itemprop="url"
         >
       <% else %>
         <img 
@@ -40,28 +60,65 @@
           loading="eager"
           width="1200"
           height="675"
+          itemprop="url"
         >
       <% end %>
+      <meta itemprop="width" content="1200">
+      <meta itemprop="height" content="675">
     </div>
 
     <!-- Article Content -->
-    <div class="space-y-6 text-base leading-8 text-slate-700 lg:text-lg lg:leading-9">
+    <div class="space-y-6 text-base leading-8 text-slate-700 lg:text-lg lg:leading-9" itemprop="articleBody">
       <div class="prose prose-slate max-w-none">
         <%= raw(@entry.ai_content&.gsub('. ', '.<br><br>')) || @entry.description %>
       </div>
+      
+      <!-- SEO-rich summary section -->
+      <% if @entry.ai_summary.present? %>
+        <div class="mt-8 rounded-xl bg-slate-50 p-6 ring-1 ring-slate-200">
+          <h2 class="text-xl font-semibold text-slate-900 mb-3">Summary</h2>
+          <p class="text-base leading-7 text-slate-700"><%= @entry.ai_summary %></p>
+        </div>
+      <% end %>
     </div>
 
     <!-- Tags -->
     <% if @entry.tags.any? %>
       <div class="mt-10 border-t border-slate-200 pt-8">
-        <h3 class="text-sm font-semibold text-slate-900">Topics</h3>
-        <div class="mt-4 flex flex-wrap gap-2">
+        <h2 class="text-xl font-semibold text-slate-900 mb-4">Related Topics</h2>
+        <p class="text-sm text-slate-600 mb-4">
+          Explore more articles about these topics:
+        </p>
+        <div class="flex flex-wrap gap-2" itemprop="keywords">
           <% @entry.tags.each do |tag| %>
-            <%= link_to tag_path(tag), class: "inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/20 transition-colors hover:bg-indigo-100" do %>
+            <%= link_to tag_path(tag), class: "inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/20 transition-colors hover:bg-indigo-100", rel: "tag" do %>
               <%= tag.name %>
             <% end %>
           <% end %>
         </div>
+      </div>
+    <% end %>
+    
+    <!-- Source attribution for SEO -->
+    <% if @entry.source_name.present? || @entry.source_url.present? %>
+      <div class="mt-8 border-t border-slate-200 pt-6 text-sm text-slate-600">
+        <p>
+          <% if @entry.source_name.present? %>
+            Source: 
+            <% if @entry.source_url.present? %>
+              <a href="<%= @entry.source_url %>" target="_blank" rel="nofollow noopener" class="text-indigo-600 hover:text-indigo-500">
+                <%= @entry.source_name %>
+              </a>
+            <% else %>
+              <%= @entry.source_name %>
+            <% end %>
+          <% elsif @entry.source_url.present? %>
+            Source: 
+            <a href="<%= @entry.source_url %>" target="_blank" rel="nofollow noopener" class="text-indigo-600 hover:text-indigo-500">
+              Original Article
+            </a>
+          <% end %>
+        </p>
       </div>
     <% end %>
   </article>
