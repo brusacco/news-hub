@@ -1,47 +1,72 @@
 <div class="bg-white">
-  <div class="mx-auto max-w-full px-4 py-2 sm:px-6 sm:py-10 lg:max-w-7xl lg:px-8">
-    <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
-      <!-- Entry info -->
-      <div class="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
-        <h1 class="text-3xl font-bold tracking-tight text-gray-900"><%= @entry.ai_title || @entry.title %></h1>
-        <div class="mt-3">
-          <h2 class="sr-only">Entry information</h2>
-          <p class="text-sm text-gray-500">Published on: <%= @entry.published_at.strftime('%B %d, %Y') %></p>
-        </div>
-        <div class="mt-6">
-          <h3 class="sr-only">Description</h3>
-          <div class="space-y-6 text-base text-gray-700">
-            <p><%= raw(@entry.ai_content&.gsub('. ', '.<br><br>')) || @entry.description %></p>
-            <p>
-              <% @entry.tags.each do |tag| %>
-                <span class="mt-3 inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                  <%= link_to tag.name, tag_path(tag) %>
-                </span>
-              <%end%>
-            </p>
-          </div>
-        </div>
+  <!-- Article Header -->
+  <article class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <!-- Header -->
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+        <%= @entry.ai_title || @entry.title %>
+      </h1>
+      <div class="mt-6 flex items-center gap-4 text-sm text-slate-600">
+        <time datetime="<%= @entry.published_at.iso8601 %>" class="flex items-center">
+          <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 005.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+          </svg>
+          <%= @entry.published_at.strftime('%B %d, %Y') %>
+        </time>
       </div>
-      <!-- Image gallery -->
-      <div class="flex flex-col-reverse">
-        <div>
-          <div id="tabs-1-panel-1" aria-labelledby="tabs-1-tab-1" role="tabpanel" tabindex="0">
-            <%if @entry.site.id == 11%>
-              <img src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg" alt="<%= @entry.title %>" class="aspect-square w-full object-cover sm:rounded-lg">
-            <%else%>
-              <img src="<%= @entry.image_url %>" alt="<%= @entry.title %>" class="aspect-square w-full object-cover sm:rounded-lg">
-            <%end%>
-          </div>
-        </div>
+    </header>
+
+    <!-- Featured Image -->
+    <div class="mb-12 overflow-hidden rounded-2xl bg-slate-100">
+      <% if @entry.site.id == 11 %>
+        <img 
+          src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg" 
+          alt="<%= @entry.title %>" 
+          class="h-full w-full object-cover"
+        >
+      <% else %>
+        <img 
+          src="<%= @entry.image_url %>" 
+          alt="<%= @entry.title %>" 
+          class="h-full w-full object-cover"
+        >
+      <% end %>
+    </div>
+
+    <!-- Article Content -->
+    <div class="space-y-6 text-base leading-8 text-slate-700 lg:text-lg lg:leading-9">
+      <div class="prose prose-slate max-w-none">
+        <%= raw(@entry.ai_content&.gsub('. ', '.<br><br>')) || @entry.description %>
       </div>
     </div>
-    <% if @entries.any? %>
-    <div class="mx-auto max-w-2xl py-4 sm:py-12 lg:max-w-7xl ">
-      <h2 class="text-2xl font-bold tracking-tight text-gray-900">Related</h2>
-      <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-3 xl:gap-x-8">
-        <%= render partial: 'entries/entry', collection: @entries %>
+
+    <!-- Tags -->
+    <% if @entry.tags.any? %>
+      <div class="mt-10 border-t border-slate-200 pt-8">
+        <h3 class="text-sm font-semibold text-slate-900">Topics</h3>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <% @entry.tags.each do |tag| %>
+            <%= link_to tag_path(tag), class: "inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/20 transition-colors hover:bg-indigo-100" do %>
+              <%= tag.name %>
+            <% end %>
+          <% end %>
+        </div>
       </div>
-    </div>
     <% end %>
-  </div>
+  </article>
+
+  <!-- Related Articles -->
+  <% if @entries.any? %>
+    <div class="border-t border-slate-200 bg-slate-50">
+      <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mb-10">
+          <h2 class="text-3xl font-bold tracking-tight text-slate-900">Related Articles</h2>
+          <p class="mt-2 text-base text-slate-600">Continue reading more Nintendo news</p>
+        </div>
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <%= render partial: 'entries/entry', collection: @entries %>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div>

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   get 'home/index'
   get 'search', to: 'home#search', as: :search
+  get 'search/autocomplete', to: 'home#search_autocomplete', as: :search_autocomplete
   get 'trending' => 'home#trending', as: :trending
   get '/who-we-are', to: 'home#who', as: :who
   get '/terms-of-service', to: 'home#terms', as: :terms

@@ -1,18 +1,37 @@
-<div class="group relative">
-  <%= link_to entry_path(entry) do%>
-    <% if !entry.image_url || entry.image_url.empty? || entry.site.id == 11 %>
-      <img src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg" alt="<%= entry.title %>" class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80">
-    <% else %>
-      <!-- Use the image URL from the entry object -->
-      <%= image_tag(entry.image_url, alt: entry.final_title, class: "aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80", loading: "lazy") %>
-    <% end %>
+<article class="group relative flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition-all duration-300 hover:shadow-lg hover:ring-slate-300">
+  <%= link_to entry_path(entry), class: "block" do %>
+    <div class="aspect-[16/9] w-full overflow-hidden bg-slate-100">
+      <% if !entry.image_url || entry.image_url.empty? || entry.site.id == 11 %>
+        <img 
+          src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg" 
+          alt="<%= entry.title %>" 
+          class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+        >
+      <% else %>
+        <%= image_tag(
+          entry.image_url, 
+          alt: entry.final_title, 
+          class: "h-full w-full object-cover transition-transform duration-300 group-hover:scale-105", 
+          loading: "lazy"
+        ) %>
+      <% end %>
+    </div>
   <% end %>
-  <div class="mt-4 flex justify-between">
-    <div>
-      <h3 class="text-2xl text-gray-700">
-        <%=link_to entry.final_title, entry_path(entry)%>
+  
+  <div class="flex flex-1 flex-col p-6">
+    <div class="flex-1">
+      <h3 class="text-xl font-semibold leading-7 text-slate-900 line-clamp-2">
+        <%= link_to entry.final_title, entry_path(entry), class: "transition-colors hover:text-indigo-600" %>
       </h3>
     </div>
-    <p class="text-sm font-medium text-gray-900"><%= entry.category %></p>
+    
+    <% if entry.category.present? %>
+      <div class="mt-4 flex items-center justify-between">
+        <span class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/20">
+          <%= entry.category %>
+        </span>
+      </div>
+    <% end %>
   </div>
-</div>
+</article>

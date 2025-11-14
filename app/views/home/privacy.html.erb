@@ -1,81 +1,150 @@
 <div class="bg-white">
- 
-  <!-- Main Content -->
-  <div class="mx-auto max-w-full px-4 py-4 sm:px-6 sm:py-10 lg:max-w-full lg:px-8">
-     <div class="border-b border-gray-200 pb-5">
-      <h1 class="text-4xl font-bold tracking-tight text-gray-900">Best Nintendo News Online</h1>
-      <p class="mt-4 text-base text-gray-500">Checkout out the latest news from Nintendo.</p>
+  <!-- Page Header -->
+  <div class="border-b border-slate-200 bg-gradient-to-b from-indigo-50/20 via-white to-white">
+    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <div class="mx-auto max-w-3xl text-center">
+        <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+          Privacy Policy
+        </h1>
+        <p class="mt-4 text-lg leading-8 text-slate-600">
+          Your privacy is important to us. Learn how we collect, use, and protect your information.
+        </p>
+        <p class="mt-2 text-sm text-slate-500">
+          Last updated: <%= Date.current.strftime('%B %d, %Y') %>
+        </p>
+      </div>
     </div>
-    <div class="mt-10 px-50">
-        <h2 class="text-xl font-semibold text-gray-800 mt-6">Privacy Policy</h2>
-
-        <p class="mt-4 text-base text-gray-500">
-        At <strong class="text-gray-700">Nintendo News Hub</strong>, your privacy is important to us. This Privacy Policy outlines how we collect, use, and protect your information when you visit or interact with our website.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">1. Information We Collect</h3>
-        <p class="mt-4 text-base text-gray-500">
-        We do not collect personally identifiable information unless you voluntarily provide it (e.g., via a contact form or newsletter signup). However, we may automatically collect non-personal information through standard web technologies, including:
-        </p>
-        <ul class="mt-2 list-disc list-inside text-base text-gray-500">
-        <li>Browser type and version</li>
-        <li>IP address</li>
-        <li>Referring pages and URLs</li>
-        <li>Time and date of visits</li>
-        <li>Pages visited and interactions on the site</li>
-        </ul>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">2. Use of Cookies</h3>
-        <p class="mt-4 text-base text-gray-500">
-        We use cookies and similar tracking technologies to enhance your experience, measure site performance, and understand user behavior. Cookies may be used by third-party analytics providers such as Google Analytics or Facebook Pixel.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">3. How We Use Your Data</h3>
-        <p class="mt-4 text-base text-gray-500">
-        The data we collect helps us:
-        </p>
-        <ul class="mt-2 list-disc list-inside text-base text-gray-500">
-        <li>Understand which content is most engaging</li>
-        <li>Measure the social impact of published news</li>
-        <li>Improve the design, performance, and functionality of the site</li>
-        </ul>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">4. Sharing of Information</h3>
-        <p class="mt-4 text-base text-gray-500">
-        We do not sell or share your personal information with third parties for commercial purposes. Non-personal data may be shared with trusted analytics and hosting providers strictly for performance and usage insights.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">5. Embedded Content and External Links</h3>
-        <p class="mt-4 text-base text-gray-500">
-        Articles on this site may include embedded content (e.g., videos, tweets, posts) or links to third-party websites. These sites may collect data about you, use cookies, or embed additional third-party tracking. We are not responsible for the privacy practices of other websites.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">6. Data Retention</h3>
-        <p class="mt-4 text-base text-gray-500">
-        We retain non-personal usage data for analytics purposes for as long as necessary to fulfill our editorial goals or as required by law.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">7. Your Rights</h3>
-        <p class="mt-4 text-base text-gray-500">
-        If you have shared personal data with us (e.g., through a newsletter form), you have the right to request access to that data, correct it, or ask for its deletion by contacting us.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">8. Children’s Privacy</h3>
-        <p class="mt-4 text-base text-gray-500">
-        Our content is intended for general audiences. We do not knowingly collect personal information from children under 13. If you believe your child has provided us with personal information, please contact us and we will take steps to delete it.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">9. Changes to This Policy</h3>
-        <p class="mt-4 text-base text-gray-500">
-        We may update this Privacy Policy at any time. Any changes will be reflected on this page. Your continued use of the site after any updates constitutes acceptance of the new policy.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">10. Contact</h3>
-        <p class="mt-4 text-base text-gray-500">
-        If you have any questions or concerns regarding this Privacy Policy, please reach out to us at
-        <a href="mailto:privacy@nintendonewshub.com" class="text-blue-600 underline">privacy@nintendonewshub.com</a>.
-        </p>
-
-       
   </div>
+
+  <!-- Main Content -->
+  <article class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <div class="prose prose-slate prose-lg max-w-none">
+      <p class="text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+        At <strong class="font-semibold text-slate-900">Nintendo News Hub</strong>, your privacy is important to us. This Privacy Policy outlines how we collect, use, and protect your information when you visit or interact with our website.
+      </p>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">1. Information We Collect</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          We do not collect personally identifiable information unless you voluntarily provide it (e.g., via a contact form or newsletter signup). However, we may automatically collect non-personal information through standard web technologies, including:
+        </p>
+        <ul class="mt-4 space-y-2 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          <li class="flex items-start">
+            <svg class="mr-3 mt-1.5 h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+            </svg>
+            Browser type and version
+          </li>
+          <li class="flex items-start">
+            <svg class="mr-3 mt-1.5 h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+            </svg>
+            IP address
+          </li>
+          <li class="flex items-start">
+            <svg class="mr-3 mt-1.5 h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+            </svg>
+            Referring pages and URLs
+          </li>
+          <li class="flex items-start">
+            <svg class="mr-3 mt-1.5 h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+            </svg>
+            Time and date of visits
+          </li>
+          <li class="flex items-start">
+            <svg class="mr-3 mt-1.5 h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+            </svg>
+            Pages visited and interactions on the site
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">2. Use of Cookies</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          We use cookies and similar tracking technologies to enhance your experience, measure site performance, and understand user behavior. Cookies may be used by third-party analytics providers such as Google Analytics or Facebook Pixel.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">3. How We Use Your Data</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          The data we collect helps us:
+        </p>
+        <ul class="mt-4 space-y-2 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          <li class="flex items-start">
+            <svg class="mr-3 mt-1.5 h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+            </svg>
+            Understand which content is most engaging
+          </li>
+          <li class="flex items-start">
+            <svg class="mr-3 mt-1.5 h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+            </svg>
+            Measure the social impact of published news
+          </li>
+          <li class="flex items-start">
+            <svg class="mr-3 mt-1.5 h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+            </svg>
+            Improve the design, performance, and functionality of the site
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">4. Sharing of Information</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          We do not sell or share your personal information with third parties for commercial purposes. Non-personal data may be shared with trusted analytics and hosting providers strictly for performance and usage insights.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">5. Embedded Content and External Links</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          Articles on this site may include embedded content (e.g., videos, tweets, posts) or links to third-party websites. These sites may collect data about you, use cookies, or embed additional third-party tracking. We are not responsible for the privacy practices of other websites.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">6. Data Retention</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          We retain non-personal usage data for analytics purposes for as long as necessary to fulfill our editorial goals or as required by law.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">7. Your Rights</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          If you have shared personal data with us (e.g., through a newsletter form), you have the right to request access to that data, correct it, or ask for its deletion by contacting us.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">8. Children's Privacy</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          Our content is intended for general audiences. We do not knowingly collect personal information from children under 13. If you believe your child has provided us with personal information, please contact us and we will take steps to delete it.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">9. Changes to This Policy</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          We may update this Privacy Policy at any time. Any changes will be reflected on this page. Your continued use of the site after any updates constitutes acceptance of the new policy.
+        </p>
+      </section>
+
+      <section class="mt-10 border-t border-slate-200 pt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">10. Contact</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          If you have any questions or concerns regarding this Privacy Policy, please reach out to us at
+          <a href="mailto:privacy@nintendonewshub.com" class="font-medium text-indigo-600 transition-colors hover:text-indigo-500">privacy@nintendonewshub.com</a>.
+        </p>
+      </section>
+    </div>
+  </article>
 </div>

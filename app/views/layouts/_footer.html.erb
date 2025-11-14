@@ -1,76 +1,97 @@
-<!-- Footer -->
-  <footer aria-labelledby="footer-heading" class="bg-white">
-    <h2 id="footer-heading" class="sr-only">Footer</h2>
-    <div class="mx-auto max-w-full px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-2 gap-8 border-t border-gray-200 py-20 sm:grid-cols-2 sm:gap-y-0 lg:grid-cols-4">
-        <div class="grid grid-cols-1 gap-y-10 lg:col-span-2 lg:grid-cols-2 lg:gap-x-8 lg:gap-y-0">
-          <div>
-            <h3 class="text-sm font-medium text-gray-900">Account</h3>
-            <ul role="list" class="mt-6 space-y-6">
-              <li class="text-sm">
-                <a href="#" class="text-gray-500 hover:text-gray-600">Manage Account</a>
-              </li>
-              <li class="text-sm">
-                <a href="#" class="text-gray-500 hover:text-gray-600">Saved Items</a>
-              </li>
-              <li class="text-sm">
-                <a href="#" class="text-gray-500 hover:text-gray-600">Orders</a>
-              </li>
-              <li class="text-sm">
-                <a href="#" class="text-gray-500 hover:text-gray-600">Redeem Gift card</a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-gray-900">Trending Topcis</h3>
-            <ul role="list" class="mt-6 space-y-6">
-              <%Entry.tag_counts_on(:tags).limit(5).each do |tag|%>
-              <li class="text-sm">
-                <%= link_to tag.name, tag_path(tag), class: 'text-gray-500 hover:text-gray-600' %>
-              </li>
-              <%end%>
-              <li class="text-sm">
-                <%= link_to 'All Topics', tags_path, class: 'text-gray-500 hover:text-gray-600' %>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 gap-y-10 lg:col-span-2 lg:grid-cols-2 lg:gap-x-8 lg:gap-y-0">
-          <div>
-            <h3 class="text-sm font-medium text-gray-900">Company</h3>
-            <ul role="list" class="mt-6 space-y-6">
-              <li class="text-sm">
-                <%=link_to 'Who we are', who_path, class: 'text-gray-500 hover:text-gray-600'%>
-              </li>
-              <li class="text-sm">
-                <%=link_to 'Terms & Conditions', terms_path, class: 'text-gray-500 hover:text-gray-600'%>
-              </li>
-              <li class="text-sm">
-                <%=link_to 'Privacy', privacy_path, class: 'text-gray-500 hover:text-gray-600'%>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-gray-900">Connect</h3>
-            <ul role="list" class="mt-6 space-y-6">
-              <li class="text-sm">
-                <a href="#" class="text-gray-500 hover:text-gray-600">Facebook</a>
-              </li>
-              <li class="text-sm">
-                <a href="#" class="text-gray-500 hover:text-gray-600">Instagram</a>
-              </li>
-              <li class="text-sm">
-                <a href="#" class="text-gray-500 hover:text-gray-600">Pinterest</a>
-              </li>
-            </ul>
-          </div>
+<footer class="border-t border-slate-200 bg-white">
+  <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <div class="xl:grid xl:grid-cols-3 xl:gap-8">
+      <!-- Brand -->
+      <div class="space-y-8">
+        <div>
+          <h3 class="text-lg font-bold tracking-tight text-slate-900">NintendoNews</h3>
+          <p class="mt-4 text-sm leading-6 text-slate-600">
+            Your trusted source for the latest Nintendo news, updates, and insights.
+          </p>
         </div>
       </div>
-      <div class="border-t border-gray-100 py-10 sm:flex sm:items-center sm:justify-between">
-        <div class="flex items-center justify-center text-sm text-gray-500">
-          <p>Best Nintendo News Online</p>
+
+      <!-- Links Grid -->
+      <div class="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
+        <div class="md:grid md:grid-cols-2 md:gap-8">
+          <!-- Trending Topics -->
+          <div>
+            <h3 class="text-sm font-semibold leading-6 text-slate-900">Trending Topics</h3>
+            <ul role="list" class="mt-6 space-y-4">
+              <% Entry.tag_counts_on(:tags).limit(5).each do |tag| %>
+                <li>
+                  <%= link_to tag_path(tag), class: "text-sm leading-6 text-slate-600 transition-colors hover:text-slate-900" do %>
+                    <%= tag.name %>
+                  <% end %>
+                </li>
+              <% end %>
+              <li>
+                <%= link_to tags_path, class: "text-sm font-medium leading-6 text-indigo-600 transition-colors hover:text-indigo-500" do %>
+                  View all topics →
+                <% end %>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Company -->
+          <div class="mt-10 md:mt-0">
+            <h3 class="text-sm font-semibold leading-6 text-slate-900">Company</h3>
+            <ul role="list" class="mt-6 space-y-4">
+              <li>
+                <%= link_to who_path, class: "text-sm leading-6 text-slate-600 transition-colors hover:text-slate-900" do %>
+                  About Us
+                <% end %>
+              </li>
+              <li>
+                <%= link_to terms_path, class: "text-sm leading-6 text-slate-600 transition-colors hover:text-slate-900" do %>
+                  Terms & Conditions
+                <% end %>
+              </li>
+              <li>
+                <%= link_to privacy_path, class: "text-sm leading-6 text-slate-600 transition-colors hover:text-slate-900" do %>
+                  Privacy Policy
+                <% end %>
+              </li>
+            </ul>
+          </div>
         </div>
-        <p class="mt-6 text-center text-sm text-gray-500 sm:mt-0">&copy; 2025 NintendoNewsHub.com</p>
+
+        <!-- Navigation -->
+        <div class="md:grid md:grid-cols-2 md:gap-8">
+          <div>
+            <h3 class="text-sm font-semibold leading-6 text-slate-900">Navigation</h3>
+            <ul role="list" class="mt-6 space-y-4">
+              <li>
+                <%= link_to root_path, class: "text-sm leading-6 text-slate-600 transition-colors hover:text-slate-900" do %>
+                  Home
+                <% end %>
+              </li>
+              <li>
+                <%= link_to trending_path, class: "text-sm leading-6 text-slate-600 transition-colors hover:text-slate-900" do %>
+                  Trends
+                <% end %>
+              </li>
+              <li>
+                <%= link_to tags_path, class: "text-sm leading-6 text-slate-600 transition-colors hover:text-slate-900" do %>
+                  All Topics
+                <% end %>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
-  </footer>
+
+    <!-- Bottom Bar -->
+    <div class="mt-16 border-t border-slate-200 pt-8 sm:mt-20 lg:mt-24">
+      <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+        <p class="text-xs leading-5 text-slate-500">
+          &copy; <%= Date.current.year %> NintendoNewsHub.com. All rights reserved.
+        </p>
+        <p class="text-xs leading-5 text-slate-500">
+          Best Nintendo News Online
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

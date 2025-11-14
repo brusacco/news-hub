@@ -1,63 +1,92 @@
 <div class="bg-white">
- 
-  <!-- Main Content -->
-  <div class="mx-auto max-w-full px-4 py-4 sm:px-6 sm:py-10 lg:max-w-full lg:px-8">
-     <div class="border-b border-gray-200 pb-5">
-      <h1 class="text-4xl font-bold tracking-tight text-gray-900">Best Nintendo News Online</h1>
-      <p class="mt-4 text-base text-gray-500">Checkout out the latest news from Nintendo.</p>
+  <!-- Page Header -->
+  <div class="border-b border-slate-200 bg-gradient-to-b from-indigo-50/20 via-white to-white">
+    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <div class="mx-auto max-w-3xl text-center">
+        <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+          Terms of Service
+        </h1>
+        <p class="mt-4 text-lg leading-8 text-slate-600">
+          Please read these terms carefully before using our services.
+        </p>
+        <p class="mt-2 text-sm text-slate-500">
+          Last updated: <%= Date.current.strftime('%B %d, %Y') %>
+        </p>
+      </div>
     </div>
-    <div class="mt-10 px-50">
-        <h2 class="text-xl font-semibold text-gray-800 mt-6">Terms of Service</h2>
-
-        <p class="mt-4 text-base text-gray-500">
-        Welcome to <strong class="text-gray-700">Nintendo News Hub</strong>. By accessing or using this website, you agree to comply with and be bound by the following terms and conditions. Please read them carefully before using our services. If you do not agree with any part of these terms, you must not use the site.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">1. Use of Content</h3>
-        <p class="mt-4 text-base text-gray-500">
-        All content published on <strong class="text-gray-700">Nintendo News Hub</strong>, including articles, tags, analyses, and social metrics, is for informational purposes only. While we strive for accuracy, we do not guarantee the completeness or reliability of any content. You acknowledge that any reliance on our content is at your own risk.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">2. Intellectual Property</h3>
-        <p class="mt-4 text-base text-gray-500">
-        All original content created and published on this site is the property of <strong class="text-gray-700">Nintendo News Hub</strong>, unless otherwise noted. You may share, link, or quote from our articles with proper attribution, but you may not reproduce or republish content in full without explicit written permission.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">3. User Conduct</h3>
-        <p class="mt-4 text-base text-gray-500">
-        You agree not to use the site for any unlawful purpose or to violate any laws in your jurisdiction. You also agree not to attempt to interfere with the site’s functionality, security, or performance through hacking, scraping, or other unauthorized activities.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">4. Third-Party Links</h3>
-        <p class="mt-4 text-base text-gray-500">
-        <strong class="text-gray-700">Nintendo News Hub</strong> may include links to third-party websites, including original news sources and social platforms. We are not responsible for the content, availability, or practices of these external sites.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">5. Analytics & Tracking</h3>
-        <p class="mt-4 text-base text-gray-500">
-        We use tools to analyze traffic, user behavior, and social engagement in order to improve our services and editorial decisions. By using this site, you consent to our use of cookies and analytical tracking methods as outlined in our 
-        <a href="/privacy-policy" class="text-blue-600 underline">Privacy Policy</a>.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">6. Modifications to the Service</h3>
-        <p class="mt-4 text-base text-gray-500">
-        We reserve the right to modify, suspend, or discontinue any part of the website or its services at any time, with or without notice. We are not liable for any impact this may have on your access to content.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">7. Disclaimer</h3>
-        <p class="mt-4 text-base text-gray-500">
-        <strong class="text-gray-700">Nintendo News Hub</strong> is an independent editorial site and is not affiliated with or endorsed by Nintendo Co., Ltd. or any of its subsidiaries. All trademarks and game titles are the property of their respective owners.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">8. Changes to These Terms</h3>
-        <p class="mt-4 text-base text-gray-500">
-        We may update these Terms of Service from time to time. Continued use of the site after changes are posted constitutes your acceptance of the updated terms. Please check this page periodically for updates.
-        </p>
-
-        <h3 class="mt-6 text-lg font-semibold text-gray-700">9. Contact</h3>
-        <p class="mt-4 text-base text-gray-500">
-        If you have any questions or concerns about these terms, please contact us at 
-        <a href="mailto:contact@nintendonewshub.com" class="text-blue-600 underline">contact@nintendonewshub.com</a>.
-        </p>
   </div>
+
+  <!-- Main Content -->
+  <article class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <div class="prose prose-slate prose-lg max-w-none">
+      <p class="text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+        Welcome to <strong class="font-semibold text-slate-900">Nintendo News Hub</strong>. By accessing or using this website, you agree to comply with and be bound by the following terms and conditions. Please read them carefully before using our services. If you do not agree with any part of these terms, you must not use the site.
+      </p>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">1. Use of Content</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          All content published on <strong class="font-semibold text-slate-900">Nintendo News Hub</strong>, including articles, tags, analyses, and social metrics, is for informational purposes only. While we strive for accuracy, we do not guarantee the completeness or reliability of any content. You acknowledge that any reliance on our content is at your own risk.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">2. Intellectual Property</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          All original content created and published on this site is the property of <strong class="font-semibold text-slate-900">Nintendo News Hub</strong>, unless otherwise noted. You may share, link, or quote from our articles with proper attribution, but you may not reproduce or republish content in full without explicit written permission.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">3. User Conduct</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          You agree not to use the site for any unlawful purpose or to violate any laws in your jurisdiction. You also agree not to attempt to interfere with the site's functionality, security, or performance through hacking, scraping, or other unauthorized activities.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">4. Third-Party Links</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          <strong class="font-semibold text-slate-900">Nintendo News Hub</strong> may include links to third-party websites, including original news sources and social platforms. We are not responsible for the content, availability, or practices of these external sites.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">5. Analytics & Tracking</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          We use tools to analyze traffic, user behavior, and social engagement in order to improve our services and editorial decisions. By using this site, you consent to our use of cookies and analytical tracking methods as outlined in our 
+          <%= link_to "Privacy Policy", privacy_path, class: "font-medium text-indigo-600 transition-colors hover:text-indigo-500" %>.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">6. Modifications to the Service</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          We reserve the right to modify, suspend, or discontinue any part of the website or its services at any time, with or without notice. We are not liable for any impact this may have on your access to content.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">7. Disclaimer</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          <strong class="font-semibold text-slate-900">Nintendo News Hub</strong> is an independent editorial site and is not affiliated with or endorsed by Nintendo Co., Ltd. or any of its subsidiaries. All trademarks and game titles are the property of their respective owners.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">8. Changes to These Terms</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          We may update these Terms of Service from time to time. Continued use of the site after changes are posted constitutes your acceptance of the updated terms. Please check this page periodically for updates.
+        </p>
+      </section>
+
+      <section class="mt-10 border-t border-slate-200 pt-10">
+        <h2 class="text-2xl font-semibold text-slate-900">9. Contact</h2>
+        <p class="mt-4 text-base leading-7 text-slate-700 lg:text-lg lg:leading-8">
+          If you have any questions or concerns about these terms, please contact us at 
+          <a href="mailto:contact@nintendonewshub.com" class="font-medium text-indigo-600 transition-colors hover:text-indigo-500">contact@nintendonewshub.com</a>.
+        </p>
+      </section>
+    </div>
+  </article>
 </div>
