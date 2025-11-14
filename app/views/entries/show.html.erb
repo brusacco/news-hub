@@ -1,4 +1,9 @@
 <div class="bg-white">
+  <!-- Breadcrumbs -->
+  <div class="mx-auto max-w-3xl px-4 pt-12 sm:px-6 lg:px-8">
+    <%= render 'layouts/breadcrumbs' %>
+  </div>
+  
   <!-- Article Header -->
   <article class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
     <!-- Header -->
@@ -21,14 +26,20 @@
       <% if @entry.site.id == 11 %>
         <img 
           src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg" 
-          alt="<%= @entry.title %>" 
+          alt="<%= @entry.final_title %> - Featured Image" 
           class="h-full w-full object-cover"
+          loading="eager"
+          width="1200"
+          height="675"
         >
       <% else %>
         <img 
           src="<%= @entry.image_url %>" 
-          alt="<%= @entry.title %>" 
+          alt="<%= @entry.final_title %> - Featured Image" 
           class="h-full w-full object-cover"
+          loading="eager"
+          width="1200"
+          height="675"
         >
       <% end %>
     </div>

@@ -1,13 +1,23 @@
 <div class="bg-white">
+  <!-- Breadcrumbs -->
+  <div class="mx-auto max-w-[1600px] px-4 pt-12 sm:px-6 lg:px-8">
+    <%= render 'layouts/breadcrumbs' %>
+  </div>
+  
   <!-- Page Header -->
   <div class="border-b border-slate-200 bg-gradient-to-b from-indigo-50/20 via-white to-white">
     <div class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-      <div class="mx-auto max-w-2xl text-center">
+      <div class="mx-auto max-w-3xl text-center">
         <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-          <%= @tag.name %>
+          <%= @tag.name %> News
         </h1>
         <p class="mt-4 text-lg leading-8 text-slate-600">
-          Discover the latest news and updates about <%= @tag.name %>.
+          Stay updated with the latest <strong class="font-semibold text-slate-900"><%= @tag.name %></strong> news, updates, and articles. 
+          <% if @tag.taggings_count && @tag.taggings_count > 0 %>
+            Discover <%= number_with_delimiter(@tag.taggings_count) %> articles about <%= @tag.name %> on Nintendo News Hub.
+          <% else %>
+            Discover the latest articles and insights about <%= @tag.name %>.
+          <% end %>
         </p>
       </div>
     </div>
@@ -15,9 +25,26 @@
 
   <!-- Main Content -->
   <div class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <!-- SEO Content Section -->
+    <div class="mb-12 max-w-3xl">
+      <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+        Latest <%= @tag.name %> News & Updates
+      </h2>
+      <p class="text-base leading-7 text-slate-700">
+        Explore the most recent news, articles, and updates about <strong class="font-semibold text-slate-900"><%= @tag.name %></strong>. 
+        Our comprehensive coverage includes the latest developments, releases, announcements, and insights related to <%= @tag.name %> 
+        in the Nintendo gaming world. Stay informed with our curated collection of <%= @tag.name %> news articles.
+      </p>
+    </div>
+
     <!-- Articles Grid -->
-    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      <%= render partial: 'entries/entry', collection: @entries %>
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold text-slate-900 mb-6">
+        <%= @tag.name %> Articles
+      </h2>
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <%= render partial: 'entries/entry', collection: @entries %>
+      </div>
     </div>
 
     <!-- Pagination -->

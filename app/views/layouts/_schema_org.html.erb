@@ -1,0 +1,152 @@
+<%# Schema.org JSON-LD para Organization %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Nintendo News Hub",
+  "url": "<%= root_url %>",
+  "logo": "<%= root_url %>apple-touch-icon.png",
+  "description": "Your trusted source for the latest Nintendo news, updates, and insights.",
+  "sameAs": [
+    "https://www.facebook.com/nintendonewshub",
+    "https://twitter.com/NintendoNewsHub"
+  ]
+}
+</script>
+
+<%# Schema.org para Article (solo en páginas de artículos) %>
+<% if defined?(@entry) && @entry.present? %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "<%= j(@entry.final_title) %>",
+  "description": "<%= j(@entry.final_description || @entry.description || '') %>",
+  "image": "<%= @entry.image_url.presence || root_url + 'apple-touch-icon.png' %>",
+  "datePublished": "<%= @entry.published_at&.iso8601 %>",
+  "dateModified": "<%= @entry.updated_at&.iso8601 %>",
+  "author": {
+    "@type": "Organization",
+    "name": "Nintendo News Hub"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nintendo News Hub",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "<%= root_url %>apple-touch-icon.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "<%= entry_url(@entry) %>"
+  },
+  <% if @entry.tags.any? %>
+  "keywords": "<%= @entry.tags.map(&:name).join(', ') %>",
+  <% end %>
+  "articleSection": "<%= @entry.category || 'Gaming News' %>"
+}
+</script>
+<% end %>
+
+<%# Schema.org para BreadcrumbList %>
+<% if defined?(@entry) && @entry.present? %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "<%= root_url %>"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "<%= j(@entry.final_title) %>",
+      "item": "<%= entry_url(@entry) %>"
+    }
+  ]
+}
+</script>
+<% elsif defined?(@tag) && @tag.present? %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "<%= root_url %>"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Topics",
+      "item": "<%= tags_url %>"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "<%= j(@tag.name) %>",
+      "item": "<%= tag_url(@tag) %>"
+    }
+  ]
+}
+</script>
+<% end %>
+
+<%# Schema.org para CollectionPage (páginas de listado) %>
+<% if controller_name == 'home' && action_name == 'index' %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Nintendo News Hub - Latest News",
+  "description": "Latest Nintendo news, updates, and insights",
+  "url": "<%= root_url %>"
+}
+</script>
+<% elsif defined?(@tag) && @tag.present? %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "<%= j(@tag.name) %> News - Nintendo News Hub",
+  "description": "Latest <%= j(@tag.name) %> news, updates, and articles. Stay updated with <%= j(@tag.name) %> developments and insights.",
+  "url": "<%= tag_url(@tag) %>",
+  "about": {
+    "@type": "Thing",
+    "name": "<%= j(@tag.name) %>"
+  },
+  <% if @tag.taggings_count && @tag.taggings_count > 0 %>
+  "numberOfItems": <%= @tag.taggings_count %>,
+  <% end %>
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "<%= j(@tag.name) %> Articles",
+    "description": "Collection of articles about <%= j(@tag.name) %>"
+  }
+}
+</script>
+<% elsif controller_name == 'tags' && action_name == 'index' %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Nintendo Topics & Categories - Browse All Gaming News Topics",
+  "description": "Browse all Nintendo news topics, categories, and keywords. Explore gaming topics including franchises, characters, games, and hardware.",
+  "url": "<%= tags_url %>",
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Nintendo Topics",
+    "description": "Complete list of Nintendo news topics and categories"
+  }
+}
+</script>
+<% end %>
+

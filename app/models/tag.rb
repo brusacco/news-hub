@@ -8,10 +8,10 @@ class Tag < ApplicationRecord
   accepts_nested_attributes_for :topics
 
   has_many :taggings, dependent: :destroy
-  validates :name, uniqueness: true
+  validates :name, presence: true, uniqueness: true
 
-  after_create :tag_entries
-  after_update :tag_entries
+  after_create :schedule_tag_entries_job
+  after_update :schedule_tag_entries_job, if: :saved_change_to_name?
 
   attr_accessor :interactions
 
@@ -23,19 +23,16 @@ class Tag < ApplicationRecord
     %w[taggings topics]
   end
 
-  def belongs_to_any_topic?
-    Topic.all.any? { |topic| topic.tag_ids.include?(id) }
-  end
+  scope :popular, -> { order(taggings_count: :desc) }
+  scope :matching_name, ->(query) { where('LOWER(name) LIKE ?', "%#{query.downcase}%") }
 
-  def list_entries_test
-    filtered_entries = RecentEntry.tagged_with(name).order(published_at: :desc)
-    RecentEntry.tagged_with('Honor Colorado').order(published_at: :desc)
-    filtered_entries.joins(:site)
+  def belongs_to_any_topic?
+    Topic.joins(:tags).where(tags: { id: id }).exists?
   end
 
   private
 
-  def tag_entries
+  def schedule_tag_entries_job
     Tags::TagEntriesJob.perform_later(id, 1.month.ago..Time.current)
   end
 end

@@ -9,6 +9,9 @@ class Entry < ApplicationRecord
 
   validates :title, :source_url, presence: true
   validates :source_url, uniqueness: true
+  validates :published_at, presence: true
+  validate :published_at_not_in_future
+  validate :image_url_format, if: -> { image_url.present? }
 
   scope :a_week_ago, -> { where(published_at: 1.week.ago..Time.current) }
   scope :a_day_ago, -> { where(published_at: 1.day.ago..Time.current) }
@@ -16,6 +19,19 @@ class Entry < ApplicationRecord
   scope :no_published_at, -> { where(published_at: nil) }
   scope :needs_ai_generation, -> { where.not(content: nil).where(ai_content: nil).order(published_at: :desc) }
   scope :tagger_scope, -> { where(published_at: 4.years.ago..Time.current).order(published_at: :desc) }
+  scope :recent, -> { order(published_at: :desc) }
+  scope :with_tags, -> { includes(:tags) }
+  scope :with_site, -> { includes(:site) }
+  scope :search_by_title, ->(query) { where('LOWER(title) LIKE ?', "%#{query.downcase}%") }
+  scope :search_by_description, ->(query) { where('LOWER(description) LIKE ?', "%#{query.downcase}%") }
+  scope :search_by_text, ->(query) { search_by_title(query).or(search_by_description(query)) }
+
+  # Cache popular tags for footer
+  def self.popular_tags(limit: 5)
+    Rails.cache.fetch("popular_tags_#{limit}", expires_in: 1.hour) do
+      tag_counts_on(:tags).limit(limit).to_a
+    end
+  end
 
   def self.ransackable_associations(_auth_object = nil)
     ['site']
@@ -65,5 +81,17 @@ class Entry < ApplicationRecord
 
   def final_keywords
     keywords || 'Nintendo, News, Aggregator, Switch, Wii U'
+  end
+
+  private
+
+  def published_at_not_in_future
+    return unless published_at.present?
+    errors.add(:published_at, 'cannot be in the future') if published_at > Time.current
+  end
+
+  def image_url_format
+    return if image_url.match?(/\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/)
+    errors.add(:image_url, 'must be a valid URL')
   end
 end

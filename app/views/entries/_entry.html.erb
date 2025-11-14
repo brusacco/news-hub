@@ -4,16 +4,20 @@
       <% if !entry.image_url || entry.image_url.empty? || entry.site.id == 11 %>
         <img 
           src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg" 
-          alt="<%= entry.title %>" 
+          alt="<%= entry.final_title %> - Nintendo News" 
           class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
+          width="400"
+          height="225"
         >
       <% else %>
         <%= image_tag(
           entry.image_url, 
-          alt: entry.final_title, 
+          alt: "#{entry.final_title} - Nintendo News Article", 
           class: "h-full w-full object-cover transition-transform duration-300 group-hover:scale-105", 
-          loading: "lazy"
+          loading: "lazy",
+          width: 400,
+          height: 225
         ) %>
       <% end %>
     </div>

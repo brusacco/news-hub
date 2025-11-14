@@ -18,7 +18,7 @@
           <div>
             <h3 class="text-sm font-semibold leading-6 text-slate-900">Trending Topics</h3>
             <ul role="list" class="mt-6 space-y-4">
-              <% Entry.tag_counts_on(:tags).limit(5).each do |tag| %>
+              <% Entry.popular_tags(limit: 5).each do |tag| %>
                 <li>
                   <%= link_to tag_path(tag), class: "text-sm leading-6 text-slate-600 transition-colors hover:text-slate-900" do %>
                     <%= tag.name %>
