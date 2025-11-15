@@ -14,14 +14,16 @@
       
       <!-- SEO-rich metadata -->
       <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-600">
-        <time datetime="<%= @entry.published_at.iso8601 %>" class="flex items-center" itemprop="datePublished" content="<%= @entry.published_at.iso8601 %>">
-          <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 005.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-          </svg>
-          <span>Published: <%= @entry.published_at.strftime('%B %d, %Y') %></span>
-        </time>
+        <% if @entry.published_at.present? %>
+          <time datetime="<%= @entry.published_at.iso8601 %>" class="flex items-center" itemprop="datePublished" content="<%= @entry.published_at.iso8601 %>">
+            <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 005.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+            </svg>
+            <span>Published: <%= @entry.published_at.strftime('%B %d, %Y') %></span>
+          </time>
+        <% end %>
         
-        <% if @entry.updated_at != @entry.published_at %>
+        <% if @entry.updated_at.present? && @entry.published_at.present? && @entry.updated_at != @entry.published_at %>
           <time datetime="<%= @entry.updated_at.iso8601 %>" class="flex items-center" itemprop="dateModified" content="<%= @entry.updated_at.iso8601 %>">
             <span class="text-slate-500">Updated: <%= @entry.updated_at.strftime('%B %d, %Y') %></span>
           </time>
