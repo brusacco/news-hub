@@ -62,41 +62,56 @@ task crawler: :environment do
       end
 
       anemone.on_pages_like(/#{site.url_filter}/) do |page|
-        Entry.create_with(site: site).find_or_create_by!(source_url: page.url.to_s) do |entry|
-          puts page.url.to_s.colorize(:green)
-
-          #---------------------------------------------------------------------------
-          # Basic data extractor
-          #---------------------------------------------------------------------------
-          result = WebExtractorServices::ExtractBasicInfo.call(page.doc)
-          if result.success?
-            entry.update!(result.data)
-          else
-            puts "ERROR BASIC: #{result.error}"
-          end
-
-          #---------------------------------------------------------------------------
-          # Date extractor
-          #---------------------------------------------------------------------------
-          result = WebExtractorServices::ExtractDate.call(page.doc)
-          if result.success?
-            entry.update!(result.data)
-            puts result.data
-          else
-            puts "ERROR DATE: #{result&.error}"
-          end
-
-          #---------------------------------------------------------------------------
-          # Content extractor
-          #---------------------------------------------------------------------------
-          result = WebExtractorServices::ArticleExtractor.call(page.url.to_s, page.doc.to_html)
-          if result.success?
-            entry.update!(result.data)
-            puts result.data
-          else
-            puts "ERROR CONTENT: #{result&.error}"
-          end
+        entry = Entry.find_or_initialize_by(source_url: page.url.to_s)
+        entry.site ||= site
+        
+        # Skip if entry already exists and has all required data
+        if entry.persisted? && entry.published_at.present?
+          puts "#{page.url.to_s} (skipped - already exists)".colorize(:yellow)
+          next
         end
+        
+        puts page.url.to_s.colorize(:green)
+
+        #---------------------------------------------------------------------------
+        # Basic data extractor
+        #---------------------------------------------------------------------------
+        result = WebExtractorServices::ExtractBasicInfo.call(page.doc)
+        if result.success?
+          entry.assign_attributes(result.data)
+        else
+          puts "ERROR BASIC: #{result.error}"
+        end
+
+        #---------------------------------------------------------------------------
+        # Date extractor
+        #---------------------------------------------------------------------------
+        result = WebExtractorServices::ExtractDate.call(page.doc)
+        if result.success?
+          entry.assign_attributes(result.data)
+          puts result.data
+        else
+          puts "ERROR DATE: #{result&.error}"
+          # Set default published_at if extraction failed
+          entry.published_at ||= Time.current
+        end
+
+        #---------------------------------------------------------------------------
+        # Content extractor
+        #---------------------------------------------------------------------------
+        result = WebExtractorServices::ArticleExtractor.call(page.url.to_s, page.doc.to_html)
+        if result.success?
+          entry.assign_attributes(result.data)
+          puts result.data
+        else
+          puts "ERROR CONTENT: #{result&.error}"
+        end
+
+        # Ensure published_at is set before saving
+        entry.published_at ||= Time.current
+        
+        # Save entry with all extracted data
+        entry.save!
       rescue StandardError => e
         puts "Error processing page #{page.url}: #{e.message}".colorize(:red)
         puts e.backtrace.join("\n").colorize(:red)
