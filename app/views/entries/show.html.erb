@@ -74,7 +74,16 @@
     <div class="space-y-6 text-base leading-8 text-slate-700 lg:text-lg lg:leading-9" itemprop="articleBody">
       <meta itemprop="wordCount" content="<%= (@entry.ai_content.presence || @entry.description.to_s).split.size %>">
       <div class="prose prose-slate max-w-none">
-        <%= sanitize(@entry.ai_content.presence || @entry.description.to_s, tags: %w[p br strong em a ul ol li], attributes: %w[href rel target]) %>
+        <% article_body = @entry.ai_content.presence || @entry.description.to_s %>
+        <% formatted_article_body = if article_body.match?(/<[^>]+>/)
+                                      article_body
+                                    else
+                                      article_body
+                                        .gsub(/\r\n?/, "\n")
+                                        .gsub(/([.!?])\s+/, "\\1<br><br>")
+                                        .gsub(/\n+/, "<br><br>")
+                                    end %>
+        <%= sanitize(formatted_article_body, tags: %w[p br strong em a ul ol li], attributes: %w[href rel target]) %>
       </div>
       
       <!-- SEO-rich summary section -->
