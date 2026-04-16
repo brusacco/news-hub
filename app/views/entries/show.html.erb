@@ -11,7 +11,7 @@
       <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl" itemprop="headline">
         <%= @entry.final_title %>
       </h1>
-      <meta itemprop="description" content="<%= @entry.final_description || truncate(@entry.description.to_s, length: 160) %>">
+      <meta itemprop="description" content="<%= @entry.final_description.present? ? strip_tags(@entry.final_description.to_s).squish : truncate(strip_tags(@entry.description.to_s).squish, length: 160) %>">
       
       <!-- SEO-rich metadata -->
       <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-600">
