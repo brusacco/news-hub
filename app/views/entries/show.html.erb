@@ -75,7 +75,8 @@
       <meta itemprop="wordCount" content="<%= (@entry.ai_content.presence || @entry.description.to_s).split.size %>">
       <div class="prose prose-slate max-w-none">
         <% article_body = @entry.ai_content.presence || @entry.description.to_s %>
-        <% formatted_article_body = if article_body.match?(/<[^>]+>/)
+        <% contains_html = article_body != strip_tags(article_body) %>
+        <% formatted_article_body = if contains_html
                                       article_body
                                     else
                                       article_body
