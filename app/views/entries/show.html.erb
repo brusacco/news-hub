@@ -74,7 +74,7 @@
     <div class="space-y-6 text-base leading-8 text-slate-700 lg:text-lg lg:leading-9" itemprop="articleBody">
       <meta itemprop="wordCount" content="<%= (@entry.ai_content.presence || @entry.description.to_s).split.size %>">
       <div class="prose prose-slate max-w-none">
-        <%= simple_format(sanitize(@entry.ai_content.presence || @entry.description.to_s, tags: %w[p br strong em a ul ol li], attributes: %w[href rel target])) %>
+        <%= sanitize(@entry.ai_content.presence || @entry.description.to_s, tags: %w[p br strong em a ul ol li], attributes: %w[href rel target]) %>
       </div>
       
       <!-- SEO-rich summary section -->
