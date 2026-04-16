@@ -11,6 +11,7 @@
       <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl" itemprop="headline">
         <%= @entry.final_title %>
       </h1>
+      <meta itemprop="description" content="<%= @entry.final_description.present? ? strip_tags(@entry.final_description.to_s).squish : truncate(strip_tags(@entry.description.to_s).squish, length: 160) %>">
       
       <!-- SEO-rich metadata -->
       <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-600">
@@ -71,8 +72,9 @@
 
     <!-- Article Content -->
     <div class="space-y-6 text-base leading-8 text-slate-700 lg:text-lg lg:leading-9" itemprop="articleBody">
+      <meta itemprop="wordCount" content="<%= (@entry.ai_content.presence || @entry.description.to_s).split.size %>">
       <div class="prose prose-slate max-w-none">
-        <%= raw(@entry.ai_content&.gsub('. ', '.<br><br>')) || @entry.description %>
+        <%= sanitize(@entry.ai_content.presence || @entry.description.to_s, tags: %w[p br strong em a ul ol li], attributes: %w[href rel target]) %>
       </div>
       
       <!-- SEO-rich summary section -->
@@ -108,7 +110,7 @@
           <% if @entry.source_name.present? %>
             Source: 
             <% if @entry.source_url.present? %>
-              <a href="<%= @entry.source_url %>" target="_blank" rel="nofollow noopener" class="text-[#E60012] hover:text-[#CC0010]">
+              <a href="<%= @entry.source_url %>" target="_blank" rel="noopener noreferrer" class="text-[#E60012] hover:text-[#CC0010]">
                 <%= @entry.source_name %>
               </a>
             <% else %>
@@ -116,7 +118,7 @@
             <% end %>
           <% elsif @entry.source_url.present? %>
             Source: 
-            <a href="<%= @entry.source_url %>" target="_blank" rel="nofollow noopener" class="text-[#E60012] hover:text-[#CC0010]">
+            <a href="<%= @entry.source_url %>" target="_blank" rel="noopener noreferrer" class="text-[#E60012] hover:text-[#CC0010]">
               Original Article
             </a>
           <% end %>

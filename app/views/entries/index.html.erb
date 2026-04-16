@@ -1,4 +1,37 @@
-<div>
-  <h1 class="font-bold text-4xl">Entries#index</h1>
-  <p>Find me in app/views/entries/index.html.erb</p>
+<div class="bg-white">
+  <section class="relative isolate overflow-hidden bg-gradient-to-b from-red-50/30 via-white to-white">
+    <div class="mx-auto max-w-7xl px-6 pb-20 pt-10 sm:pb-24 lg:px-8 lg:pt-16">
+      <div class="mx-auto max-w-3xl text-center">
+        <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">Nintendo News Archive</h1>
+        <p class="mt-6 text-lg leading-8 text-slate-600">
+          Explore every Nintendo News Hub article in one place, including platform announcements, game releases, and community updates.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16" aria-label="Nintendo news archive listing">
+    <header class="mb-10">
+      <h2 class="text-3xl font-bold tracking-tight text-slate-900">Latest Articles</h2>
+      <p class="mt-2 text-base text-slate-600">Fresh Nintendo coverage ordered from newest to oldest.</p>
+    </header>
+
+    <% if @entries.any? %>
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <%= render partial: 'entries/entry', collection: @entries %>
+      </div>
+
+      <% if @pagy.pages > 1 %>
+        <nav class="mt-12 flex justify-center" aria-label="Pagination">
+          <div class="rounded-lg bg-white px-4 py-3 shadow-sm ring-1 ring-slate-200">
+            <%== pagy_nav(@pagy) %>
+          </div>
+        </nav>
+      <% end %>
+    <% else %>
+      <p class="rounded-lg bg-slate-50 p-6 text-slate-700 ring-1 ring-slate-200">
+        No articles are available right now. Please check back soon for new Nintendo updates.
+      </p>
+    <% end %>
+  </section>
 </div>
