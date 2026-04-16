@@ -74,7 +74,22 @@
     <div class="space-y-6 text-base leading-8 text-slate-700 lg:text-lg lg:leading-9" itemprop="articleBody">
       <meta itemprop="wordCount" content="<%= (@entry.ai_content.presence || @entry.description.to_s).split.size %>">
       <div class="prose prose-slate max-w-none">
-        <%= sanitize(@entry.ai_content.presence || @entry.description.to_s, tags: %w[p br strong em a ul ol li], attributes: %w[href rel target]) %>
+        <% article_body = @entry.ai_content.presence || @entry.description.to_s %>
+        <% contains_html = article_body != strip_tags(article_body) %>
+        <% formatted_article_body = if contains_html
+                                      article_body
+                                    else
+                                      plain_text_body = article_body.gsub(/\r\n?/, "\n")
+                                      protected_dot = "__PROTECTED_DOT__"
+
+                                      plain_text_body = plain_text_body.gsub(/(\d)\.(\d)/, "\\1#{protected_dot}\\2")
+                                      plain_text_body = plain_text_body.gsub(/\b(?:[A-Z]\.){2,}/) { |match| match.gsub(".", protected_dot) }
+                                      plain_text_body = plain_text_body.gsub(/\b(?:Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|vs|etc)\./) { |match| match.gsub(".", protected_dot) }
+                                      plain_text_body = plain_text_body.gsub(/([.!?])\s+(?=(?:["'“”‘’(\[]?[A-Z]))/, "\\1<br><br>")
+                                      plain_text_body = plain_text_body.gsub(/\n+/, "<br><br>")
+                                      plain_text_body.gsub(protected_dot, ".")
+                                    end %>
+        <%= sanitize(formatted_article_body, tags: %w[p br strong em a ul ol li], attributes: %w[href rel target]) %>
       </div>
       
       <!-- SEO-rich summary section -->
