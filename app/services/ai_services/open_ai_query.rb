@@ -11,7 +11,7 @@ module AiServices
 
       response = client.chat(
         parameters: {
-          model: 'gpt-4.1',
+          model: ENV.fetch('OPENAI_MODEL', 'gpt-5-mini'),
           messages: [{ role: 'user', content: @text }]
         }
       )
