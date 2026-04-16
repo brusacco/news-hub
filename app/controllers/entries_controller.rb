@@ -69,7 +69,7 @@ class EntriesController < ApplicationController
                   end
 
     # Enhanced keywords with semantic variations
-    tag_names = @entry.tags.pluck(:name)
+    tag_names = @entry.tags.map(&:name)
     keywords_array = []
 
     # Add original keywords if available
