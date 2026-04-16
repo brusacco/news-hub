@@ -14,6 +14,22 @@
 }
 </script>
 
+<%# Schema.org for WebSite + SearchAction %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Nintendo News Hub",
+  "url": "<%= root_url %>",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "<%= search_url %>?keyword={search_term_string}",
+    "query-input": "required name=search_term_string"
+  },
+  "inLanguage": "en-US"
+}
+</script>
+
 <%# Schema.org para Article (solo en páginas de artículos) %>
 <% if defined?(@entry) && @entry.present? %>
 <script type="application/ld+json">
@@ -154,6 +170,20 @@
     "@type": "ItemList",
     "name": "<%= j(@tag.name) %> Articles",
     "description": "Collection of articles about <%= j(@tag.name) %>"
+  }
+}
+</script>
+<% elsif controller_name == 'entries' && action_name == 'index' %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Nintendo News Archive - Latest Nintendo Articles & Updates",
+  "description": "Browse the complete Nintendo News Hub archive with the latest Nintendo updates and articles.",
+  "url": "<%= entries_url %>",
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Nintendo News Articles"
   }
 }
 </script>
