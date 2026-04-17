@@ -128,18 +128,27 @@ export default class extends Controller {
   }
 
 
+  escapeHtmlAttribute(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+  }
+
   renderEntryImage(entry) {
     const fallbackImageUrl = "https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg"
-    const imageUrl = typeof entry.image_url === "string" ? entry.image_url.trim() : entry.image_url
+    const safeTitle = this.escapeHtmlAttribute(entry.title)
 
-    if (!imageUrl || entry.site_id === 11) {
-      return `<img src="${fallbackImageUrl}" alt="${entry.title}" class="h-12 w-12 rounded-md object-cover flex-shrink-0" loading="lazy">`
+    if (!entry.image_url || entry.site_id === 11) {
+      return `<img src="${fallbackImageUrl}" alt="${safeTitle}" class="h-12 w-12 rounded-md object-cover flex-shrink-0" loading="lazy">`
     }
 
     return `
       <img
-        src="${imageUrl}"
-        alt="${entry.title}"
+        src="${entry.image_url}"
+        alt="${safeTitle}"
         class="h-12 w-12 rounded-md object-cover flex-shrink-0"
         loading="lazy"
         onerror="this.onerror=null;this.src='${fallbackImageUrl}'"
