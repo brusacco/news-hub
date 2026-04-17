@@ -1,9 +1,9 @@
+Found no changes, using resolution from the lockfile
 <div class="bg-white">
   <!-- Breadcrumbs -->
   <div class="mx-auto max-w-3xl px-4 pt-12 sm:px-6 lg:px-8">
     <%= render 'layouts/breadcrumbs' %>
   </div>
-  
   <!-- Article Header -->
   <article class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16" itemscope itemtype="https://schema.org/NewsArticle">
     <!-- Header -->
@@ -12,7 +12,6 @@
         <%= @entry.final_title %>
       </h1>
       <meta itemprop="description" content="<%= @entry.final_description.present? ? strip_tags(@entry.final_description.to_s).squish : truncate(strip_tags(@entry.description.to_s).squish, length: 160) %>">
-      
       <!-- SEO-rich metadata -->
       <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-600">
         <% if @entry.published_at.present? %>
@@ -23,26 +22,22 @@
             <span>Published: <%= @entry.published_at.strftime('%B %d, %Y') %></span>
           </time>
         <% end %>
-        
         <% if @entry.updated_at.present? && @entry.published_at.present? && @entry.updated_at != @entry.published_at %>
           <time datetime="<%= @entry.updated_at.iso8601 %>" class="flex items-center" itemprop="dateModified" content="<%= @entry.updated_at.iso8601 %>">
             <span class="text-slate-500">Updated: <%= @entry.updated_at.strftime('%B %d, %Y') %></span>
           </time>
         <% end %>
-        
         <% if @entry.category.present? %>
           <span class="inline-flex items-center rounded-full bg-[#FFE5E7] px-3 py-1 text-xs font-medium text-[#E60012] ring-1 ring-inset ring-[#E60012]/20">
             <%= @entry.category %>
           </span>
         <% end %>
       </div>
-      
       <!-- Author info for SEO -->
       <div class="mt-4 text-sm text-slate-600" itemprop="author" itemscope itemtype="https://schema.org/Organization">
         <span itemprop="name">Nintendo News Hub</span>
       </div>
     </header>
-
     <!-- Featured Image -->
     <div class="mb-12 overflow-hidden rounded-2xl bg-slate-100" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
       <% if @entry.site.id == 11 %>
@@ -69,7 +64,6 @@
       <meta itemprop="width" content="1200">
       <meta itemprop="height" content="675">
     </div>
-
     <!-- Article Content -->
     <div class="space-y-6 text-base leading-8 text-slate-700 lg:text-lg lg:leading-9" itemprop="articleBody">
       <meta itemprop="wordCount" content="<%= (@entry.ai_content.presence || @entry.description.to_s).split.size %>">
@@ -91,7 +85,6 @@
                                     end %>
         <%= sanitize(formatted_article_body, tags: %w[p br strong em a ul ol li], attributes: %w[href rel target]) %>
       </div>
-      
       <!-- SEO-rich summary section -->
       <% if @entry.ai_summary.present? %>
         <div class="mt-8 rounded-xl bg-slate-50 p-6 ring-1 ring-slate-200">
@@ -100,7 +93,6 @@
         </div>
       <% end %>
     </div>
-
     <!-- Tags -->
     <% if @entry.tags.any? %>
       <div class="mt-10 border-t border-slate-200 pt-8">
@@ -117,7 +109,6 @@
         </div>
       </div>
     <% end %>
-    
     <!-- Source attribution for SEO -->
     <% if @entry.source_name.present? || @entry.source_url.present? %>
       <div class="mt-8 border-t border-slate-200 pt-6 text-sm text-slate-600">
@@ -134,14 +125,13 @@
           <% elsif @entry.source_url.present? %>
             Source: 
             <a href="<%= @entry.source_url %>" target="_blank" rel="noopener noreferrer" class="text-[#E60012] hover:text-[#CC0010]">
-              Original Article
+              <%= @entry.site&.name.presence || 'Original Article' %>
             </a>
           <% end %>
         </p>
       </div>
     <% end %>
   </article>
-
   <!-- Related Articles -->
   <% if @entries.any? %>
     <div class="border-t border-slate-200 bg-slate-50">
