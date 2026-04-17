@@ -100,11 +100,7 @@ export default class extends Controller {
           <div class="space-y-1">
             ${data.entries.map(entry => `
               <a href="${entry.url}" class="flex items-start gap-3 rounded-lg px-3 py-2 text-sm hover:bg-slate-100 transition-colors group">
-                ${entry.image_url ? `
-                  <img src="${entry.image_url}" alt="${entry.title}" class="h-12 w-12 rounded-md object-cover flex-shrink-0">
-                ` : `
-                  <div class="h-12 w-12 rounded-md bg-slate-200 flex-shrink-0"></div>
-                `}
+                ${this.renderEntryImage(entry)}
                 <div class="flex-1 min-w-0">
                   <div class="font-medium text-slate-900 line-clamp-2 group-hover:text-indigo-600">${this.highlight(query, entry.title)}</div>
                   ${entry.published_at ? `
@@ -129,6 +125,35 @@ export default class extends Controller {
 
     this.resultsTarget.innerHTML = html
     this.showResults()
+  }
+
+
+  escapeHtmlAttribute(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+  }
+
+  renderEntryImage(entry) {
+    const fallbackImageUrl = "https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg"
+    const safeTitle = this.escapeHtmlAttribute(entry.title)
+
+    if (!entry.image_url || entry.site_id === 11) {
+      return `<img src="${fallbackImageUrl}" alt="${safeTitle}" class="h-12 w-12 rounded-md object-cover flex-shrink-0" loading="lazy">`
+    }
+
+    return `
+      <img
+        src="${entry.image_url}"
+        alt="${safeTitle}"
+        class="h-12 w-12 rounded-md object-cover flex-shrink-0"
+        loading="lazy"
+        onerror="this.onerror=null;this.src='${fallbackImageUrl}'"
+      >
+    `
   }
 
   highlight(query, text) {
