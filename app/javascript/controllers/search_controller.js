@@ -130,14 +130,15 @@ export default class extends Controller {
 
   renderEntryImage(entry) {
     const fallbackImageUrl = "https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg"
+    const imageUrl = typeof entry.image_url === "string" ? entry.image_url.trim() : entry.image_url
 
-    if (!entry.image_url || entry.site_id === 11) {
+    if (!imageUrl || entry.site_id === 11) {
       return `<img src="${fallbackImageUrl}" alt="${entry.title}" class="h-12 w-12 rounded-md object-cover flex-shrink-0" loading="lazy">`
     }
 
     return `
       <img
-        src="${entry.image_url}"
+        src="${imageUrl}"
         alt="${entry.title}"
         class="h-12 w-12 rounded-md object-cover flex-shrink-0"
         loading="lazy"
