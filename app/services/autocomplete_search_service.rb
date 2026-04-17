@@ -63,7 +63,8 @@ class AutocompleteSearchService
       title: entry.final_title,
       url: Rails.application.routes.url_helpers.entry_path(entry),
       published_at: entry.published_at&.strftime('%b %d, %Y'),
-      image_url: entry.image_url
+      image_url: entry.image_url,
+      site_id: entry.site_id
     }
   end
 end
