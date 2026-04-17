@@ -3,6 +3,8 @@
 class AutocompleteSearchService
   MIN_QUERY_LENGTH = 2
   MAX_RESULTS = 5
+  NINTENDO_SITE_ID = 11
+  NINTENDO_FALLBACK_IMAGE_URL = 'https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg'
 
   def initialize(query)
     @query = query.to_s.strip.downcase
@@ -38,10 +40,10 @@ class AutocompleteSearchService
     entry_ids = []
     entry_ids += Entry.where('LOWER(title) LIKE ?', "%#{@query}%").pluck(:id)
     entry_ids += Entry.where('LOWER(description) LIKE ?', "%#{@query}%").pluck(:id)
-    
+
     matching_tags = Tag.where('LOWER(name) LIKE ?', "%#{@query}%")
     entry_ids += Entry.tagged_with(matching_tags.pluck(:name), any: true).pluck(:id) if matching_tags.any?
-    
+
     Entry.where(id: entry_ids.uniq)
          .order(published_at: :desc)
          .limit(MAX_RESULTS)
@@ -63,9 +65,15 @@ class AutocompleteSearchService
       title: entry.final_title,
       url: Rails.application.routes.url_helpers.entry_path(entry),
       published_at: entry.published_at&.strftime('%b %d, %Y'),
-      image_url: entry.image_url,
+      image_url: resolved_image_url(entry),
       site_id: entry.site_id
     }
   end
-end
 
+  def resolved_image_url(entry)
+    return NINTENDO_FALLBACK_IMAGE_URL if entry.site_id == NINTENDO_SITE_ID
+    return NINTENDO_FALLBACK_IMAGE_URL if entry.image_url.blank?
+
+    entry.image_url
+  end
+end
