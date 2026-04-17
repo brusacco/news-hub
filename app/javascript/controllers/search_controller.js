@@ -140,14 +140,16 @@ export default class extends Controller {
   renderEntryImage(entry) {
     const fallbackImageUrl = "https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg"
     const safeTitle = this.escapeHtmlAttribute(entry.title)
+    const imageUrl = typeof entry.image_url === "string" ? entry.image_url.trim() : entry.image_url
+    const isNintendoSite = Number(entry.site_id) === 11
 
-    if (!entry.image_url || entry.site_id === 11) {
+    if (!imageUrl || isNintendoSite) {
       return `<img src="${fallbackImageUrl}" alt="${safeTitle}" class="h-12 w-12 rounded-md object-cover flex-shrink-0" loading="lazy">`
     }
 
     return `
       <img
-        src="${entry.image_url}"
+        src="${imageUrl}"
         alt="${safeTitle}"
         class="h-12 w-12 rounded-md object-cover flex-shrink-0"
         loading="lazy"
@@ -197,4 +199,3 @@ export default class extends Controller {
     }
   }
 }
-
