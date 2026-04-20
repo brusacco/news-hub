@@ -42,7 +42,7 @@ class EntriesController < ApplicationController
   def find_related_entries
     tag_names = @entry.tags.pluck(:name)
     main_tags = tag_names - TAG_BLACKLIST
-    base_scope = Entry.a_week_ago.where.not(id: @entry.id).recent.limit(MAX_RELATED_ENTRIES)
+    base_scope = Entry.a_week_ago.where.not(id: @entry.id).recent
 
     entries = related_entries_for(base_scope, main_tags)
     entries.presence || related_entries_for(base_scope, tag_names)
@@ -51,7 +51,7 @@ class EntriesController < ApplicationController
   def related_entries_for(scope, tag_names)
     return Entry.none if tag_names.blank?
 
-    scope.tagged_with(tag_names, any: true)
+    scope.tagged_with(tag_names, any: true).limit(MAX_RELATED_ENTRIES)
   end
 
   def set_entry_meta_tags
