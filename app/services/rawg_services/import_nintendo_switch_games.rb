@@ -6,9 +6,9 @@ module RawgServices
     NINTENDO_SWITCH_PLATFORM_ID = 7
     DEFAULT_PAGE_SIZE = 40
 
-    def initialize(api_key:, pages: 1, page_size: DEFAULT_PAGE_SIZE, ordering: '-released', http_client: HTTParty)
+    def initialize(api_key:, pages: nil, page_size: DEFAULT_PAGE_SIZE, ordering: '-released', http_client: HTTParty)
       @api_key = api_key.to_s
-      @pages = pages.to_i
+      @pages = pages.presence&.to_i
       @page_size = page_size.to_i
       @ordering = ordering
       @http_client = http_client
@@ -24,8 +24,8 @@ module RawgServices
 
     private
 
-    def pages
-      @pages.positive? ? @pages : 1
+    def max_pages
+      @pages&.positive? ? @pages : nil
     end
 
     def page_size
@@ -47,13 +47,17 @@ module RawgServices
 
     def import_pages
       imported_count = 0
+      page = 1
 
-      (1..pages).each do |page|
+      loop do
         response = fetch_page(page)
         raise "RAWG request failed with status #{response.code}" unless response.success?
 
         imported_count += import_games(Array(response.parsed_response['results']))
         break if response.parsed_response['next'].blank?
+        break if max_pages.present? && page >= max_pages
+
+        page += 1
       end
 
       imported_count
@@ -70,6 +74,7 @@ module RawgServices
       Game.find_or_initialize_by(rawg_id: game_data.fetch('id')).tap do |game|
         game.assign_attributes(attributes_for(game_data))
         game.save!
+        SyncGameGenres.sync_game!(game, Array(game_data['genres']))
       end
     end
 
@@ -87,7 +92,7 @@ module RawgServices
         playtime: game_data['playtime'],
         rawg_updated_at: game_data['updated'],
         platforms: game_data['platforms'],
-        genres: game_data['genres'],
+        rawg_genres: game_data['genres'],
         stores: game_data['stores'],
         raw_data: game_data
       }

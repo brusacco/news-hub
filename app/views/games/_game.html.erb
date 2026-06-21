@@ -30,9 +30,9 @@
       </h3>
 
       <div class="mt-3 flex flex-wrap gap-2">
-        <% Array(game.genres).first(3).each do |genre| %>
+        <% game.genres.to_a.first(3).each do |genre| %>
           <span class="inline-flex items-center rounded-full bg-[#FFE5E7] px-3 py-1 text-xs font-medium text-[#E60012] ring-1 ring-inset ring-[#E60012]/20">
-            <%= genre['name'] %>
+            <%= genre.name %>
           </span>
         <% end %>
       </div>

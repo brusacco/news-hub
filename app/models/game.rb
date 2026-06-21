@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 class Game < ApplicationRecord
+  has_many :game_genres, dependent: :destroy
+  has_many :genres, through: :game_genres
+
   serialize :platforms, coder: JSON
-  serialize :genres, coder: JSON
+  serialize :rawg_genres, coder: JSON
   serialize :stores, coder: JSON
   serialize :raw_data, coder: JSON
 
@@ -18,6 +21,6 @@ class Game < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    []
+    %w[game_genres genres]
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_06_21_192429) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_21_195717) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -82,6 +82,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_21_192429) do
     t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
   end
 
+  create_table "game_genres", force: :cascade do |t|
+    t.integer "game_id", null: false
+    t.integer "genre_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id", "genre_id"], name: "index_game_genres_on_game_id_and_genre_id", unique: true
+    t.index ["game_id"], name: "index_game_genres_on_game_id"
+    t.index ["genre_id"], name: "index_game_genres_on_genre_id"
+  end
+
   create_table "games", force: :cascade do |t|
     t.integer "rawg_id", null: false
     t.string "name", null: false
@@ -96,7 +106,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_21_192429) do
     t.integer "playtime"
     t.datetime "rawg_updated_at"
     t.text "platforms"
-    t.text "genres"
+    t.text "rawg_genres"
     t.text "stores"
     t.text "raw_data"
     t.datetime "created_at", null: false
@@ -104,6 +114,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_21_192429) do
     t.index ["rawg_id"], name: "index_games_on_rawg_id", unique: true
     t.index ["released"], name: "index_games_on_released"
     t.index ["slug"], name: "index_games_on_slug", unique: true
+  end
+
+  create_table "genres", force: :cascade do |t|
+    t.integer "rawg_id", null: false
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.integer "games_count"
+    t.string "image_background"
+    t.text "raw_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rawg_id"], name: "index_genres_on_rawg_id", unique: true
+    t.index ["slug"], name: "index_genres_on_slug", unique: true
   end
 
   create_table "sites", force: :cascade do |t|
@@ -164,5 +187,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_21_192429) do
   end
 
   add_foreign_key "entries", "sites"
+  add_foreign_key "game_genres", "games"
+  add_foreign_key "game_genres", "genres"
   add_foreign_key "taggings", "tags"
 end
