@@ -40,7 +40,7 @@ class EntriesController < ApplicationController
   private
 
   def find_related_entries
-    tag_names = @entry.tags.pluck(:name)
+    tag_names = @entry.display_tags(limit: nil).map(&:name)
     main_tags = tag_names - TAG_BLACKLIST
     base_scope = Entry.a_week_ago.where.not(id: @entry.id).recent.limit(MAX_RELATED_ENTRIES)
 
@@ -69,7 +69,7 @@ class EntriesController < ApplicationController
                   end
 
     # Enhanced keywords with semantic variations
-    tag_names = @entry.tags.map(&:name)
+    tag_names = @entry.display_tags(limit: nil).map { |tag| TagSanitizer.normalize(tag.name) }
     keywords_array = []
 
     # Add original keywords if available

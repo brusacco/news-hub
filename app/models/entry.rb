@@ -61,6 +61,15 @@ class Entry < ApplicationRecord
     keywords.presence || DEFAULT_KEYWORDS
   end
 
+  def display_tags(limit: TagSanitizer::MAX_DISPLAY_TAGS)
+    sanitized_names = TagSanitizer.call(tags, limit:)
+
+    displayable_tags = tags.select { |tag| sanitized_names.include?(TagSanitizer.normalize(tag.name)) }
+                           .uniq { |tag| TagSanitizer.normalize(tag.name).downcase }
+
+    limit ? displayable_tags.first(limit) : displayable_tags
+  end
+
   private
 
   def published_at_not_in_future

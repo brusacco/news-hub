@@ -17,6 +17,16 @@ class TaggerTaskTest < ActiveSupport::TestCase
     assert_equal ['Metroid Prime', 'Zelda'], entry.reload.tag_list.sort
   end
 
+  test 'filters generic short and duplicate entity tags' do
+    entry = create_entry(
+      entities: 'Nintendo Switch 2, Switch, PC, US, eShop, esHop, CAPCOM, Capcom, Devil May Cry 5, S, OFF'
+    )
+
+    TaggerTask.tag_entry(entry)
+
+    assert_equal ['Capcom', 'Devil May Cry 5'], entry.reload.tag_list.sort
+  end
+
   test 'can append one selected tag without replacing existing tags' do
     tag = Tag.create!(name: 'Zelda')
     entry = create_entry(title: 'Zelda update')

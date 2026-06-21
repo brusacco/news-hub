@@ -93,16 +93,17 @@
       <% end %>
     </div>
     <!-- Tags -->
-    <% if @entry.tags.any? %>
+    <% display_tags = @entry.display_tags %>
+    <% if display_tags.any? %>
       <div class="mt-10 border-t border-slate-200 pt-8">
         <h2 class="text-xl font-semibold text-slate-900 mb-4">Related Topics</h2>
         <p class="text-sm text-slate-600 mb-4">
           Explore more articles about these topics:
         </p>
         <div class="flex flex-wrap gap-2" itemprop="keywords">
-          <% @entry.tags.each do |tag| %>
+          <% display_tags.each do |tag| %>
             <%= link_to tag_path(tag), class: "inline-flex items-center rounded-full bg-[#FFE5E7] px-3 py-1 text-sm font-medium text-[#E60012] ring-1 ring-inset ring-[#E60012]/20 transition-colors hover:bg-[#FFCCCF]", rel: "tag" do %>
-              <%= tag.name %>
+              <%= TagSanitizer.normalize(tag.name) %>
             <% end %>
           <% end %>
         </div>

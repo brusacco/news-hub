@@ -44,7 +44,7 @@ module TaggerTask
   end
 
   def normalize_tags(tags)
-    tags.flatten.map(&:strip).compact_blank.uniq
+    TagSanitizer.call(tags.flatten)
   end
 
   def apply_tags(entry, tags, replace:)

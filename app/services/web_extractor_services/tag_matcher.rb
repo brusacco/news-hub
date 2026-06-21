@@ -9,7 +9,9 @@ module WebExtractorServices
 
     def call
       @tags.each_with_object([]) do |tag, tags_found|
-        tags_found << tag.name if matches?(tag)
+        next unless TagSanitizer.allowed?(tag.name)
+
+        tags_found << TagSanitizer.normalize(tag.name) if matches?(tag)
       end.uniq
     end
 
