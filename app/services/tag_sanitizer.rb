@@ -1,28 +1,57 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 class TagSanitizer < ApplicationService
   MAX_DISPLAY_TAGS = 12
   MIN_TAG_LENGTH = 3
 
   BLOCKED_TAGS = [
+    'ages',
     'america',
+    'amiibo',
     'beast',
+    'coin',
+    'collect',
+    'console',
+    'control',
+    'cursor',
     'driver',
+    'egg',
     'english',
-    'eshop',
     'e-shop',
     'e shop',
+    'eshop',
     'europe',
     'extreme',
+    'feel',
     'fox',
+    'franchise',
+    'galaxy 2',
     'game',
+    'gamestop',
     'games',
+    'happy',
     'hidden',
     'hunter',
+    'ice',
     'japan',
+    'joy',
+    'joy-cons',
+    'kid',
+    'kondo',
     'legendary',
+    'luma',
+    'lumas',
+    'mario franchise',
+    'mario galaxy',
+    'mario galaxy 2',
+    'mario series',
     'maze',
+    'miyamoto',
+    'mother',
+    'mushroom',
     'nintendo',
+    'nintendo ead',
     'nintendo eshop',
     'nintendo switch',
     'nintendo switch 2',
@@ -32,15 +61,26 @@ class TagSanitizer < ApplicationService
     'off',
     'one',
     'pc',
+    'pro controller',
     'queen',
+    'ray',
+    'red',
     'rogue',
     'run',
+    'soundtrack',
+    'storybook',
+    'sunshine',
     'switch',
     'switch 2',
     'switch 2 edition',
     'switch 2 eshop',
+    'switch port',
+    'time',
+    'tokyo',
     'us',
     'usa',
+    'wii',
+    'wii u',
     'vs'
   ].freeze
 
@@ -102,3 +142,4 @@ class TagSanitizer < ApplicationService
     name.downcase.gsub(/[[:alpha:]]+/, &:capitalize)
   end
 end
+# rubocop:enable Metrics/ClassLength

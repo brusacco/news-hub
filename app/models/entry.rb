@@ -66,6 +66,7 @@ class Entry < ApplicationRecord
 
     displayable_tags = tags.select { |tag| sanitized_names.include?(TagSanitizer.normalize(tag.name)) }
                            .uniq { |tag| TagSanitizer.normalize(tag.name).downcase }
+                           .sort_by { |tag| title_tag_priority(tag) }
 
     limit ? displayable_tags.first(limit) : displayable_tags
   end
@@ -90,5 +91,11 @@ class Entry < ApplicationRecord
     return if url.match?(/\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/)
 
     errors.add(attribute, 'must be a valid URL')
+  end
+
+  def title_tag_priority(tag)
+    normalized_name = TagSanitizer.normalize(tag.name).to_s
+
+    title.to_s.downcase.include?(normalized_name.downcase) ? 0 : 1
   end
 end

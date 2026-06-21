@@ -27,6 +27,20 @@ class TaggerTaskTest < ActiveSupport::TestCase
     assert_equal ['Capcom', 'Devil May Cry 5'], entry.reload.tag_list.sort
   end
 
+  test 'prioritizes tags extracted from the title before entity tags' do
+    Tag.create!(name: 'Super Mario Galaxy')
+    Tag.create!(name: 'Mario')
+    entry = create_entry(
+      title: "Super Mario Galaxy Nintendo Switch: How Nintendo's 2007 Classic Holds Up in 2026",
+      entities: 'Bowser, Super Mario Galaxy'
+    )
+
+    TaggerTask.tag_entry(entry)
+
+    assert_equal 'Super Mario Galaxy', entry.reload.tag_list.first
+    assert_includes entry.tag_list, 'Bowser'
+  end
+
   test 'can append one selected tag without replacing existing tags' do
     tag = Tag.create!(name: 'Zelda')
     entry = create_entry(title: 'Zelda update')

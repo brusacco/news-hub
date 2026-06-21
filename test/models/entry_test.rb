@@ -60,6 +60,17 @@ class EntryTest < ActiveSupport::TestCase
     assert_includes entry.prompt, 'Nintendo announced a new game.'
   end
 
+  test 'display_tags prioritizes tags found in the title' do
+    entry = create_entry(
+      title: "Super Mario Galaxy Nintendo Switch: How Nintendo's 2007 Classic Holds Up in 2026",
+      source_url: 'https://example.com/display-tags'
+    )
+    entry.tag_list = ['Bowser', 'Super Mario Galaxy', 'Mario']
+    entry.save!
+
+    assert_equal ['Super Mario Galaxy', 'Mario', 'Bowser'], entry.reload.display_tags.map(&:name)
+  end
+
   private
 
   def build_entry(attributes = {})

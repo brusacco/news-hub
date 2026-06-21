@@ -21,7 +21,8 @@ module TaggerTask
   end
 
   def tag_entry(entry, tag_id: nil, include_entities: true, replace: true)
-    tags = extracted_tags(entry, tag_id:)
+    tags = title_tags(entry, tag_id:)
+    tags += extracted_tags(entry, tag_id:)
     tags += entity_tags(entry) if include_entities
     tags = normalize_tags(tags)
     return if tags.blank?
@@ -32,6 +33,11 @@ module TaggerTask
     puts '---------------------------------------------------'
 
     entry.save!
+  end
+
+  def title_tags(entry, tag_id: nil)
+    result = WebExtractorServices::ExtractTitleTags.call(entry.id, tag_id)
+    result.success? ? Array(result.data) : []
   end
 
   def extracted_tags(entry, tag_id: nil)
