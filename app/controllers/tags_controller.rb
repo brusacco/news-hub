@@ -19,7 +19,8 @@ class TagsController < ApplicationController
       canonical: tags_url,
       og: {
         title: 'Nintendo Topics & Categories - Browse All Gaming News Topics',
-        description: "Browse all Nintendo news topics and categories. Explore #{@tags.count}+ gaming topics including franchises, characters, games, and hardware.",
+        description: "Browse all Nintendo news topics and categories. Explore #{@tags.count}+ gaming topics " \
+                     'including franchises, characters, games, and hardware.',
         url: tags_url
       },
       twitter: {
@@ -32,7 +33,7 @@ class TagsController < ApplicationController
 
   def show
     @tag = Tag.friendly.find(params[:id])
-    @entries = Entry.tagged_with(@tag.name).includes(:tags, :site).recent
+    @entries = entries_for_tag(@tag)
     @pagy, @entries = pagy(@entries, limit: 60)
 
     # SEO-optimized title with keyword at the beginning
@@ -40,7 +41,7 @@ class TagsController < ApplicationController
 
     # Rich description with keyword variations and context
     article_count = @tag.taggings_count || 0
-    article_text = if article_count > 0
+    article_text = if article_count.positive?
                      "#{ActionController::Base.helpers.number_with_delimiter(article_count)} "
                    else
                      ''
@@ -80,5 +81,15 @@ class TagsController < ApplicationController
         description: description
       }
     )
+  end
+
+  private
+
+  def entries_for_tag(tag)
+    Entry
+      .tagged_with(tag.name, on: :tags)
+      .includes(:tags, :site)
+      .distinct
+      .recent
   end
 end
