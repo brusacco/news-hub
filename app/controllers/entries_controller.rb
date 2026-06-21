@@ -51,7 +51,7 @@ class EntriesController < ApplicationController
   end
 
   def related_tag_groups
-    title_tags = @entry.display_title_tags(limit: nil)
+    title_tags = title_related_tags
 
     [
       { names: sanitized_tag_names(title_tags) - TAG_BLACKLIST, context: :title_tags }
@@ -65,10 +65,42 @@ class EntriesController < ApplicationController
   def related_entries_for(scope, tag_group, excluded_ids: [])
     return Entry.none if tag_group[:names].blank?
 
+    tagged_entries = scope.where.not(id: excluded_ids)
+                          .tagged_with(tag_group[:names], any: true, on: tag_group[:context])
+                          .recent
+                          .limit(MAX_RELATED_ENTRIES)
+                          .to_a
+    remaining = MAX_RELATED_ENTRIES - tagged_entries.length
+    return tagged_entries if remaining <= 0
+
+    excluded_ids += tagged_entries.map(&:id)
+    tagged_entries + title_matching_entries(scope, tag_group[:names], excluded_ids:, limit: remaining)
+  end
+
+  def title_related_tags
+    title_tags = @entry.display_title_tags(limit: nil)
+    return title_tags if title_tags.any?
+
+    @entry.display_tags(limit: nil).select { |tag| tag_name_in_entry_title?(tag.name) }
+  end
+
+  def tag_name_in_entry_title?(tag_name)
+    normalized_name = TagSanitizer.normalize(tag_name).to_s
+
+    @entry.final_title.to_s.downcase.include?(normalized_name.downcase)
+  end
+
+  def title_matching_entries(scope, tag_names, excluded_ids:, limit:)
+    title_conditions = tag_names.map do |tag_name|
+      query = "%#{Entry.sanitize_sql_like(tag_name.downcase)}%"
+      Entry.arel_table[:title].lower.matches(query).or(Entry.arel_table[:ai_title].lower.matches(query))
+    end
+
     scope.where.not(id: excluded_ids)
-         .tagged_with(tag_group[:names], any: true, on: tag_group[:context])
+         .where(title_conditions.inject(:or))
          .recent
-         .limit(MAX_RELATED_ENTRIES)
+         .limit(limit)
+         .to_a
   end
 
   def set_entry_meta_tags

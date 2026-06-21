@@ -81,6 +81,42 @@ class EntriesControllerTest < ActionDispatch::IntegrationTest
     assert_equal [title_related], related_entries
   end
 
+  test 'related entries match title text while title tags are being backfilled' do
+    site = Site.create!(name: 'Nintendo News Hub', url: 'https://example.com')
+    main_entry = create_entry(
+      site:,
+      title: 'Cyberpunk 2077 Redemption: CD Projekt Red Head Admits Work Remains',
+      source_url: 'https://example.com/cyberpunk-main'
+    )
+    main_entry.tag_list = ['Cyberpunk 2077', 'Witcher']
+    main_entry.save!
+
+    title_match = create_entry(
+      site:,
+      title: 'Nintendo Switch 2 Cyberpunk 2077 benchmark test',
+      source_url: 'https://example.com/cyberpunk-title-match',
+      published_at: 2.hours.ago
+    )
+    title_match.tag_list = ['Cyberpunk 2077']
+    title_match.save!
+
+    tag_only_match = create_entry(
+      site:,
+      title: 'CD Projekt Red talks about future plans',
+      source_url: 'https://example.com/cyberpunk-tag-only',
+      published_at: 5.minutes.ago
+    )
+    tag_only_match.tag_list = ['Cyberpunk 2077']
+    tag_only_match.save!
+
+    controller = EntriesController.new
+    controller.instance_variable_set(:@entry, main_entry)
+
+    related_entries = controller.send(:find_related_entries)
+
+    assert_equal [title_match], related_entries
+  end
+
   private
 
   def create_entry(site:, title:, source_url:, published_at: 2.hours.ago)

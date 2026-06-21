@@ -64,6 +64,27 @@ class TaggerTaskTest < ActiveSupport::TestCase
     end
   end
 
+  test 'limit supports all for uncapped backfills' do
+    previous_limit = ENV.fetch('LIMIT', nil)
+    ENV['LIMIT'] = 'all'
+
+    assert_nil TaggerTask.limit
+  ensure
+    ENV['LIMIT'] = previous_limit
+  end
+
+  test 'entries missing title tags excludes entries that already have title tags' do
+    missing_title_tags = create_entry(title: 'Cyberpunk 2077 update')
+    tagged = create_entry(title: 'Zelda update')
+    tagged.title_tag_list = ['Zelda']
+    tagged.save!
+
+    entry_ids = TaggerTask.entries_missing_title_tags.pluck(:id)
+
+    assert_includes entry_ids, missing_title_tags.id
+    assert_not_includes entry_ids, tagged.id
+  end
+
   private
 
   def create_entry(attributes = {})

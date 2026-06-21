@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ModuleLength
 module TaggerTask
   DEFAULT_LIMIT = 100
   MAX_RETRIES = 3
@@ -7,8 +8,14 @@ module TaggerTask
   module_function
 
   def limit
+    return nil if ENV.fetch('LIMIT', DEFAULT_LIMIT).to_s.casecmp('all').zero?
+
     value = ENV.fetch('LIMIT', DEFAULT_LIMIT).to_i
     value.positive? ? value : DEFAULT_LIMIT
+  end
+
+  def limit_scope(scope)
+    limit ? scope.limit(limit) : scope
   end
 
   def tag_entries(entries, tag_id: nil, include_entities: true, replace: true)
@@ -19,6 +26,28 @@ module TaggerTask
 
       begin
         tag_entry(entry, tag_id:, include_entities:, replace:, matcher_context:)
+      rescue StandardError => e
+        retries += 1
+        puts e.message
+
+        if retries <= MAX_RETRIES
+          sleep 1
+          retry
+        end
+
+        puts "Skipping entry #{entry.id} after #{MAX_RETRIES} retries"
+      end
+    end
+  end
+
+  def tag_title_entries(entries, tag_id: nil, replace: true)
+    matcher_context = build_matcher_context(tag_id)
+
+    entries.each do |entry|
+      retries = 0
+
+      begin
+        tag_title_entry(entry, tag_id:, replace:, matcher_context:)
       rescue StandardError => e
         retries += 1
         puts e.message
@@ -45,6 +74,17 @@ module TaggerTask
     changed = apply_tags(entry, tag_names, replace:)
     changed = apply_title_tags(entry, title_tag_names, replace:) || changed
     return unless changed
+
+    entry.save!
+    log_tagged_entry(entry)
+  end
+
+  def tag_title_entry(entry, tag_id: nil, replace: true, matcher_context: nil)
+    matcher_context ||= build_matcher_context(tag_id)
+
+    title_tag_names = normalize_tags(extracted_title_tags(entry, tag_id:, matcher_context:))
+    return if title_tag_names.blank?
+    return unless apply_title_tags(entry, title_tag_names, replace:)
 
     entry.save!
     log_tagged_entry(entry)
@@ -115,6 +155,20 @@ module TaggerTask
     tag_id.nil? ? Tag.all : Tag.where(id: tag_id)
   end
 
+  def entries_missing_title_tags
+    Entry.tagger_scope.where(
+      <<~SQL.squish
+        NOT EXISTS (
+          SELECT 1
+          FROM taggings
+          WHERE taggings.taggable_type = 'Entry'
+            AND taggings.taggable_id = entries.id
+            AND taggings.context = 'title_tags'
+        )
+      SQL
+    )
+  end
+
   def selected_tag
     return Tag.find(ENV.fetch('TAG_ID')) if ENV['TAG_ID'].present?
     return Tag.friendly.find(ENV.fetch('TAG')) if ENV['TAG'].present?
@@ -125,7 +179,7 @@ end
 
 desc 'Tagger'
 task tagger: :environment do
-  entries = Entry.order(id: :desc).limit(TaggerTask.limit)
+  entries = TaggerTask.limit_scope(Entry.order(id: :desc))
   TaggerTask.tag_entries(entries)
 end
 
@@ -135,16 +189,23 @@ namespace :tagger do
     entries = Entry
               .tagger_scope
               .where.missing(:taggings)
-              .limit(TaggerTask.limit)
 
-    TaggerTask.tag_entries(entries)
+    TaggerTask.tag_entries(TaggerTask.limit_scope(entries))
+  end
+
+  desc 'Backfill title_tags. Defaults to missing title_tags; set ALL=true to recompute all; LIMIT=all for no cap.'
+  task title_tags: :environment do
+    entries = ENV['ALL'].present? ? Entry.tagger_scope : TaggerTask.entries_missing_title_tags
+
+    TaggerTask.tag_title_entries(TaggerTask.limit_scope(entries))
   end
 
   desc 'Apply one tag to matching entries. Set TAG_ID=123 or TAG=tag-slug; set LIMIT=500 to control batch size.'
   task tag: :environment do
     tag = TaggerTask.selected_tag
-    entries = Entry.tagger_scope.limit(TaggerTask.limit)
+    entries = TaggerTask.limit_scope(Entry.tagger_scope)
 
     TaggerTask.tag_entries(entries, tag_id: tag.id, include_entities: false, replace: false)
   end
 end
+# rubocop:enable Metrics/ModuleLength
