@@ -41,6 +41,43 @@ class EntriesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, 'Pragmata gets new update'
   end
 
+  test 'related entries prioritize tags extracted from the title' do
+    site = Site.create!(name: 'Nintendo News Hub', url: 'https://example.com')
+    main_entry = create_entry(
+      site:,
+      title: "Super Mario Galaxy Nintendo Switch: How Nintendo's 2007 Classic Holds Up in 2026",
+      source_url: 'https://example.com/main-title-priority'
+    )
+    main_entry.tag_list = ['Bowser', 'Super Mario Galaxy', 'Mario']
+    main_entry.save!
+
+    title_related = create_entry(
+      site:,
+      title: 'Super Mario Galaxy receives new retrospective',
+      source_url: 'https://example.com/title-related',
+      published_at: 2.hours.ago
+    )
+    title_related.tag_list = ['Super Mario Galaxy']
+    title_related.save!
+
+    other_related = create_entry(
+      site:,
+      title: 'Bowser gets a new profile',
+      source_url: 'https://example.com/other-related',
+      published_at: 5.minutes.ago
+    )
+    other_related.tag_list = ['Bowser']
+    other_related.save!
+
+    controller = EntriesController.new
+    controller.instance_variable_set(:@entry, main_entry)
+
+    related_entries = controller.send(:find_related_entries)
+
+    assert_equal title_related, related_entries.first
+    assert_includes related_entries, other_related
+  end
+
   private
 
   def create_entry(site:, title:, source_url:, published_at: 2.hours.ago)

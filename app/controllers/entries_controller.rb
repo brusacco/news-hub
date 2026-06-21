@@ -40,18 +40,44 @@ class EntriesController < ApplicationController
   private
 
   def find_related_entries
-    tag_names = @entry.display_tags(limit: nil).map(&:name)
-    main_tags = tag_names - TAG_BLACKLIST
     base_scope = Entry.a_week_ago.where.not(id: @entry.id).recent.limit(MAX_RELATED_ENTRIES)
+    prioritized_tags = related_tag_groups
 
-    entries = related_entries_for(base_scope, main_tags)
-    entries.presence || related_entries_for(base_scope, tag_names)
+    prioritized_tags.each_with_object([]) do |tag_names, entries|
+      next if entries.length >= MAX_RELATED_ENTRIES
+
+      entries.concat(related_entries_for(base_scope, tag_names, excluded_ids: entries.map(&:id)).to_a)
+    end.first(MAX_RELATED_ENTRIES)
   end
 
-  def related_entries_for(scope, tag_names)
+  def related_tag_groups
+    tags = @entry.display_tags(limit: nil)
+    title_tags, other_tags = tags.partition { |tag| title_tag?(tag) }
+
+    [
+      sanitized_tag_names(title_tags) - TAG_BLACKLIST,
+      sanitized_tag_names(other_tags) - TAG_BLACKLIST,
+      sanitized_tag_names(tags)
+    ].compact_blank
+  end
+
+  def title_tag?(tag)
+    normalized_name = TagSanitizer.normalize(tag.name).to_s
+
+    @entry.final_title.to_s.downcase.include?(normalized_name.downcase)
+  end
+
+  def sanitized_tag_names(tags)
+    tags.map { |tag| TagSanitizer.normalize(tag.name) }.compact
+  end
+
+  def related_entries_for(scope, tag_names, excluded_ids: [])
     return Entry.none if tag_names.blank?
 
-    scope.tagged_with(tag_names, any: true).recent.limit(MAX_RELATED_ENTRIES)
+    scope.where.not(id: excluded_ids)
+         .tagged_with(tag_names, any: true)
+         .recent
+         .limit(MAX_RELATED_ENTRIES)
   end
 
   def set_entry_meta_tags
