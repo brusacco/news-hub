@@ -33,4 +33,10 @@ class GameTest < ActiveSupport::TestCase
 
     assert_equal ['Action'], game.reload.genres.pluck(:name)
   end
+
+  test 'uses slug as route param' do
+    game = Game.new(slug: 'cyberpunk-2077')
+
+    assert_equal 'cyberpunk-2077', game.to_param
+  end
 end

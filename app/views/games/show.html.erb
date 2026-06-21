@@ -1,0 +1,120 @@
+<div class="bg-white">
+  <section class="relative isolate overflow-hidden bg-slate-950">
+    <% if @game.background_image.present? %>
+      <%= image_tag(
+        @game.background_image,
+        alt: "#{@game.name} - Nintendo Switch game",
+        class: "absolute inset-0 -z-10 h-full w-full object-cover opacity-45",
+        width: 1600,
+        height: 900,
+        itemprop: "image"
+      ) %>
+      <div class="absolute inset-0 -z-10 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/40"></div>
+    <% end %>
+
+    <div class="mx-auto max-w-7xl px-6 pb-16 pt-16 sm:pb-20 lg:px-8 lg:pt-24">
+      <div class="max-w-3xl">
+        <p class="text-sm font-semibold uppercase tracking-wide text-[#FFCCCF]">Nintendo Switch Game</p>
+        <h1 class="mt-4 text-4xl font-bold tracking-tight text-white sm:text-6xl" itemprop="name"><%= @game.name %></h1>
+        <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-200">
+          <%= @game.name %> is listed in our Nintendo Switch games database with release details, Metacritic data,
+          platform information, and related genre pages.
+        </p>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <% if @game.released.present? %>
+            <span class="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-white ring-1 ring-white/20">
+              Released <%= @game.released.strftime('%b %d, %Y') %>
+            </span>
+          <% elsif @game.tba? %>
+            <span class="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-white ring-1 ring-white/20">
+              Release TBA
+            </span>
+          <% end %>
+
+          <% if @game.metacritic.present? %>
+            <span class="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-white ring-1 ring-white/20">
+              <%= @game.metacritic %> Metacritic
+            </span>
+          <% end %>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <div class="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <main>
+        <header class="mb-8">
+          <h2 class="text-3xl font-bold tracking-tight text-slate-900"><%= @game.name %> Details</h2>
+        </header>
+
+        <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="rounded-xl bg-slate-50 p-5 ring-1 ring-slate-200">
+            <dt class="text-sm font-medium text-slate-500">Release Date</dt>
+            <dd class="mt-2 text-lg font-semibold text-slate-900">
+              <%= @game.released.present? ? @game.released.strftime('%B %d, %Y') : (@game.tba? ? 'TBA' : 'Unknown') %>
+            </dd>
+          </div>
+
+          <div class="rounded-xl bg-slate-50 p-5 ring-1 ring-slate-200">
+            <dt class="text-sm font-medium text-slate-500">Metacritic</dt>
+            <dd class="mt-2 text-lg font-semibold text-slate-900"><%= @game.metacritic.presence || 'Not available' %></dd>
+          </div>
+        </dl>
+
+        <% if @game.genres.any? %>
+          <section class="mt-10">
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900"><%= @game.name %> Genres</h2>
+            <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
+              Explore more Nintendo Switch games in categories related to <%= @game.name %>.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-3">
+              <% @game.genres.each do |genre| %>
+                <%= link_to genre.name, genre_path(genre), class: "inline-flex items-center rounded-full bg-[#FFE5E7] px-4 py-2 text-sm font-medium text-[#E60012] ring-1 ring-inset ring-[#E60012]/20 transition-colors hover:bg-[#FFCCCF]" %>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
+
+        <% if @related_games.any? %>
+          <section class="mt-12">
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900">More Games Like <%= @game.name %></h2>
+            <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
+              Browse other Nintendo Switch games that share genres with <%= @game.name %>.
+            </p>
+            <div class="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
+              <%= render partial: 'games/game', collection: @related_games %>
+            </div>
+          </section>
+        <% end %>
+      </main>
+
+      <aside class="space-y-6">
+        <section class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+          <h2 class="text-lg font-semibold text-slate-900">Browse Games</h2>
+          <div class="mt-4 flex flex-col gap-3">
+            <%= link_to 'All Nintendo Switch Games', games_path, class: "text-sm font-medium text-[#E60012] hover:text-[#CC0010]" %>
+            <%= link_to 'Nintendo Switch Genres', genres_path, class: "text-sm font-medium text-[#E60012] hover:text-[#CC0010]" %>
+          </div>
+        </section>
+
+        <section class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+          <h2 class="text-lg font-semibold text-slate-900">Platforms</h2>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <% Array(@game.platforms).each do |platform_data| %>
+              <% platform_name = platform_data.dig('platform', 'name') %>
+              <% next if platform_name.blank? %>
+
+              <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200">
+                <%= platform_name %>
+              </span>
+            <% end %>
+          </div>
+        </section>
+
+      </aside>
+    </div>
+  </section>
+</div>

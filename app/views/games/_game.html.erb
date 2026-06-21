@@ -1,4 +1,4 @@
-<article class="group relative flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition-all duration-300 hover:shadow-lg hover:ring-slate-300" itemscope itemtype="https://schema.org/VideoGame">
+<%= link_to game_path(game), class: "group relative flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition-all duration-300 hover:shadow-lg hover:ring-slate-300", itemscope: true, itemtype: "https://schema.org/VideoGame" do %>
   <div class="aspect-[16/9] w-full overflow-hidden bg-slate-100 relative">
     <% if game.background_image.present? %>
       <%= image_tag(
@@ -63,4 +63,4 @@
       <% end %>
     </div>
   </div>
-</article>
+<% end %>

@@ -89,6 +89,28 @@
 </script>
 <% end %>
 
+<%# Schema.org for VideoGame pages %>
+<% if defined?(@game) && @game.present? %>
+<script type="application/ld+json">
+<%=
+  raw(
+    {
+      '@context': 'https://schema.org',
+      '@type': 'VideoGame',
+      name: @game.name,
+      url: game_url(@game),
+      image: @game.background_image.presence,
+      datePublished: @game.released&.iso8601,
+      gamePlatform: Array(@game.platforms).filter_map { |platform_data| platform_data.dig('platform', 'name') },
+      genre: @game.genres.map(&:name),
+      applicationCategory: 'Game',
+      inLanguage: 'en-US'
+    }.compact.to_json
+  )
+%>
+</script>
+<% end %>
+
 <%# Schema.org para BreadcrumbList %>
 <% if defined?(@entry) && @entry.present? %>
 <script type="application/ld+json">
@@ -137,6 +159,68 @@
     }
   ]
 }
+</script>
+<% elsif defined?(@game) && @game.present? %>
+<script type="application/ld+json">
+<%=
+  raw(
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: root_url
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Games',
+          item: games_url
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: @game.name,
+          item: game_url(@game)
+        }
+      ]
+    }.to_json
+  )
+%>
+</script>
+<% elsif defined?(@genre) && @genre.present? %>
+<script type="application/ld+json">
+<%=
+  raw(
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: root_url
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Genres',
+          item: genres_url
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: @genre.name,
+          item: genre_url(@genre)
+        }
+      ]
+    }.to_json
+  )
+%>
 </script>
 <% end %>
 
@@ -202,5 +286,46 @@
   }
 }
 </script>
+<% elsif controller_name == 'genres' && action_name == 'index' %>
+<script type="application/ld+json">
+<%=
+  raw(
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: 'Nintendo Switch Game Genres - Browse Switch Games by Category',
+      description: 'Browse Nintendo Switch games by genre and category.',
+      url: genres_url,
+      mainEntity: {
+        '@type': 'ItemList',
+        name: 'Nintendo Switch Game Genres',
+        numberOfItems: @pagy&.count
+      }
+    }.to_json
+  )
+%>
+</script>
+<% elsif defined?(@genre) && @genre.present? %>
+<script type="application/ld+json">
+<%=
+  raw(
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: "#{@genre.name} Nintendo Switch Games",
+      description: "Browse #{@genre.name} Nintendo Switch games with release dates, images, and score details.",
+      url: genre_url(@genre),
+      about: {
+        '@type': 'Thing',
+        name: @genre.name
+      },
+      mainEntity: {
+        '@type': 'ItemList',
+        name: "#{@genre.name} Nintendo Switch Games",
+        numberOfItems: @pagy&.count
+      }
+    }.to_json
+  )
+%>
+</script>
 <% end %>
-

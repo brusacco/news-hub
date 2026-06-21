@@ -11,21 +11,21 @@ class GenresController < ApplicationController
                                .group(:id).order(:name), limit: INDEX_LIMIT)
 
     set_default_meta_tags(
-      title: 'Nintendo Switch Game Genres - Browse Games by Genre',
-      description: 'Browse Nintendo Switch game genres imported from RAWG and explore how many games are available ' \
-                   'in each category.',
-      keywords: 'Nintendo Switch genres, game genres, Nintendo games database, RAWG genres',
+      title: 'Nintendo Switch Game Genres - Browse Switch Games by Category',
+      description: 'Browse Nintendo Switch games by genre, including action, adventure, RPG, strategy, platformer, ' \
+                   'racing, sports, and more game categories.',
+      keywords: 'Nintendo Switch genres, Switch games by genre, Nintendo Switch categories, game genres',
       canonical: genres_url,
       og: {
-        title: 'Nintendo Switch Game Genres - Browse Games by Genre',
-        description: 'Browse Nintendo Switch game genres and game counts.',
+        title: 'Nintendo Switch Game Genres - Browse Switch Games by Category',
+        description: 'Browse Nintendo Switch games by genre and category.',
         type: 'website',
         url: genres_url
       },
       twitter: {
         card: 'summary_large_image',
-        title: 'Nintendo Switch Game Genres - Browse Games by Genre',
-        description: 'Browse Nintendo Switch game genres and game counts.'
+        title: 'Nintendo Switch Game Genres - Browse Switch Games by Category',
+        description: 'Browse Nintendo Switch games by genre and category.'
       }
     )
   end
@@ -34,9 +34,8 @@ class GenresController < ApplicationController
     @genre = Genre.find_by!(slug: params[:id])
     @pagy, @games = pagy(@genre.games.includes(:genres).recent, limit: INDEX_LIMIT)
 
-    title = "#{@genre.name} Nintendo Switch Games - Browse Games by Genre"
-    description = "Browse Nintendo Switch games in the #{@genre.name} genre. Explore release dates, ratings, " \
-                  'images, and metadata for games imported from RAWG.'
+    title = "#{@genre.name} Nintendo Switch Games - Releases, Ratings & Details"
+    description = genre_description(@genre, @pagy.count)
 
     set_default_meta_tags(
       title: title,
@@ -55,5 +54,14 @@ class GenresController < ApplicationController
         description: description
       }
     )
+  end
+
+  private
+
+  def genre_description(genre, game_count)
+    count_text = game_count.positive? ? "#{game_count} " : ''
+
+    "Browse #{count_text}#{genre.name} Nintendo Switch games with release dates, images, Metacritic scores, " \
+      'and related game genres.'
   end
 end

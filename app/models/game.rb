@@ -15,6 +15,10 @@ class Game < ApplicationRecord
   scope :released, -> { where.not(released: nil) }
   scope :recent, -> { order(released: :desc, name: :asc) }
 
+  def to_param
+    slug
+  end
+
   def self.ransackable_attributes(_auth_object = nil)
     %w[background_image created_at id id_value metacritic name playtime rating rating_top ratings_count rawg_id
        rawg_updated_at released slug tba updated_at]

@@ -5,21 +5,24 @@
         <p class="text-sm font-semibold uppercase tracking-wide text-[#E60012]">Game Genre</p>
         <h1 class="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl"><%= @genre.name %> Games</h1>
         <p class="mt-6 text-lg leading-8 text-slate-600">
-          Browse Nintendo Switch games linked to <%= @genre.name %>.
+          Browse <%= @genre.name %> Nintendo Switch games with release dates, images, related genres, and score
+          details where available.
         </p>
-        <% if @genre.games_count.present? && @genre.games_count.positive? %>
-          <p class="mt-3 text-sm text-slate-500">
-            RAWG lists <%= number_with_delimiter(@genre.games_count) %> games for this genre across all platforms.
-          </p>
-        <% end %>
       </div>
     </div>
   </section>
 
   <section class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16" aria-label="<%= @genre.name %> Nintendo Switch games listing">
     <header class="mb-10">
-      <h2 class="text-3xl font-bold tracking-tight text-slate-900"><%= @genre.name %> Games</h2>
-      <p class="mt-2 text-base text-slate-600">Nintendo Switch games in this genre ordered by release date.</p>
+      <h2 class="text-3xl font-bold tracking-tight text-slate-900">Latest <%= @genre.name %> Nintendo Switch Games</h2>
+      <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
+        Explore Nintendo Switch releases categorized as <%= @genre.name %>. Games are ordered by release date so
+        newer releases appear first.
+      </p>
+      <div class="mt-4 flex flex-wrap gap-3">
+        <%= link_to 'All Genres', genres_path, class: "inline-flex items-center rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 ring-1 ring-inset ring-slate-200 transition-colors hover:bg-[#FFE5E7] hover:text-[#E60012]" %>
+        <%= link_to 'All Games', games_path, class: "inline-flex items-center rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 ring-1 ring-inset ring-slate-200 transition-colors hover:bg-[#FFE5E7] hover:text-[#E60012]" %>
+      </div>
     </header>
 
     <% if @games.any? %>

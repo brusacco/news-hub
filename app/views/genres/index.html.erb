@@ -4,11 +4,8 @@
       <div class="mx-auto max-w-3xl text-center">
         <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">Nintendo Switch Genres</h1>
         <p class="mt-6 text-lg leading-8 text-slate-600">
-          Browse Nintendo Switch game categories and see how many imported games are linked to each genre.
-        </p>
-        <p class="mt-3 text-sm text-slate-500">
-          Genre data and images provided by
-          <%= link_to 'RAWG', 'https://rawg.io/', target: '_blank', rel: 'noopener noreferrer', class: 'font-medium text-[#E60012] hover:text-[#CC0010]' %>.
+          Browse Nintendo Switch games by category, including action, adventure, RPG, strategy, platformer, racing,
+          sports, and other popular game genres.
         </p>
       </div>
     </div>
@@ -16,8 +13,11 @@
 
   <section class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16" aria-label="Nintendo Switch genres listing">
     <header class="mb-10">
-      <h2 class="text-3xl font-bold tracking-tight text-slate-900">Game Genres</h2>
-      <p class="mt-2 text-base text-slate-600">Genres ordered alphabetically.</p>
+      <h2 class="text-3xl font-bold tracking-tight text-slate-900">Browse Games by Genre</h2>
+      <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
+        Select a genre to view Nintendo Switch games linked to that category, with release dates, images, and
+        score metadata where available.
+      </p>
     </header>
 
     <% if @genres.any? %>

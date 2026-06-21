@@ -2,7 +2,7 @@
 
 Rails.application.routes.draw do
   resources :entries, path: 'news', only: %i[index show]
-  resources :games, only: %i[index]
+  resources :games, only: %i[index show]
   resources :genres, only: %i[index show]
   resources :tags, only: %i[index show]
 
