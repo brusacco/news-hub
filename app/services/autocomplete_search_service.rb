@@ -37,9 +37,7 @@ class AutocompleteSearchService
   end
 
   def search_entries
-    entry_ids = []
-    entry_ids += Entry.where('LOWER(title) LIKE ?', "%#{@query}%").pluck(:id)
-    entry_ids += Entry.where('LOWER(description) LIKE ?', "%#{@query}%").pluck(:id)
+    entry_ids = Entry.matching_text(@query).pluck(:id)
 
     matching_tags = Tag.where('LOWER(name) LIKE ?', "%#{@query}%")
     entry_ids += Entry.tagged_with(matching_tags.pluck(:name), any: true).pluck(:id) if matching_tags.any?

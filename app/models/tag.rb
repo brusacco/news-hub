@@ -4,14 +4,13 @@ class Tag < ApplicationRecord
   extend FriendlyId
   friendly_id :name, use: :slugged
 
+  # rubocop:disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :topics
+  # rubocop:enable Rails/HasAndBelongsToMany
   accepts_nested_attributes_for :topics
 
   has_many :taggings, dependent: :destroy
   validates :name, presence: true, uniqueness: true
-
-  after_create :schedule_tag_entries_job
-  after_update :schedule_tag_entries_job, if: :saved_change_to_name?
 
   attr_accessor :interactions
 
@@ -27,12 +26,6 @@ class Tag < ApplicationRecord
   scope :matching_name, ->(query) { where('LOWER(name) LIKE ?', "%#{query.downcase}%") }
 
   def belongs_to_any_topic?
-    Topic.joins(:tags).where(tags: { id: id }).exists?
-  end
-
-  private
-
-  def schedule_tag_entries_job
-    Tags::TagEntriesJob.perform_later(id, 1.month.ago..Time.current)
+    Topic.joins(:tags).exists?(tags: { id: id })
   end
 end

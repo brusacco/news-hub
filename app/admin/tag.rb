@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/BlockLength
 ActiveAdmin.register Tag do
   permit_params :name, :slug, :variations, topic_ids: []
 
@@ -14,8 +15,8 @@ ActiveAdmin.register Tag do
   #
   #------------------------------------------------------------------
   member_action :retag_entries, method: :put do
-    Tags::UpdateTagEntriesJob.perform_later(params[:id])
-    redirect_to admin_tags_path, notice: 'Running tag updates'
+    Tags::UpdateTagEntriesJob.perform_now(params[:id])
+    redirect_to admin_tags_path, notice: I18n.t('admin.tags.retag_finished', default: 'Tag updates finished')
   end
 
   filter :name
@@ -48,3 +49,4 @@ ActiveAdmin.register Tag do
     f.actions
   end
 end
+# rubocop:enable Metrics/BlockLength

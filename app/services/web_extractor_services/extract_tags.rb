@@ -9,22 +9,7 @@ module WebExtractorServices
 
     def call
       entry = Entry.find(@entry_id)
-      content = "#{entry.ai_title} #{entry.ai_description}"
-      tags_found = []
-
-      tags = if @tag_id.nil?
-               Tag.all
-             else
-               Tag.where(id: @tag_id)
-             end
-
-      tags.each do |tag|
-        tags_found << tag.name if content.match(/\b#{tag.name}\b/)
-        if tag.variations
-          alts = tag.variations.split(',')
-          alts.each { |alt_tag| tags_found << tag.name if content.match(/\b#{alt_tag}\b/) }
-        end
-      end
+      tags_found = TagMatcher.call(searchable_content(entry), tags: tags)
 
       if tags_found.empty?
         handle_error('No tags found')
@@ -33,6 +18,26 @@ module WebExtractorServices
       end
     rescue StandardError => e
       handle_error(e.message)
+    end
+
+    private
+
+    def searchable_content(entry)
+      [
+        entry.ai_title,
+        entry.ai_description,
+        entry.title,
+        entry.description,
+        entry.ai_summary,
+        entry.summary,
+        entry.content,
+        entry.category,
+        entry.entities
+      ].compact_blank.join(' ')
+    end
+
+    def tags
+      @tag_id.nil? ? Tag.all : Tag.where(id: @tag_id)
     end
   end
 end

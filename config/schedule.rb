@@ -9,6 +9,7 @@ end
 every :hour do
   rake 'crawler'
   rake 'tagger'
+  rake 'tagger:untagged'
   rake 'update_stats'
   rake 'update_content'
   rake 'update_entries'
