@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_20_120000) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_21_192429) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -80,6 +80,30 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_20_120000) do
     t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
+  end
+
+  create_table "games", force: :cascade do |t|
+    t.integer "rawg_id", null: false
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.date "released"
+    t.boolean "tba", default: false, null: false
+    t.string "background_image"
+    t.decimal "rating", precision: 4, scale: 2
+    t.integer "rating_top"
+    t.integer "ratings_count"
+    t.integer "metacritic"
+    t.integer "playtime"
+    t.datetime "rawg_updated_at"
+    t.text "platforms"
+    t.text "genres"
+    t.text "stores"
+    t.text "raw_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rawg_id"], name: "index_games_on_rawg_id", unique: true
+    t.index ["released"], name: "index_games_on_released"
+    t.index ["slug"], name: "index_games_on_slug", unique: true
   end
 
   create_table "sites", force: :cascade do |t|
