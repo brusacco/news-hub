@@ -1,0 +1,41 @@
+<div class="bg-white">
+  <section class="relative isolate overflow-hidden bg-gradient-to-b from-red-50/30 via-white to-white">
+    <div class="mx-auto max-w-7xl px-6 pb-20 pt-10 sm:pb-24 lg:px-8 lg:pt-16">
+      <div class="mx-auto max-w-3xl text-center">
+        <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">Nintendo Switch Genres</h1>
+        <p class="mt-6 text-lg leading-8 text-slate-600">
+          Browse Nintendo Switch game categories and see how many imported games are linked to each genre.
+        </p>
+        <p class="mt-3 text-sm text-slate-500">
+          Genre data and images provided by
+          <%= link_to 'RAWG', 'https://rawg.io/', target: '_blank', rel: 'noopener noreferrer', class: 'font-medium text-[#E60012] hover:text-[#CC0010]' %>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16" aria-label="Nintendo Switch genres listing">
+    <header class="mb-10">
+      <h2 class="text-3xl font-bold tracking-tight text-slate-900">Game Genres</h2>
+      <p class="mt-2 text-base text-slate-600">Genres ordered alphabetically.</p>
+    </header>
+
+    <% if @genres.any? %>
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <%= render partial: 'genres/genre', collection: @genres %>
+      </div>
+
+      <% if @pagy.pages > 1 %>
+        <nav class="mt-12 flex justify-center" aria-label="Pagination">
+          <div class="rounded-lg bg-white px-4 py-3 shadow-sm ring-1 ring-slate-200">
+            <%== pagy_nav(@pagy) %>
+          </div>
+        </nav>
+      <% end %>
+    <% else %>
+      <p class="rounded-lg bg-slate-50 p-6 text-slate-700 ring-1 ring-slate-200">
+        No genres are available right now. Import genres from RAWG to populate this page.
+      </p>
+    <% end %>
+  </section>
+</div>

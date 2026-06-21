@@ -11,6 +11,10 @@ class Genre < ApplicationRecord
 
   scope :alphabetical, -> { order(:name) }
 
+  def to_param
+    slug
+  end
+
   def self.ransackable_attributes(_auth_object = nil)
     %w[created_at games_count id id_value image_background name rawg_id slug updated_at]
   end

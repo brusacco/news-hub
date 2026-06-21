@@ -17,6 +17,9 @@
             <%= link_to games_path, class: "rounded-lg px-3 py-2 text-sm font-medium transition-colors #{request.path.include?('/games') ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
               Games
             <% end %>
+            <%= link_to genres_path, class: "rounded-lg px-3 py-2 text-sm font-medium transition-colors #{request.path.include?('/genres') ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
+              Genres
+            <% end %>
           </div>
         </div>
       </div>
@@ -89,6 +92,9 @@
       <% end %>
       <%= link_to games_path, class: "block rounded-lg px-3 py-2 text-base font-medium transition-colors #{request.path.include?('/games') ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
         Games
+      <% end %>
+      <%= link_to genres_path, class: "block rounded-lg px-3 py-2 text-base font-medium transition-colors #{request.path.include?('/genres') ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
+        Genres
       <% end %>
     </div>
   </div>

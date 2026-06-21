@@ -15,15 +15,27 @@ module RawgServices
       return if rawg_id.blank? || slug.blank?
 
       Genre.find_or_initialize_by(rawg_id: rawg_id).tap do |genre|
-        genre.assign_attributes(
-          name: genre_data['name'],
-          slug: slug,
-          games_count: genre_data['games_count'],
-          image_background: genre_data['image_background'],
-          raw_data: genre_data
-        )
+        genre.assign_attributes(attributes_for(genre, genre_data))
         genre.save!
       end
+    end
+
+    def self.attributes_for(genre, genre_data)
+      attributes = {
+        name: genre_data['name'],
+        slug: genre_data['slug']
+      }
+
+      attributes[:games_count] = genre_data['games_count'] if genre_data['games_count'].present?
+      attributes[:image_background] = genre_data['image_background'] if genre_data['image_background'].present?
+
+      attributes[:raw_data] = genre_data if update_raw_data?(genre, genre_data)
+
+      attributes
+    end
+
+    def self.update_raw_data?(genre, genre_data)
+      genre.raw_data.blank? || genre_data['games_count'].present? || genre_data['image_background'].present?
     end
 
     def initialize(scope: Game.where.not(rawg_genres: nil), batch_size: DEFAULT_BATCH_SIZE)
