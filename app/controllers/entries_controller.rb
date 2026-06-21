@@ -40,7 +40,7 @@ class EntriesController < ApplicationController
   private
 
   def find_related_entries
-    base_scope = Entry.a_week_ago.where.not(id: @entry.id).recent.limit(MAX_RELATED_ENTRIES)
+    base_scope = Entry.tagger_scope.where.not(id: @entry.id)
     prioritized_tags = related_tag_groups
 
     prioritized_tags.each_with_object([]) do |tag_names, entries|

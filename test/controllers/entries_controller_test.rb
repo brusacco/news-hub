@@ -117,6 +117,33 @@ class EntriesControllerTest < ActionDispatch::IntegrationTest
     assert_equal [title_match], related_entries
   end
 
+  test 'related entries include title matches older than a week' do
+    site = Site.create!(name: 'Nintendo News Hub', url: 'https://example.com')
+    main_entry = create_entry(
+      site:,
+      title: 'Cyberpunk 2077 Redemption: CD Projekt Red Head Admits Work Remains',
+      source_url: 'https://example.com/cyberpunk-recent'
+    )
+    main_entry.tag_list = ['Cyberpunk 2077']
+    main_entry.save!
+
+    older_match = create_entry(
+      site:,
+      title: 'Cyberpunk 2077 benchmark results on Nintendo Switch 2',
+      source_url: 'https://example.com/cyberpunk-older',
+      published_at: 2.months.ago
+    )
+    older_match.tag_list = ['Cyberpunk 2077']
+    older_match.save!
+
+    controller = EntriesController.new
+    controller.instance_variable_set(:@entry, main_entry)
+
+    related_entries = controller.send(:find_related_entries)
+
+    assert_equal [older_match], related_entries
+  end
+
   private
 
   def create_entry(site:, title:, source_url:, published_at: 2.hours.ago)
