@@ -27,6 +27,13 @@ class EntryTest < ActiveSupport::TestCase
     assert_includes entry.errors[:image_url], 'must be a valid URL'
   end
 
+  test 'rejects placeholder none title' do
+    entry = build_entry(title: ' NONE ')
+
+    assert_not entry.valid?
+    assert_includes entry.errors[:title], 'cannot be a placeholder'
+  end
+
   test 'final fields fall back when ai fields are blank' do
     entry = build_entry(
       title: 'Original title',

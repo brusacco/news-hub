@@ -14,6 +14,7 @@ class Entry < ApplicationRecord
   validates :source_url, uniqueness: true
   validates :published_at, presence: true
   validate :published_at_not_in_future
+  validate :title_not_placeholder
   validate :source_url_format, if: -> { source_url.present? }
   validate :image_url_format, if: -> { image_url.present? }
 
@@ -84,6 +85,12 @@ class Entry < ApplicationRecord
     return if published_at.blank?
 
     errors.add(:published_at, 'cannot be in the future') if published_at > Time.current
+  end
+
+  def title_not_placeholder
+    return unless title.to_s.strip.casecmp('none').zero?
+
+    errors.add(:title, 'cannot be a placeholder')
   end
 
   def source_url_format
