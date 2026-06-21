@@ -7,7 +7,7 @@ class Entry < ApplicationRecord
 
   friendly_id :title, use: :slugged
 
-  acts_as_taggable_on :tags
+  acts_as_taggable_on :tags, :title_tags
   belongs_to :site
 
   validates :title, :source_url, presence: true
@@ -24,7 +24,7 @@ class Entry < ApplicationRecord
   scope :needs_ai_generation, -> { where.not(content: nil).where(ai_content: nil).order(published_at: :desc) }
   scope :tagger_scope, -> { published_since(4.years.ago).order(published_at: :desc) }
   scope :recent, -> { order(published_at: :desc) }
-  scope :with_tags, -> { includes(:tags) }
+  scope :with_tags, -> { includes(:tags, :title_tags) }
   scope :with_site, -> { includes(:site) }
   scope :matching_text, lambda { |query|
     sanitized_query = "%#{sanitize_sql_like(query.to_s.downcase)}%"
@@ -69,6 +69,13 @@ class Entry < ApplicationRecord
                            .sort_by { |tag| title_tag_priority(tag) }
 
     limit ? displayable_tags.first(limit) : displayable_tags
+  end
+
+  def display_title_tags(limit: nil)
+    sanitized_names = TagSanitizer.call(title_tags, limit:)
+
+    title_tags.select { |tag| sanitized_names.include?(TagSanitizer.normalize(tag.name)) }
+              .uniq { |tag| TagSanitizer.normalize(tag.name).downcase }
   end
 
   private

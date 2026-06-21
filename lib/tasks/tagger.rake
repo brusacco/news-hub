@@ -21,21 +21,30 @@ module TaggerTask
   end
 
   def tag_entry(entry, tag_id: nil, include_entities: true, replace: true)
-    tags = title_tags(entry, tag_id:)
-    tags += extracted_tags(entry, tag_id:)
-    tags += entity_tags(entry) if include_entities
-    tags = normalize_tags(tags)
+    title_tag_names = normalize_tags(extracted_title_tags(entry, tag_id:))
+    tags = normalize_tags(candidate_tags(entry, title_tag_names, tag_id:, include_entities:))
     return if tags.blank?
 
     apply_tags(entry, tags, replace:)
-    puts entry.source_url
-    puts entry.tag_list
-    puts '---------------------------------------------------'
+    apply_title_tags(entry, title_tag_names, replace:)
+    log_tagged_entry(entry)
 
     entry.save!
   end
 
-  def title_tags(entry, tag_id: nil)
+  def log_tagged_entry(entry)
+    puts entry.source_url
+    puts entry.tag_list
+    puts "Title tags: #{entry.title_tag_list.join(', ')}" if entry.title_tag_list.any?
+    puts '---------------------------------------------------'
+  end
+
+  def candidate_tags(entry, title_tag_names, tag_id: nil, include_entities: true)
+    tags = title_tag_names + extracted_tags(entry, tag_id:)
+    include_entities ? tags + entity_tags(entry) : tags
+  end
+
+  def extracted_title_tags(entry, tag_id: nil)
     result = WebExtractorServices::ExtractTitleTags.call(entry.id, tag_id)
     result.success? ? Array(result.data) : []
   end
@@ -55,6 +64,12 @@ module TaggerTask
 
   def apply_tags(entry, tags, replace:)
     replace ? entry.tag_list = tags : entry.tag_list.add(tags)
+  end
+
+  def apply_title_tags(entry, title_tags, replace:)
+    return if title_tags.blank?
+
+    replace ? entry.title_tag_list = title_tags : entry.title_tag_list.add(title_tags)
   end
 
   def selected_tag

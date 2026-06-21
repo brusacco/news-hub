@@ -38,6 +38,7 @@ class TaggerTaskTest < ActiveSupport::TestCase
     TaggerTask.tag_entry(entry)
 
     assert_equal 'Super Mario Galaxy', entry.reload.tag_list.first
+    assert_equal ['Super Mario Galaxy', 'Mario'], entry.title_tag_list
     assert_includes entry.tag_list, 'Bowser'
   end
 

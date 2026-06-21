@@ -52,13 +52,27 @@ class EntriesController < ApplicationController
 
   def related_tag_groups
     tags = @entry.display_tags(limit: nil)
-    title_tags, other_tags = tags.partition { |tag| title_tag?(tag) }
+    title_tags = title_related_tags(tags)
 
     [
-      sanitized_tag_names(title_tags) - TAG_BLACKLIST,
-      sanitized_tag_names(other_tags) - TAG_BLACKLIST,
-      sanitized_tag_names(tags)
-    ].compact_blank
+      { names: sanitized_tag_names(title_tags) - TAG_BLACKLIST, context: :title_tags },
+      { names: sanitized_tag_names(title_tags) - TAG_BLACKLIST, context: :tags },
+      { names: sanitized_tag_names(non_title_related_tags(tags, title_tags)) - TAG_BLACKLIST, context: :tags },
+      { names: sanitized_tag_names(tags), context: :tags }
+    ].reject { |group| group[:names].blank? }
+  end
+
+  def non_title_related_tags(tags, title_tags)
+    title_tag_keys = title_tags.map { |tag| TagSanitizer.normalize(tag.name).to_s.downcase }
+
+    tags.reject { |tag| title_tag_keys.include?(TagSanitizer.normalize(tag.name).to_s.downcase) }
+  end
+
+  def title_related_tags(tags)
+    title_tags = @entry.display_title_tags
+    return title_tags if title_tags.any?
+
+    tags.select { |tag| title_tag?(tag) }
   end
 
   def title_tag?(tag)
@@ -71,11 +85,11 @@ class EntriesController < ApplicationController
     tags.map { |tag| TagSanitizer.normalize(tag.name) }.compact
   end
 
-  def related_entries_for(scope, tag_names, excluded_ids: [])
-    return Entry.none if tag_names.blank?
+  def related_entries_for(scope, tag_group, excluded_ids: [])
+    return Entry.none if tag_group[:names].blank?
 
     scope.where.not(id: excluded_ids)
-         .tagged_with(tag_names, any: true)
+         .tagged_with(tag_group[:names], any: true, on: tag_group[:context])
          .recent
          .limit(MAX_RELATED_ENTRIES)
   end

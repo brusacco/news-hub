@@ -11,7 +11,7 @@ class EntriesControllerTest < ActionDispatch::IntegrationTest
   test 'show displays related entries even when recent unrelated entries exist' do
     site = Site.create!(name: 'Nintendo News Hub', url: 'https://example.com')
     main_entry = create_entry(site:, title: 'Pragmata passes a million sales', source_url: 'https://example.com/main')
-    main_entry.tag_list = ['Pragmata', 'Nintendo']
+    main_entry.tag_list = %w[Pragmata Nintendo]
     main_entry.save!
 
     6.times do |index|
@@ -58,6 +58,7 @@ class EntriesControllerTest < ActionDispatch::IntegrationTest
       published_at: 2.hours.ago
     )
     title_related.tag_list = ['Super Mario Galaxy']
+    title_related.title_tag_list = ['Super Mario Galaxy']
     title_related.save!
 
     other_related = create_entry(
