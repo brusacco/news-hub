@@ -51,34 +51,11 @@ class EntriesController < ApplicationController
   end
 
   def related_tag_groups
-    tags = @entry.display_tags(limit: nil)
-    title_tags = title_related_tags(tags)
+    title_tags = @entry.display_title_tags(limit: nil)
 
     [
-      { names: sanitized_tag_names(title_tags) - TAG_BLACKLIST, context: :title_tags },
-      { names: sanitized_tag_names(title_tags) - TAG_BLACKLIST, context: :tags },
-      { names: sanitized_tag_names(non_title_related_tags(tags, title_tags)) - TAG_BLACKLIST, context: :tags },
-      { names: sanitized_tag_names(tags), context: :tags }
+      { names: sanitized_tag_names(title_tags) - TAG_BLACKLIST, context: :title_tags }
     ].reject { |group| group[:names].blank? }
-  end
-
-  def non_title_related_tags(tags, title_tags)
-    title_tag_keys = title_tags.map { |tag| TagSanitizer.normalize(tag.name).to_s.downcase }
-
-    tags.reject { |tag| title_tag_keys.include?(TagSanitizer.normalize(tag.name).to_s.downcase) }
-  end
-
-  def title_related_tags(tags)
-    title_tags = @entry.display_title_tags
-    return title_tags if title_tags.any?
-
-    tags.select { |tag| title_tag?(tag) }
-  end
-
-  def title_tag?(tag)
-    normalized_name = TagSanitizer.normalize(tag.name).to_s
-
-    @entry.final_title.to_s.downcase.include?(normalized_name.downcase)
   end
 
   def sanitized_tag_names(tags)

@@ -2,6 +2,7 @@
 
 module TaggerTask
   DEFAULT_LIMIT = 100
+  MAX_RETRIES = 3
 
   module_function
 
@@ -11,25 +12,42 @@ module TaggerTask
   end
 
   def tag_entries(entries, tag_id: nil, include_entities: true, replace: true)
+    matcher_context = build_matcher_context(tag_id)
+
     entries.each do |entry|
-      tag_entry(entry, tag_id:, include_entities:, replace:)
-    rescue StandardError => e
-      puts e.message
-      sleep 1
-      retry
+      retries = 0
+
+      begin
+        tag_entry(entry, tag_id:, include_entities:, replace:, matcher_context:)
+      rescue StandardError => e
+        retries += 1
+        puts e.message
+
+        if retries <= MAX_RETRIES
+          sleep 1
+          retry
+        end
+
+        puts "Skipping entry #{entry.id} after #{MAX_RETRIES} retries"
+      end
     end
   end
 
-  def tag_entry(entry, tag_id: nil, include_entities: true, replace: true)
-    title_tag_names = normalize_tags(extracted_title_tags(entry, tag_id:))
-    tags = normalize_tags(candidate_tags(entry, title_tag_names, tag_id:, include_entities:))
-    return if tags.blank?
+  def tag_entry(entry, tag_id: nil, include_entities: true, replace: true, matcher_context: nil)
+    matcher_context ||= build_matcher_context(tag_id)
 
-    apply_tags(entry, tags, replace:)
-    apply_title_tags(entry, title_tag_names, replace:)
-    log_tagged_entry(entry)
+    title_tag_names = normalize_tags(extracted_title_tags(entry, tag_id:, matcher_context:))
+    tag_names = normalize_tags(
+      candidate_tags(entry, title_tag_names, tag_id:, include_entities:, matcher_context:)
+    )
+    return if tag_names.blank?
+
+    changed = apply_tags(entry, tag_names, replace:)
+    changed = apply_title_tags(entry, title_tag_names, replace:) || changed
+    return unless changed
 
     entry.save!
+    log_tagged_entry(entry)
   end
 
   def log_tagged_entry(entry)
@@ -39,18 +57,20 @@ module TaggerTask
     puts '---------------------------------------------------'
   end
 
-  def candidate_tags(entry, title_tag_names, tag_id: nil, include_entities: true)
-    tags = title_tag_names + extracted_tags(entry, tag_id:)
+  def candidate_tags(entry, title_tag_names, tag_id: nil, include_entities: true, matcher_context: nil)
+    tags = title_tag_names + extracted_tags(entry, tag_id:, matcher_context:)
     include_entities ? tags + entity_tags(entry) : tags
   end
 
-  def extracted_title_tags(entry, tag_id: nil)
-    result = WebExtractorServices::ExtractTitleTags.call(entry.id, tag_id)
+  def extracted_title_tags(entry, tag_id: nil, matcher_context: nil)
+    matcher_context ||= build_matcher_context(tag_id)
+    result = WebExtractorServices::ExtractTitleTags.call(entry, tag_id, **matcher_context)
     result.success? ? Array(result.data) : []
   end
 
-  def extracted_tags(entry, tag_id: nil)
-    result = WebExtractorServices::ExtractTags.call(entry.id, tag_id)
+  def extracted_tags(entry, tag_id: nil, matcher_context: nil)
+    matcher_context ||= build_matcher_context(tag_id)
+    result = WebExtractorServices::ExtractTags.call(entry, tag_id, **matcher_context)
     result.success? ? Array(result.data) : []
   end
 
@@ -63,13 +83,36 @@ module TaggerTask
   end
 
   def apply_tags(entry, tags, replace:)
-    replace ? entry.tag_list = tags : entry.tag_list.add(tags)
+    return false if tags.blank?
+
+    next_tags = replace ? tags : (entry.tag_list + tags).uniq
+    return false if entry.tag_list == next_tags
+
+    entry.tag_list = next_tags
+    true
   end
 
   def apply_title_tags(entry, title_tags, replace:)
-    return if title_tags.blank?
+    return false if title_tags.blank?
 
-    replace ? entry.title_tag_list = title_tags : entry.title_tag_list.add(title_tags)
+    next_tags = replace ? title_tags : (entry.title_tag_list + title_tags).uniq
+    return false if entry.title_tag_list == next_tags
+
+    entry.title_tag_list = next_tags
+    true
+  end
+
+  def build_matcher_context(tag_id = nil)
+    tags = matching_tags(tag_id).load
+
+    {
+      tags: tags,
+      compiled_tags: WebExtractorServices::TagMatcher.compile(tags)
+    }
+  end
+
+  def matching_tags(tag_id = nil)
+    tag_id.nil? ? Tag.all : Tag.where(id: tag_id)
   end
 
   def selected_tag

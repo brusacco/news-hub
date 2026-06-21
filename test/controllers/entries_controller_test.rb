@@ -12,6 +12,7 @@ class EntriesControllerTest < ActionDispatch::IntegrationTest
     site = Site.create!(name: 'Nintendo News Hub', url: 'https://example.com')
     main_entry = create_entry(site:, title: 'Pragmata passes a million sales', source_url: 'https://example.com/main')
     main_entry.tag_list = %w[Pragmata Nintendo]
+    main_entry.title_tag_list = ['Pragmata']
     main_entry.save!
 
     6.times do |index|
@@ -32,6 +33,7 @@ class EntriesControllerTest < ActionDispatch::IntegrationTest
       published_at: 10.minutes.ago
     )
     related.tag_list = ['Pragmata']
+    related.title_tag_list = ['Pragmata']
     related.save!
 
     get entry_url(main_entry)
@@ -41,7 +43,7 @@ class EntriesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, 'Pragmata gets new update'
   end
 
-  test 'related entries prioritize tags extracted from the title' do
+  test 'related entries only match tags extracted from the title' do
     site = Site.create!(name: 'Nintendo News Hub', url: 'https://example.com')
     main_entry = create_entry(
       site:,
@@ -49,6 +51,7 @@ class EntriesControllerTest < ActionDispatch::IntegrationTest
       source_url: 'https://example.com/main-title-priority'
     )
     main_entry.tag_list = ['Bowser', 'Super Mario Galaxy', 'Mario']
+    main_entry.title_tag_list = ['Super Mario Galaxy']
     main_entry.save!
 
     title_related = create_entry(
@@ -75,8 +78,7 @@ class EntriesControllerTest < ActionDispatch::IntegrationTest
 
     related_entries = controller.send(:find_related_entries)
 
-    assert_equal title_related, related_entries.first
-    assert_includes related_entries, other_related
+    assert_equal [title_related], related_entries
   end
 
   private

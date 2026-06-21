@@ -53,6 +53,17 @@ class TaggerTaskTest < ActiveSupport::TestCase
     assert_equal %w[Nintendo Zelda], entry.reload.tag_list.sort
   end
 
+  test 'does not save an entry when computed tags are unchanged' do
+    Tag.create!(name: 'Zelda')
+    entry = create_entry(title: 'Zelda update')
+
+    TaggerTask.tag_entry(entry)
+
+    assert_no_changes -> { entry.reload.updated_at } do
+      TaggerTask.tag_entry(entry)
+    end
+  end
+
   private
 
   def create_entry(attributes = {})

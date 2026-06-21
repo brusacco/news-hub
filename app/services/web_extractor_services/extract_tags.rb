@@ -2,14 +2,16 @@
 
 module WebExtractorServices
   class ExtractTags < ApplicationService
-    def initialize(entry_id, tag_id = nil)
-      @entry_id = entry_id
+    def initialize(entry, tag_id = nil, tags: nil, compiled_tags: nil)
+      @entry = entry
       @tag_id = tag_id
+      @tags = tags
+      @compiled_tags = compiled_tags
     end
 
     def call
-      entry = Entry.find(@entry_id)
-      tags_found = TagMatcher.call(searchable_content(entry), tags: tags)
+      entry = load_entry
+      tags_found = TagMatcher.call(searchable_content(entry), tags:, compiled_tags: @compiled_tags)
 
       if tags_found.empty?
         handle_error('No tags found')
@@ -21,6 +23,10 @@ module WebExtractorServices
     end
 
     private
+
+    def load_entry
+      @entry.is_a?(Entry) ? @entry : Entry.find(@entry)
+    end
 
     def searchable_content(entry)
       [
@@ -37,7 +43,7 @@ module WebExtractorServices
     end
 
     def tags
-      @tag_id.nil? ? Tag.all : Tag.where(id: @tag_id)
+      @tags || (@tag_id.nil? ? Tag.all : Tag.where(id: @tag_id))
     end
   end
 end
