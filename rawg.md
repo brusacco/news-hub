@@ -140,6 +140,7 @@ Optional variables:
 ```bash
 GAME='cyberpunk-2077'
 GAME_ID=123
+START_ID=3175
 BATCH_SIZE=100
 REPLACE=false
 ```
@@ -148,6 +149,7 @@ Examples:
 
 ```bash
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_screenshots GAME='cyberpunk-2077'
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_screenshots START_ID=3175
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_screenshots BATCH_SIZE=25
 ```
 
@@ -158,6 +160,8 @@ By default, reruns are safe and idempotent:
 - games are not recreated or duplicated
 
 Use `REPLACE=false` only when you want additive imports without pruning stale rows.
+
+Use `START_ID=...` to resume from a local `games.id` after an interrupted run, for example after a SQLite lock.
 
 ### `games:populate_name_tags`
 

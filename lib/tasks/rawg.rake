@@ -45,7 +45,7 @@ namespace :rawg do
 end
 
 namespace :rawg do
-  desc 'Import RAWG screenshots for imported games. Set RAWG_API_KEY and optional GAME, GAME_ID, BATCH_SIZE.'
+  desc 'Import RAWG screenshots for imported games. Set RAWG_API_KEY and optional GAME, GAME_ID, START_ID, BATCH_SIZE.'
   task import_screenshots: :environment do
     scope = Game.all
 
@@ -53,6 +53,8 @@ namespace :rawg do
       scope = scope.where(id: ENV['GAME_ID'])
     elsif ENV['GAME'].present?
       scope = scope.where(slug: ENV['GAME'])
+    elsif ENV['START_ID'].present?
+      scope = scope.where(id: ENV['START_ID'].to_i..)
     end
 
     result = RawgServices::ImportGameScreenshots.call(
