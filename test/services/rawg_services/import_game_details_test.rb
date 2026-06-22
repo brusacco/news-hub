@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'json'
 
 module RawgServices
   class ImportGameDetailsTest < ActiveSupport::TestCase
@@ -50,69 +51,57 @@ module RawgServices
       assert_includes io.string, '[1/1] cyberpunk-2077: details imported'
     end
 
+    test 'retries transient upstream failures and then imports details' do
+      game = Game.create!(rawg_id: 12_345, name: 'Cyberpunk 2077', slug: 'cyberpunk-2077')
+      http_client = SequenceHttpClient.new([
+                                             FakeResponse.new(502, {}, false),
+                                             FakeResponse.new(200, details_response, true)
+                                           ])
+      io = StringIO.new
+      delays = []
+
+      result = ImportGameDetails.call(
+        api_key: 'test-key',
+        scope: Game.where(id: game.id),
+        http_client:,
+        io:,
+        sleeper: ->(seconds) { delays << seconds }
+      )
+
+      assert result.success?
+      assert_equal 2, http_client.requests.size
+      assert_equal [1], delays
+      assert_includes(
+        io.string,
+        'Retry 1/3 for cyberpunk-2077 in 1s after RAWG game details request failed with status 502'
+      )
+      assert_equal 'CD PROJEKT RED', game.reload.primary_developer_name
+    end
+
+    test 'does not retry non-retryable failures' do
+      game = Game.create!(rawg_id: 12_345, name: 'Cyberpunk 2077', slug: 'cyberpunk-2077')
+      http_client = SequenceHttpClient.new([FakeResponse.new(404, {}, false)])
+      io = StringIO.new
+      delays = []
+
+      result = ImportGameDetails.call(
+        api_key: 'test-key',
+        scope: Game.where(id: game.id),
+        http_client:,
+        io:,
+        sleeper: ->(seconds) { delays << seconds }
+      )
+
+      assert_not result.success?
+      assert_equal 'RAWG game details request failed with status 404 for game 12345', result.error
+      assert_equal 1, http_client.requests.size
+      assert_empty delays
+    end
+
     private
 
     def details_response
-      {
-        'id' => 12_345,
-        'slug' => 'cyberpunk-2077',
-        'name' => 'Cyberpunk 2077',
-        'name_original' => 'Cyberpunk 2077: Ultimate Edition',
-        'description' => '<p>Detailed description</p>',
-        'metacritic' => 89,
-        'metacritic_platforms' => [{ 'metascore' => 90, 'platform' => { 'slug' => 'pc', 'name' => 'PC' } }],
-        'released' => '2025-06-05',
-        'tba' => false,
-        'updated' => '2026-06-22T12:00:00Z',
-        'background_image' => 'https://example.com/bg.jpg',
-        'background_image_additional' => 'https://example.com/bg-extra.jpg',
-        'website' => 'https://example.com',
-        'rating' => 4.5,
-        'rating_top' => 5,
-        'ratings' => { '5' => 100 },
-        'reactions' => { '1' => 20 },
-        'added' => 200,
-        'added_by_status' => { 'owned' => 80 },
-        'playtime' => 45,
-        'screenshots_count' => 12,
-        'movies_count' => 3,
-        'creators_count' => 4,
-        'achievements_count' => 55,
-        'parent_achievements_count' => '60',
-        'reddit_url' => 'https://www.reddit.com/r/cyberpunkgame/',
-        'reddit_name' => 'cyberpunkgame',
-        'reddit_description' => 'Cyberpunk subreddit',
-        'reddit_logo' => 'https://example.com/reddit-logo.png',
-        'reddit_count' => 400,
-        'twitch_count' => '12',
-        'youtube_count' => '33',
-        'reviews_text_count' => '7',
-        'ratings_count' => 500,
-        'suggestions_count' => 9,
-        'alternative_names' => %w[CP2077 Cyberpunk],
-        'metacritic_url' => 'https://www.metacritic.com/game/cyberpunk-2077',
-        'parents_count' => 1,
-        'additions_count' => 2,
-        'game_series_count' => 1,
-        'esrb_rating' => { 'id' => 4, 'name' => 'Mature' },
-        'developers' => [
-          {
-            'id' => 9023,
-            'name' => 'CD PROJEKT RED',
-            'slug' => 'cd-projekt-red',
-            'games_count' => 26,
-            'image_background' => 'https://example.com/cdpr.jpg'
-          },
-          {
-            'id' => 24,
-            'name' => 'CD PROJEKT',
-            'slug' => 'cd-projekt-sa',
-            'games_count' => 7,
-            'image_background' => 'https://example.com/cdp.jpg'
-          }
-        ],
-        'platforms' => [{ 'platform' => { 'id' => 7, 'name' => 'Nintendo Switch' } }]
-      }
+      @details_response ||= JSON.parse(file_fixture('rawg_game_details_response.json').read)
     end
   end
 end

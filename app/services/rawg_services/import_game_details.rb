@@ -2,8 +2,12 @@
 
 module RawgServices
   class ImportGameDetails < ApplicationService
+    include RawgServices::RetryableGameDetailsRequest
+
     API_URL = 'https://api.rawg.io/api/games/%<rawg_id>s'
     DEFAULT_BATCH_SIZE = 100
+    DEFAULT_MAX_RETRIES = 3
+    RETRYABLE_STATUS_CODES = [429, 500, 502, 503, 504].freeze
     BASE_ATTRIBUTE_KEYS = %i[
       slug name name_original description metacritic metacritic_platforms released background_image
       background_image_additional website rating rating_top ratings reactions added added_by_status playtime
@@ -23,8 +27,10 @@ module RawgServices
       @api_key = api_key.to_s
       @scope = scope
       @batch_size = options.fetch(:batch_size, DEFAULT_BATCH_SIZE).to_i
+      @max_retries = options.fetch(:max_retries, DEFAULT_MAX_RETRIES).to_i
       @http_client = options.fetch(:http_client, HTTParty)
       @io = options.fetch(:io, $stdout)
+      @sleeper = options.fetch(:sleeper, ->(seconds) { sleep(seconds) })
     end
 
     def call
@@ -57,8 +63,7 @@ module RawgServices
     end
 
     def import_game_details(game)
-      response = fetch_details(game.rawg_id)
-      validate_response!(response, game)
+      response = fetch_details_with_retry(game)
 
       game_data = response.parsed_response
 
