@@ -5,18 +5,6 @@ require 'json'
 
 module RawgServices
   class ImportGameDetailsTest < ActiveSupport::TestCase
-    FakeResponse = Struct.new(:code, :parsed_response, :success?)
-    SequenceHttpClient = Struct.new(:responses) do
-      def get(url, query:)
-        requests << { url:, query: }
-        responses[requests.size - 1]
-      end
-
-      def requests
-        @requests ||= []
-      end
-    end
-
     test 'requires an api key' do
       result = ImportGameDetails.call(api_key: nil)
 
@@ -26,7 +14,9 @@ module RawgServices
 
     test 'imports detailed fields for a game' do
       game = Game.create!(rawg_id: 12_345, name: 'Cyberpunk 2077', slug: 'cyberpunk-2077')
-      http_client = SequenceHttpClient.new([FakeResponse.new(200, details_response, true)])
+      http_client = RawgHttpClientHelpers::SequenceHttpClient.new(
+        [RawgHttpClientHelpers::FakeResponse.new(200, details_response, true)]
+      )
       io = StringIO.new
 
       result = ImportGameDetails.call(api_key: 'test-key', scope: Game.where(id: game.id), http_client:, io:)
@@ -53,10 +43,11 @@ module RawgServices
 
     test 'retries transient upstream failures and then imports details' do
       game = Game.create!(rawg_id: 12_345, name: 'Cyberpunk 2077', slug: 'cyberpunk-2077')
-      http_client = SequenceHttpClient.new([
-                                             FakeResponse.new(502, {}, false),
-                                             FakeResponse.new(200, details_response, true)
-                                           ])
+      responses = [
+        RawgHttpClientHelpers::FakeResponse.new(502, {}, false),
+        RawgHttpClientHelpers::FakeResponse.new(200, details_response, true)
+      ]
+      http_client = RawgHttpClientHelpers::SequenceHttpClient.new(responses)
       io = StringIO.new
       delays = []
 
@@ -80,7 +71,9 @@ module RawgServices
 
     test 'does not retry non-retryable failures' do
       game = Game.create!(rawg_id: 12_345, name: 'Cyberpunk 2077', slug: 'cyberpunk-2077')
-      http_client = SequenceHttpClient.new([FakeResponse.new(404, {}, false)])
+      http_client = RawgHttpClientHelpers::SequenceHttpClient.new(
+        [RawgHttpClientHelpers::FakeResponse.new(404, {}, false)]
+      )
       io = StringIO.new
       delays = []
 

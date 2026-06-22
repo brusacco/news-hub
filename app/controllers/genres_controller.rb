@@ -89,7 +89,7 @@ class GenresController < ApplicationController
   def genre_description(genre, game_count)
     count_text = game_count.positive? ? "#{game_count} " : ''
 
-    "Browse #{count_text}#{genre.name} Nintendo Switch games with release dates, images, Metacritic scores, " \
+    "Browse #{count_text}#{genre.name} Nintendo Switch games with ratings, images, Metacritic scores, " \
       'and related game genres.'
   end
 end

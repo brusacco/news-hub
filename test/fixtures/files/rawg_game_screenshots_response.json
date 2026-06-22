@@ -1,0 +1,18 @@
+{
+  "results": [
+    {
+      "id": 111,
+      "image": "https://cdn.test/1.jpg",
+      "width": 1280,
+      "height": 720,
+      "is_deleted": false
+    },
+    {
+      "id": 222,
+      "image": "https://cdn.test/2.jpg",
+      "width": 1920,
+      "height": 1080,
+      "is_deleted": false
+    }
+  ]
+}

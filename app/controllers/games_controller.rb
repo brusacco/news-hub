@@ -8,7 +8,7 @@ class GamesController < ApplicationController
   INDEX_LIMIT = 60
 
   def index
-    @pagy, @games = pagy(Game.includes(:genres, :developers).recent, limit: INDEX_LIMIT)
+    @pagy, @games = pagy(Game.includes(:genres, :developers).popular_first, limit: INDEX_LIMIT)
 
     set_default_meta_tags(
       title: 'Nintendo Switch Games - Release Dates, Ratings & Details',

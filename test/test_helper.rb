@@ -3,6 +3,7 @@
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'rails/test_help'
+require_relative 'support/rawg_http_client_helpers'
 
 module ActiveSupport
   class TestCase

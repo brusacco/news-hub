@@ -2,20 +2,32 @@
 
 module RawgServices
   class ImportGameScreenshots < ApplicationService
+    include RawgServices::RetryableGameScreenshotsRequest
+
     API_URL = 'https://api.rawg.io/api/games/%<rawg_id>s/screenshots'
     DEFAULT_BATCH_SIZE = 100
+    DEFAULT_MAX_RETRIES = 3
+    RETRYABLE_STATUS_CODES = [429, 500, 502, 503, 504].freeze
 
-    def self.sync_game!(game, api_key:, http_client: HTTParty, replace: true, io: $stdout)
-      new(api_key:, scope: Game.where(id: game.id), http_client:, replace:, io:).send(:sync_game, game)
+    # rubocop:disable Style/ArgumentsForwarding
+    def self.sync_game!(game, api_key:, **options)
+      new(
+        api_key:,
+        scope: Game.where(id: game.id),
+        **options
+      ).send(:sync_game, game)
     end
+    # rubocop:enable Style/ArgumentsForwarding
 
     def initialize(api_key:, scope: Game.all, **options)
       @api_key = api_key.to_s
       @scope = scope
       @batch_size = options.fetch(:batch_size, DEFAULT_BATCH_SIZE).to_i
+      @max_retries = options.fetch(:max_retries, DEFAULT_MAX_RETRIES).to_i
       @http_client = options.fetch(:http_client, HTTParty)
       @replace = options.fetch(:replace, true)
       @io = options.fetch(:io, $stdout)
+      @sleeper = options.fetch(:sleeper, ->(seconds) { sleep(seconds) })
     end
 
     def call
@@ -51,8 +63,7 @@ module RawgServices
     end
 
     def sync_game(game)
-      response = fetch_screenshots(game.rawg_id)
-      validate_response!(response, game)
+      response = fetch_screenshots_with_retry(game)
 
       screenshots_data = Array(response.parsed_response['results'])
       imported_ids = upsert_screenshots(game, screenshots_data)

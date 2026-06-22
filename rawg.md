@@ -53,7 +53,7 @@ The order matters:
 8. `games:link_entries` links news entries to imported games.
 9. `whenever --update-crontab` installs the cron schedule that keeps new entries linked over time.
 
-After deploying view/style changes for `/games`, `/genres`, or game detail pages, also rebuild assets:
+After deploying view/style changes for `/games`, `/genres`, `/developers`, or game detail pages, also rebuild assets:
 
 ```bash
 RAILS_ENV=production bin/rails assets:clobber assets:precompile
@@ -157,6 +157,9 @@ RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_game_details 
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_game_details START_ID=3175
 ```
 
+This importer automatically retries transient RAWG upstream failures for status `429`, `500`, `502`, `503`, and
+`504`, with a short backoff of `1s`, `2s`, and `3s` across up to 3 retry attempts.
+
 This task enriches existing `games` rows with fields that are not present in the paginated `/api/games` list response,
 including:
 
@@ -222,6 +225,9 @@ RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_screenshots S
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_screenshots BATCH_SIZE=25
 ```
 
+This importer automatically retries transient RAWG upstream failures for status `429`, `500`, `502`, `503`, and
+`504`, with a short backoff of `1s`, `2s`, and `3s` across up to 3 retry attempts.
+
 By default, reruns are safe and idempotent:
 
 - screenshots are upserted by `game_id + rawg_id`
@@ -271,6 +277,28 @@ RAILS_ENV=production bin/rails games:populate_name_tag GAME_ID=123 FORCE=true
 
 Backfills the many-to-many relation from stored `games.rawg_genres`.
 
+```bash
+RAILS_ENV=production bin/rails rawg:sync_game_genres
+```
+
+Optional variables:
+
+```bash
+BATCH_SIZE=500
+```
+
+Use this task after:
+
+- Adding the `genres` or `game_genres` tables.
+- Renaming `games.genres` to `games.rawg_genres`.
+- Importing games before genre relations existed.
+- Fixing or reimporting genre data.
+
+This task does not call RAWG.
+
+It preserves enriched genre fields. If a game payload only has `id`, `name`, and `slug`, it will not clear an existing
+`genres.image_background`, `genres.games_count`, or full `genres.raw_data`.
+
 ### `rawg:sync_game_developers`
 
 Backfills cached developer fields and the many-to-many game/developer relation from stored RAWG detail payloads.
@@ -305,28 +333,6 @@ This task reads `games.raw_data['developers']`, then updates:
 
 Use this after deploying the developer migration, or whenever old games already have RAWG detail payloads stored but
 do not yet have normalized developer records linked.
-
-```bash
-RAILS_ENV=production bin/rails rawg:sync_game_genres
-```
-
-Optional variables:
-
-```bash
-BATCH_SIZE=500
-```
-
-Use this task after:
-
-- Adding the `genres` or `game_genres` tables.
-- Renaming `games.genres` to `games.rawg_genres`.
-- Importing games before genre relations existed.
-- Fixing or reimporting genre data.
-
-This task does not call RAWG.
-
-It preserves enriched genre fields. If a game payload only has `id`, `name`, and `slug`, it will not clear an existing
-`genres.image_background`, `genres.games_count`, or full `genres.raw_data`.
 
 ### `games:link_entries`
 

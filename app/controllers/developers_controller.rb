@@ -11,7 +11,7 @@ class DevelopersController < ApplicationController
       Developer.left_joins(:game_developers)
                .select('developers.*, COUNT(game_developers.id) AS local_games_count')
                .group(:id)
-               .order(:name),
+               .order(games_count: :desc, name: :asc),
       limit: INDEX_LIMIT
     )
 
@@ -85,7 +85,7 @@ class DevelopersController < ApplicationController
   def developer_description(developer, game_count)
     count_text = game_count.positive? ? "#{game_count} " : ''
 
-    "Browse #{count_text}Nintendo Switch games by #{developer.name}, with release dates, images, ratings, genres, " \
+    "Browse #{count_text}Nintendo Switch games by #{developer.name}, with ratings, images, genres, " \
       'and related news coverage.'
   end
 end
