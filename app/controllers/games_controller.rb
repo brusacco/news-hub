@@ -63,12 +63,15 @@ class GamesController < ApplicationController
   def related_games(game)
     return Game.none if game.genre_ids.blank?
 
+    required_genre_ids = game.genre_ids.sort
+
     Game
       .joins(:game_genres)
-      .where(game_genres: { genre_id: game.genre_ids })
+      .where(game_genres: { genre_id: required_genre_ids })
       .where.not(id: game.id)
+      .group('games.id')
+      .having('COUNT(DISTINCT game_genres.genre_id) = ?', required_genre_ids.length)
       .includes(:genres)
-      .distinct
       .recent
       .limit(8)
   end
