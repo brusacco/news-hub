@@ -1,5 +1,14 @@
 <div class="bg-white">
   <% section_links = [] %>
+  <% has_game_details = @game.metacritic_url.present? ||
+    @game.website.present? ||
+    @game.esrb_rating.present? ||
+    @game.alternative_names.present? ||
+    @game.reddit_name.present? ||
+    @game.reddit_url.present? ||
+    @game.reddit_description.present? ||
+    @game.reddit_count.present? ||
+    @game.reddit_logo.present? %>
   <% section_links << ['About', 'about'] if @game.description.present? %>
   <% section_links << ['Genres', 'genres'] if @game.genres.any? %>
   <% section_links << ['Screenshots', 'screenshots'] if @game.screenshots.any? %>
@@ -227,90 +236,92 @@
           </section>
         <% end %>
 
-        <section class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-          <h2 class="text-lg font-semibold text-slate-900">Game Details</h2>
-          <dl class="mt-4 space-y-4 text-sm">
-            <% if @game.metacritic_url.present? %>
-              <div>
-                <dt class="font-medium text-slate-500">Metacritic</dt>
-                <dd class="mt-1">
-                  <a href="<%= @game.metacritic_url %>" target="_blank" rel="noopener noreferrer" class="text-[#E60012] hover:text-[#CC0010]">
-                    View Metacritic Page
-                  </a>
-                </dd>
-              </div>
-            <% end %>
+        <% if has_game_details %>
+          <section class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+            <h2 class="text-lg font-semibold text-slate-900">Game Details</h2>
+            <dl class="mt-4 space-y-4 text-sm">
+              <% if @game.metacritic_url.present? %>
+                <div>
+                  <dt class="font-medium text-slate-500">Metacritic</dt>
+                  <dd class="mt-1">
+                    <a href="<%= @game.metacritic_url %>" target="_blank" rel="noopener noreferrer" class="text-[#E60012] hover:text-[#CC0010]">
+                      View Metacritic Page
+                    </a>
+                  </dd>
+                </div>
+              <% end %>
 
-            <% if @game.website.present? %>
-              <div>
-                <dt class="font-medium text-slate-500">Website</dt>
-                <dd class="mt-1">
-                  <a href="<%= @game.website %>" target="_blank" rel="noopener noreferrer" class="break-all text-[#E60012] hover:text-[#CC0010]">
-                    <%= @game.website %>
-                  </a>
-                </dd>
-              </div>
-            <% end %>
+              <% if @game.website.present? %>
+                <div>
+                  <dt class="font-medium text-slate-500">Website</dt>
+                  <dd class="mt-1">
+                    <a href="<%= @game.website %>" target="_blank" rel="noopener noreferrer" class="break-all text-[#E60012] hover:text-[#CC0010]">
+                      <%= @game.website %>
+                    </a>
+                  </dd>
+                </div>
+              <% end %>
 
-            <% if @game.esrb_rating.present? %>
-              <div>
-                <dt class="font-medium text-slate-500">ESRB Rating</dt>
-                <dd class="mt-1 text-slate-900"><%= @game.esrb_rating['name'].presence || @game.esrb_rating['slug'].presence || 'Available' %></dd>
-              </div>
-            <% end %>
+              <% if @game.esrb_rating.present? %>
+                <div>
+                  <dt class="font-medium text-slate-500">ESRB Rating</dt>
+                  <dd class="mt-1 text-slate-900"><%= @game.esrb_rating['name'].presence || @game.esrb_rating['slug'].presence || 'Available' %></dd>
+                </div>
+              <% end %>
 
-            <% if @game.alternative_names.present? %>
-              <div>
-                <dt class="font-medium text-slate-500">Alternative Names</dt>
-                <dd class="mt-1 flex flex-wrap gap-2">
-                  <% Array(@game.alternative_names).reject(&:blank?).each do |alternative_name| %>
-                    <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200">
-                      <%= alternative_name %>
-                    </span>
-                  <% end %>
-                </dd>
-              </div>
-            <% end %>
+              <% if @game.alternative_names.present? %>
+                <div>
+                  <dt class="font-medium text-slate-500">Alternative Names</dt>
+                  <dd class="mt-1 flex flex-wrap gap-2">
+                    <% Array(@game.alternative_names).reject(&:blank?).each do |alternative_name| %>
+                      <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200">
+                        <%= alternative_name %>
+                      </span>
+                    <% end %>
+                  </dd>
+                </div>
+              <% end %>
 
-            <% if @game.reddit_name.present? || @game.reddit_url.present? || @game.reddit_description.present? || @game.reddit_count.present? %>
-              <div class="border-t border-slate-200 pt-4">
-                <dt class="font-medium text-slate-500">Reddit</dt>
-                <dd class="mt-2 space-y-2 text-slate-700">
-                  <% if @game.reddit_name.present? %>
-                    <p><span class="font-medium text-slate-900">Community:</span> <%= @game.reddit_name %></p>
-                  <% end %>
+              <% if @game.reddit_name.present? || @game.reddit_url.present? || @game.reddit_description.present? || @game.reddit_count.present? %>
+                <div class="border-t border-slate-200 pt-4">
+                  <dt class="font-medium text-slate-500">Reddit</dt>
+                  <dd class="mt-2 space-y-2 text-slate-700">
+                    <% if @game.reddit_name.present? %>
+                      <p><span class="font-medium text-slate-900">Community:</span> <%= @game.reddit_name %></p>
+                    <% end %>
 
-                  <% if @game.reddit_count.present? %>
-                    <p><span class="font-medium text-slate-900">Members:</span> <%= number_with_delimiter(@game.reddit_count) %></p>
-                  <% end %>
+                    <% if @game.reddit_count.present? %>
+                      <p><span class="font-medium text-slate-900">Members:</span> <%= number_with_delimiter(@game.reddit_count) %></p>
+                    <% end %>
 
-                  <% if @game.reddit_description.present? %>
-                    <p class="text-sm leading-6 text-slate-600"><%= @game.reddit_description %></p>
-                  <% end %>
+                    <% if @game.reddit_description.present? %>
+                      <p class="text-sm leading-6 text-slate-600"><%= @game.reddit_description %></p>
+                    <% end %>
 
-                  <% if @game.reddit_url.present? %>
-                    <p>
-                      <a href="<%= @game.reddit_url %>" target="_blank" rel="noopener noreferrer" class="text-[#E60012] hover:text-[#CC0010]">
-                        Visit Reddit Community
-                      </a>
-                    </p>
-                  <% end %>
+                    <% if @game.reddit_url.present? %>
+                      <p>
+                        <a href="<%= @game.reddit_url %>" target="_blank" rel="noopener noreferrer" class="text-[#E60012] hover:text-[#CC0010]">
+                          Visit Reddit Community
+                        </a>
+                      </p>
+                    <% end %>
 
-                  <% if @game.reddit_logo.present? %>
-                    <img
-                      src="<%= @game.reddit_logo %>"
-                      alt="<%= @game.reddit_name.presence || @game.name %> Reddit logo"
-                      class="h-10 w-10 rounded-full object-cover"
-                      loading="lazy"
-                      width="40"
-                      height="40"
-                    >
-                  <% end %>
-                </dd>
-              </div>
-            <% end %>
-          </dl>
-        </section>
+                    <% if @game.reddit_logo.present? %>
+                      <img
+                        src="<%= @game.reddit_logo %>"
+                        alt="<%= @game.reddit_name.presence || @game.name %> Reddit logo"
+                        class="h-10 w-10 rounded-full object-cover"
+                        loading="lazy"
+                        width="40"
+                        height="40"
+                      >
+                    <% end %>
+                  </dd>
+                </div>
+              <% end %>
+            </dl>
+          </section>
+        <% end %>
 
         <section class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
           <h2 class="text-lg font-semibold text-slate-900">Browse Games</h2>
