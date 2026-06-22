@@ -65,7 +65,7 @@
         <% end %>
 
         <% if @game.screenshots.any? %>
-          <section class="<%= @game.genres.any? ? 'mt-12' : '' %>">
+          <section class="<%= @game.genres.any? ? 'mt-12' : '' %>" data-controller="screenshot-lightbox">
             <h2 class="text-2xl font-bold tracking-tight text-slate-900"><%= @game.name %> Screenshots</h2>
             <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
               In-game screenshots imported from RAWG for <%= @game.name %>.
@@ -74,9 +74,12 @@
               <% @game.screenshots.each do |screenshot| %>
                 <a
                   href="<%= screenshot.image %>"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   class="group overflow-hidden rounded-xl bg-slate-100 shadow-sm ring-1 ring-slate-200"
+                  data-action="click->screenshot-lightbox#open"
+                  data-screenshot-lightbox-target="item"
+                  data-screenshot-lightbox-index="<%= screenshot.position %>"
+                  data-screenshot-lightbox-url="<%= screenshot.image %>"
+                  data-screenshot-lightbox-alt="<%= @game.name %> screenshot <%= screenshot.position + 1 %>"
                 >
                   <%= image_tag(
                     screenshot.image,
@@ -88,6 +91,60 @@
                   ) %>
                 </a>
               <% end %>
+            </div>
+
+            <div
+              class="fixed inset-0 z-[120] hidden bg-slate-950/85 p-4 sm:p-8"
+              data-screenshot-lightbox-target="overlay"
+              data-action="click->screenshot-lightbox#closeIfBackdrop"
+            >
+              <div class="flex h-full w-full items-center justify-center">
+                <button
+                  type="button"
+                  class="absolute left-4 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+                  data-action="click->screenshot-lightbox#previous"
+                  aria-label="Previous screenshot"
+                >
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  class="absolute right-4 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+                  data-action="click->screenshot-lightbox#next"
+                  aria-label="Next screenshot"
+                >
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  class="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+                  data-action="click->screenshot-lightbox#close"
+                  aria-label="Close screenshot viewer"
+                >
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </button>
+
+                <figure class="w-full max-w-6xl">
+                  <img
+                    src=""
+                    alt=""
+                    class="max-h-[80vh] w-full rounded-2xl object-contain"
+                    data-screenshot-lightbox-target="image"
+                  >
+                  <figcaption
+                    class="mt-4 text-center text-sm text-slate-200"
+                    data-screenshot-lightbox-target="caption"
+                  ></figcaption>
+                </figure>
+              </div>
             </div>
           </section>
         <% end %>
