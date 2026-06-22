@@ -2,12 +2,13 @@
 
 class GamesController < ApplicationController
   include Pagy::Backend
+  include GameMetaTagsConcern
   include MetaTagsConcern
 
   INDEX_LIMIT = 60
 
   def index
-    @pagy, @games = pagy(Game.includes(:genres).recent, limit: INDEX_LIMIT)
+    @pagy, @games = pagy(Game.includes(:genres, :developers).recent, limit: INDEX_LIMIT)
 
     set_default_meta_tags(
       title: 'Nintendo Switch Games - Release Dates, Ratings & Details',
@@ -30,7 +31,7 @@ class GamesController < ApplicationController
   end
 
   def show
-    @game = Game.includes(:genres, :screenshots).find_by!(slug: params[:id])
+    @game = Game.includes(:genres, :developers, :screenshots).find_by!(slug: params[:id])
     @related_games = related_games(@game)
     @related_entries = related_entries(@game)
 
@@ -82,33 +83,5 @@ class GamesController < ApplicationController
         .where.not(published_at: nil)
         .recent
         .limit(8)
-  end
-
-  def game_meta_title(game)
-    release_year = game.released&.year
-    title_parts = [game.name, 'Nintendo Switch Game']
-    title_parts << release_year if release_year.present?
-
-    title_parts.join(' - ')
-  end
-
-  def game_description(game)
-    details = ["#{game.name} Nintendo Switch game details"]
-    details << "release date #{formatted_release_date(game)}" if game.released.present?
-    details << "Metacritic score #{game.metacritic}" if game.metacritic.present?
-    details << "genres #{game.genres.map(&:name).to_sentence}" if game.genres.any?
-
-    "#{details.to_sentence}."
-  end
-
-  def formatted_release_date(game)
-    game.released.strftime('%B %d, %Y')
-  end
-
-  def game_keywords(game)
-    (
-      [game.name, "#{game.name} Nintendo Switch", "#{game.name} game", "#{game.name} release date"] +
-        game.genres.map { |genre| "#{genre.name} Nintendo Switch games" }
-    ).compact.join(', ')
   end
 end

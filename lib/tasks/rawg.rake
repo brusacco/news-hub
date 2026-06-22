@@ -45,6 +45,30 @@ namespace :rawg do
 end
 
 namespace :rawg do
+  desc 'Backfill game developer relations and cached fields from stored RAWG detail payloads.'
+  task sync_game_developers: :environment do
+    scope = Game.where.not(raw_data: [nil, ''])
+
+    if ENV['GAME_ID'].present?
+      scope = scope.where(id: ENV['GAME_ID'])
+    elsif ENV['GAME'].present?
+      scope = scope.where(slug: ENV['GAME'])
+    elsif ENV['START_ID'].present?
+      scope = scope.where(id: ENV['START_ID'].to_i..)
+    end
+
+    result = RawgServices::SyncGameDevelopers.call(
+      scope:,
+      batch_size: ENV.fetch('BATCH_SIZE', RawgServices::SyncGameDevelopers::DEFAULT_BATCH_SIZE)
+    )
+
+    abort "RAWG game developer sync failed: #{result.error}" unless result.success?
+
+    puts "Synced developer relations for #{result.data} games"
+  end
+end
+
+namespace :rawg do
   desc 'Import RAWG screenshots for imported games. Set RAWG_API_KEY and optional GAME, GAME_ID, START_ID, BATCH_SIZE.'
   task import_screenshots: :environment do
     scope = Game.all

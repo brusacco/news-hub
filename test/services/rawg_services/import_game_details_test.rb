@@ -41,6 +41,9 @@ module RawgServices
       assert_equal 'https://example.com', game.website
       assert_equal 'https://example.com/bg-extra.jpg', game.background_image_additional
       assert_equal 12, game.screenshots_count
+      assert_equal 2, game.developers_count
+      assert_equal 'CD PROJEKT RED', game.primary_developer_name
+      assert_equal ['CD PROJEKT', 'CD PROJEKT RED'], game.developers.order(:rawg_id).pluck(:name)
       assert_equal 'cyberpunkgame', game.reddit_name
       assert_equal %w[CP2077 Cyberpunk], game.alternative_names
       assert_equal 'Mature', game.esrb_rating['name']
@@ -92,6 +95,22 @@ module RawgServices
         'additions_count' => 2,
         'game_series_count' => 1,
         'esrb_rating' => { 'id' => 4, 'name' => 'Mature' },
+        'developers' => [
+          {
+            'id' => 9023,
+            'name' => 'CD PROJEKT RED',
+            'slug' => 'cd-projekt-red',
+            'games_count' => 26,
+            'image_background' => 'https://example.com/cdpr.jpg'
+          },
+          {
+            'id' => 24,
+            'name' => 'CD PROJEKT',
+            'slug' => 'cd-projekt-sa',
+            'games_count' => 7,
+            'image_background' => 'https://example.com/cdp.jpg'
+          }
+        ],
         'platforms' => [{ 'platform' => { 'id' => 7, 'name' => 'Nintendo Switch' } }]
       }
     end

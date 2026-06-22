@@ -19,12 +19,14 @@ class GameTest < ActiveSupport::TestCase
       slug: 'cyberpunk-2077',
       platforms: [{ 'platform' => { 'id' => 7, 'name' => 'Nintendo Switch' } }],
       rawg_genres: [{ 'id' => 4, 'name' => 'Action' }],
+      rawg_developers: [{ 'id' => 9023, 'name' => 'CD PROJEKT RED', 'slug' => 'cd-projekt-red' }],
       alternative_names: ['CP2077'],
       esrb_rating: { 'id' => 4, 'name' => 'Mature' }
     )
 
     assert_equal 'Nintendo Switch', game.reload.platforms.first.dig('platform', 'name')
     assert_equal 'Action', game.rawg_genres.first['name']
+    assert_equal 'CD PROJEKT RED', game.rawg_developers.first['name']
     assert_equal ['CP2077'], game.alternative_names
     assert_equal 'Mature', game.esrb_rating['name']
   end
@@ -36,6 +38,15 @@ class GameTest < ActiveSupport::TestCase
     game.genres << genre
 
     assert_equal ['Action'], game.reload.genres.pluck(:name)
+  end
+
+  test 'has many developers' do
+    game = Game.create!(rawg_id: 1, name: 'Cyberpunk 2077', slug: 'cyberpunk-2077')
+    developer = Developer.create!(rawg_id: 9023, name: 'CD PROJEKT RED', slug: 'cd-projekt-red')
+
+    game.developers << developer
+
+    assert_equal ['CD PROJEKT RED'], game.reload.developers.pluck(:name)
   end
 
   test 'uses slug as route param' do

@@ -10,6 +10,7 @@
     @game.reddit_count.present? ||
     @game.reddit_logo.present? %>
   <% section_links << ['About', 'about'] if @game.description.present? %>
+  <% section_links << ['Developers', 'developers'] if @game.developers.any? %>
   <% section_links << ['Genres', 'genres'] if @game.genres.any? %>
   <% section_links << ['Screenshots', 'screenshots'] if @game.screenshots.any? %>
   <% section_links << ['More Games Like This', 'related-games'] if @related_games.any? %>
@@ -94,8 +95,23 @@
           </section>
         <% end %>
 
+        <% if @game.developers.any? %>
+          <section id="developers" class="<%= @game.description.present? ? 'mt-12' : '' %> scroll-mt-28 border-t border-slate-200 pt-8">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E60012]">Studios</p>
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900"><%= @game.name %> Developers</h2>
+            <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
+              Explore more Nintendo Switch games made by the developers behind <%= @game.name %>.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-3">
+              <% @game.developers.each do |developer| %>
+                <%= link_to developer.name, developer_path(developer), class: "inline-flex items-center rounded-full bg-[#FFE5E7] px-4 py-2 text-sm font-medium text-[#E60012] ring-1 ring-inset ring-[#E60012]/20 transition-colors hover:bg-[#FFCCCF]" %>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
+
         <% if @game.genres.any? %>
-          <section id="genres" class="<%= @game.description.present? ? 'mt-12' : '' %> scroll-mt-28 border-t border-slate-200 pt-8">
+          <section id="genres" class="<%= (@game.description.present? || @game.developers.any?) ? 'mt-12' : '' %> scroll-mt-28 border-t border-slate-200 pt-8">
             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E60012]">Categories</p>
             <h2 class="text-2xl font-bold tracking-tight text-slate-900"><%= @game.name %> Genres</h2>
             <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
@@ -110,7 +126,7 @@
         <% end %>
 
         <% if @game.screenshots.any? %>
-          <section id="screenshots" class="<%= @game.genres.any? ? 'mt-12' : '' %> scroll-mt-28 border-t border-slate-200 pt-8" data-controller="screenshot-lightbox">
+          <section id="screenshots" class="<%= (@game.genres.any? || @game.developers.any?) ? 'mt-12' : '' %> scroll-mt-28 border-t border-slate-200 pt-8" data-controller="screenshot-lightbox">
             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E60012]">Gallery</p>
             <h2 class="text-2xl font-bold tracking-tight text-slate-900"><%= @game.name %> Screenshots</h2>
             <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
@@ -328,8 +344,12 @@
           <div class="mt-4 flex flex-col gap-3">
             <%= link_to 'All Nintendo Switch Games', games_path, class: "text-sm font-medium text-[#E60012] hover:text-[#CC0010]" %>
             <%= link_to 'Nintendo Switch Genres', genres_path, class: "text-sm font-medium text-[#E60012] hover:text-[#CC0010]" %>
+            <%= link_to 'Nintendo Switch Developers', developers_path, class: "text-sm font-medium text-[#E60012] hover:text-[#CC0010]" %>
             <% @game.genres.each do |genre| %>
               <%= link_to "#{genre.name} Games", genre_path(genre), class: "text-sm font-medium text-[#E60012] hover:text-[#CC0010]" %>
+            <% end %>
+            <% @game.developers.each do |developer| %>
+              <%= link_to "#{developer.name} Games", developer_path(developer), class: "text-sm font-medium text-[#E60012] hover:text-[#CC0010]" %>
             <% end %>
           </div>
         </section>

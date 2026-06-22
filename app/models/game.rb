@@ -5,12 +5,15 @@ class Game < ApplicationRecord
 
   has_many :game_genres, dependent: :destroy
   has_many :genres, through: :game_genres
+  has_many :game_developers, dependent: :destroy
+  has_many :developers, through: :game_developers
   has_many :entry_games, dependent: :destroy
   has_many :entries, through: :entry_games
   has_many :screenshots, -> { ordered }, dependent: :destroy, inverse_of: :game
 
   serialize :platforms, coder: JSON
   serialize :rawg_genres, coder: JSON
+  serialize :rawg_developers, coder: JSON
   serialize :stores, coder: JSON
   serialize :metacritic_platforms, coder: JSON
   serialize :ratings, coder: JSON
@@ -43,13 +46,14 @@ class Game < ApplicationRecord
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[achievements_count added additions_count background_image background_image_additional created_at creators_count
-       description game_series_count id id_value metacritic metacritic_url movies_count name name_original
-       parent_achievements_count parents_count playtime rating rating_top ratings_count rawg_id rawg_updated_at
-       reddit_count reddit_logo reddit_name reddit_url released reviews_text_count screenshots_count slug
-       suggestions_count tba twitch_count updated_at website youtube_count]
+       description developers_count game_series_count id id_value metacritic metacritic_url movies_count name
+       name_original parent_achievements_count parents_count playtime primary_developer_name rating rating_top
+       ratings_count rawg_id rawg_updated_at reddit_count reddit_logo reddit_name reddit_url released
+       reviews_text_count screenshots_count slug suggestions_count tba twitch_count updated_at website
+       youtube_count]
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    %w[entries entry_games game_genres genres name_tags screenshots]
+    %w[developers entries entry_games game_developers game_genres genres name_tags screenshots]
   end
 end

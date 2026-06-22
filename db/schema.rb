@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_06_22_020000) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_22_030000) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -35,6 +35,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_22_020000) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
+  create_table "developers", force: :cascade do |t|
+    t.integer "rawg_id", null: false
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.integer "games_count"
+    t.string "image_background"
+    t.text "raw_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rawg_id"], name: "index_developers_on_rawg_id", unique: true
+    t.index ["slug"], name: "index_developers_on_slug", unique: true
   end
 
   create_table "entries", force: :cascade do |t|
@@ -97,6 +110,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_22_020000) do
     t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
   end
 
+  create_table "game_developers", force: :cascade do |t|
+    t.integer "game_id", null: false
+    t.integer "developer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["developer_id"], name: "index_game_developers_on_developer_id"
+    t.index ["game_id", "developer_id"], name: "index_game_developers_on_game_id_and_developer_id", unique: true
+    t.index ["game_id"], name: "index_game_developers_on_game_id"
+  end
+
   create_table "game_genres", force: :cascade do |t|
     t.integer "game_id", null: false
     t.integer "genre_id", null: false
@@ -155,6 +178,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_22_020000) do
     t.integer "additions_count"
     t.integer "game_series_count"
     t.text "esrb_rating"
+    t.text "rawg_developers"
+    t.string "primary_developer_name"
+    t.integer "developers_count", default: 0, null: false
     t.index ["rawg_id"], name: "index_games_on_rawg_id", unique: true
     t.index ["released"], name: "index_games_on_released"
     t.index ["slug"], name: "index_games_on_slug", unique: true
@@ -249,6 +275,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_22_020000) do
   add_foreign_key "entries", "sites"
   add_foreign_key "entry_games", "entries"
   add_foreign_key "entry_games", "games"
+  add_foreign_key "game_developers", "developers"
+  add_foreign_key "game_developers", "games"
   add_foreign_key "game_genres", "games"
   add_foreign_key "game_genres", "genres"
   add_foreign_key "screenshots", "games"

@@ -60,7 +60,10 @@ module RawgServices
       response = fetch_details(game.rawg_id)
       validate_response!(response, game)
 
-      game.update!(attributes_for(response.parsed_response))
+      game_data = response.parsed_response
+
+      game.update!(attributes_for(game_data))
+      SyncGameDevelopers.sync_game!(game, game_data['developers'])
     end
 
     def validate_response!(response, game)
