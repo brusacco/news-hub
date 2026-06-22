@@ -39,27 +39,16 @@
     </header>
     <!-- Featured Image -->
     <div class="mb-12 overflow-hidden rounded-2xl bg-slate-100" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
-      <% if @entry.site.id == 11 %>
-        <img 
-          src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg" 
-          alt="<%= @entry.final_title %> - Featured Image" 
-          class="h-full w-full object-cover"
-          loading="eager"
-          width="1200"
-          height="675"
-          itemprop="url"
-        >
-      <% else %>
-        <img 
-          src="<%= @entry.image_url %>" 
-          alt="<%= @entry.final_title %> - Featured Image" 
-          class="h-full w-full object-cover"
-          loading="eager"
-          width="1200"
-          height="675"
-          itemprop="url"
-        >
-      <% end %>
+      <% entry_image_url = @entry.site.id == 11 ? default_image_url : @entry.image_url.presence || default_image_url %>
+      <img
+        src="<%= entry_image_url %>"
+        alt="<%= @entry.final_title %> - Featured Image"
+        class="h-full w-full object-cover"
+        loading="eager"
+        width="1200"
+        height="675"
+        itemprop="url"
+      >
       <meta itemprop="width" content="1200">
       <meta itemprop="height" content="675">
     </div>

@@ -77,6 +77,17 @@
     <% end %>
   ],
   <% end %>
+  <% if defined?(@games) && @games.any? %>
+  "mentions": [
+    <% @games.each_with_index do |game, index| %>
+    {
+      "@type": "VideoGame",
+      "name": "<%= j(game.name) %>",
+      "url": "<%= game_url(game) %>"
+    }<%= index < @games.length - 1 ? ',' : '' %>
+    <% end %>
+  ],
+  <% end %>
   "articleSection": "<%= @entry.category || 'Gaming News' %>",
   "inLanguage": "en-US",
   "isAccessibleForFree": true,
@@ -103,6 +114,14 @@
       datePublished: @game.released&.iso8601,
       gamePlatform: Array(@game.platforms).filter_map { |platform_data| platform_data.dig('platform', 'name') },
       genre: @game.genres.map(&:name),
+      sameAs: "https://rawg.io/games/#{@game.slug}",
+      subjectOf: @related_entries&.map do |entry|
+        {
+          '@type': 'NewsArticle',
+          headline: entry.final_title,
+          url: entry_url(entry)
+        }
+      end,
       applicationCategory: 'Game',
       inLanguage: 'en-US'
     }.compact.to_json
@@ -253,7 +272,17 @@
   "mainEntity": {
     "@type": "ItemList",
     "name": "<%= j(@tag.name) %> Articles",
-    "description": "Collection of articles about <%= j(@tag.name) %>"
+    "description": "Collection of articles about <%= j(@tag.name) %>",
+    "itemListElement": [
+      <% @entries.each_with_index do |entry, index| %>
+      {
+        "@type": "ListItem",
+        "position": <%= index + 1 %>,
+        "url": "<%= entry_url(entry) %>",
+        "name": "<%= j(entry.final_title) %>"
+      }<%= index < @entries.length - 1 ? ',' : '' %>
+      <% end %>
+    ]
   }
 }
 </script>
@@ -322,7 +351,15 @@
       mainEntity: {
         '@type': 'ItemList',
         name: "#{@genre.name} Nintendo Switch Games",
-        numberOfItems: @pagy&.count
+        numberOfItems: @pagy&.count,
+        itemListElement: @games&.each_with_index&.map do |game, index|
+          {
+            '@type': 'ListItem',
+            position: index + 1,
+            url: game_url(game),
+            name: game.name
+          }
+        end
       }
     }.to_json
   )

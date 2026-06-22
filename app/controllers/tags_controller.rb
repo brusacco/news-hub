@@ -35,40 +35,18 @@ class TagsController < ApplicationController
     @tag = Tag.friendly.find(params[:id])
     @entries = entries_for_tag(@tag)
     @pagy, @entries = pagy(@entries, limit: 60)
+    article_count = @pagy.count
 
     # SEO-optimized title with keyword at the beginning
     title = optimized_title("#{@tag.name} News - Latest Updates & Articles | Nintendo News Hub")
-
-    # Rich description with keyword variations and context
-    article_count = @tag.taggings_count || 0
-    article_text = if article_count.positive?
-                     "#{ActionController::Base.helpers.number_with_delimiter(article_count)} "
-                   else
-                     ''
-                   end
-    description = optimized_description(
-      "Stay updated with the latest #{@tag.name} news, updates, and articles. " \
-      "Discover #{article_text}articles about #{@tag.name} on Nintendo News Hub. " \
-      "Your trusted source for #{@tag.name} gaming news, releases, and insights."
-    )
-
-    # Expanded keywords with semantic variations
-    keywords = [
-      @tag.name,
-      "#{@tag.name} news",
-      "#{@tag.name} updates",
-      "#{@tag.name} articles",
-      "Nintendo #{@tag.name}",
-      "#{@tag.name} Nintendo",
-      "latest #{@tag.name}",
-      "#{@tag.name} gaming news"
-    ].join(', ')
+    description = tag_description(@tag, article_count)
 
     set_default_meta_tags(
       title: title,
       description: description,
-      keywords: keywords,
+      keywords: tag_keywords(@tag),
       canonical: tag_url(@tag),
+      robots: article_count.positive? ? 'index, follow' : 'noindex, follow',
       og: {
         title: title,
         description: description,
@@ -84,6 +62,33 @@ class TagsController < ApplicationController
   end
 
   private
+
+  def tag_description(tag, article_count)
+    article_text = if article_count.positive?
+                     "#{ActionController::Base.helpers.number_with_delimiter(article_count)} "
+                   else
+                     ''
+                   end
+
+    optimized_description(
+      "Stay updated with the latest #{tag.name} news, updates, and articles. " \
+      "Discover #{article_text}articles about #{tag.name} on Nintendo News Hub. " \
+      "Your trusted source for #{tag.name} gaming news, releases, and insights."
+    )
+  end
+
+  def tag_keywords(tag)
+    [
+      tag.name,
+      "#{tag.name} news",
+      "#{tag.name} updates",
+      "#{tag.name} articles",
+      "Nintendo #{tag.name}",
+      "#{tag.name} Nintendo",
+      "latest #{tag.name}",
+      "#{tag.name} gaming news"
+    ].join(', ')
+  end
 
   def entries_for_tag(tag)
     Entry

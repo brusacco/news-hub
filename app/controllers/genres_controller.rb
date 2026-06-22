@@ -34,29 +34,44 @@ class GenresController < ApplicationController
     @genre = Genre.find_by!(slug: params[:id])
     @pagy, @games = pagy(@genre.games.includes(:genres).recent, limit: INDEX_LIMIT)
 
-    title = "#{@genre.name} Nintendo Switch Games - Releases, Ratings & Details"
-    description = genre_description(@genre, @pagy.count)
-
-    set_default_meta_tags(
-      title: title,
-      description: description,
-      keywords: "#{@genre.name} Nintendo Switch games, #{@genre.name} games, Nintendo game genres",
-      canonical: genre_url(@genre),
-      og: {
-        title: title,
-        description: description,
-        type: 'website',
-        url: genre_url(@genre)
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title: title,
-        description: description
-      }
-    )
+    set_default_meta_tags(genre_meta_tags(@genre, @pagy.count))
   end
 
   private
+
+  def genre_meta_tags(genre, game_count)
+    title = "#{genre.name} Nintendo Switch Games - Releases, Ratings & Details"
+    description = genre_description(genre, game_count)
+
+    {
+      title: title,
+      description: description,
+      keywords: "#{genre.name} Nintendo Switch games, #{genre.name} games, Nintendo game genres",
+      canonical: genre_url(genre),
+      robots: game_count.positive? ? 'index, follow' : 'noindex, follow',
+      og: genre_open_graph_tags(genre, title, description),
+      twitter: genre_twitter_tags(genre, title, description)
+    }
+  end
+
+  def genre_open_graph_tags(genre, title, description)
+    {
+      title: title,
+      description: description,
+      type: 'website',
+      url: genre_url(genre),
+      image: genre.image_background
+    }
+  end
+
+  def genre_twitter_tags(genre, title, description)
+    {
+      card: 'summary_large_image',
+      title: title,
+      description: description,
+      image: genre.image_background
+    }
+  end
 
   def genre_description(genre, game_count)
     count_text = game_count.positive? ? "#{game_count} " : ''

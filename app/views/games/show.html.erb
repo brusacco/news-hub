@@ -1,4 +1,8 @@
 <div class="bg-white">
+  <div class="mx-auto max-w-7xl px-6 pt-12 lg:px-8">
+    <%= render 'layouts/breadcrumbs' %>
+  </div>
+
   <section class="relative isolate overflow-hidden bg-slate-950">
     <% if @game.background_image.present? %>
       <%= image_tag(

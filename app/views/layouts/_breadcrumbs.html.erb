@@ -45,5 +45,60 @@
       </li>
     </ol>
   </nav>
+<% elsif defined?(@game) && @game.present? %>
+  <nav aria-label="Breadcrumb" class="mb-6">
+    <ol class="flex items-center space-x-2 text-sm text-slate-600">
+      <li>
+        <%= link_to root_path, class: "hover:text-slate-900 transition-colors" do %>
+          Home
+        <% end %>
+      </li>
+      <li>
+        <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </li>
+      <li>
+        <%= link_to games_path, class: "hover:text-slate-900 transition-colors" do %>
+          Games
+        <% end %>
+      </li>
+      <li>
+        <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </li>
+      <li class="text-slate-900 font-medium" aria-current="page">
+        <%= truncate(@game.name, length: 50) %>
+      </li>
+    </ol>
+  </nav>
+<% elsif defined?(@genre) && @genre.present? %>
+  <nav aria-label="Breadcrumb" class="mb-6">
+    <ol class="flex items-center space-x-2 text-sm text-slate-600">
+      <li>
+        <%= link_to root_path, class: "hover:text-slate-900 transition-colors" do %>
+          Home
+        <% end %>
+      </li>
+      <li>
+        <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </li>
+      <li>
+        <%= link_to genres_path, class: "hover:text-slate-900 transition-colors" do %>
+          Genres
+        <% end %>
+      </li>
+      <li>
+        <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </li>
+      <li class="text-slate-900 font-medium" aria-current="page">
+        <%= @genre.name %>
+      </li>
+    </ol>
+  </nav>
 <% end %>
-
