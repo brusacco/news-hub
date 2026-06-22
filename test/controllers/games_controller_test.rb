@@ -33,4 +33,36 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_includes related_games, superset_match
     assert_not_includes related_games, partial_match
   end
+
+  test 'related games are ordered by popularity first' do
+    action = Genre.create!(rawg_id: 4, name: 'Action', slug: 'action')
+    rpg = Genre.create!(rawg_id: 5, name: 'RPG', slug: 'rpg')
+
+    source_game = Game.create!(rawg_id: 100, name: 'Source Game', slug: 'source-game')
+    lower_popularity = Game.create!(
+      rawg_id: 101,
+      name: 'Lower Popularity',
+      slug: 'lower-popularity',
+      ratings_count: 100,
+      rating: 4.2,
+      metacritic: 80
+    )
+    higher_popularity = Game.create!(
+      rawg_id: 102,
+      name: 'Higher Popularity',
+      slug: 'higher-popularity',
+      ratings_count: 500,
+      rating: 4.0,
+      metacritic: 70
+    )
+
+    source_game.genres << [action, rpg]
+    lower_popularity.genres << [action, rpg]
+    higher_popularity.genres << [action, rpg]
+
+    controller = GamesController.new
+    related_games = controller.send(:related_games, source_game).to_a
+
+    assert_equal [higher_popularity, lower_popularity], related_games.first(2)
+  end
 end

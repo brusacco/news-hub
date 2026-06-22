@@ -72,7 +72,7 @@ class GamesController < ApplicationController
       .group('games.id')
       .having('COUNT(DISTINCT game_genres.genre_id) = ?', required_genre_ids.length)
       .includes(:genres)
-      .recent
+      .order(ratings_count: :desc, rating: :desc, metacritic: :desc, released: :desc, name: :asc)
       .limit(8)
   end
 
