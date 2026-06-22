@@ -9,16 +9,16 @@
         <div class="hidden md:ml-10 md:block">
           <div class="flex items-center space-x-1">
             <%= link_to root_path, class: "rounded-lg px-3 py-2 text-sm font-medium transition-colors #{request.path == root_path ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
-              Home
-            <% end %>
-            <%= link_to tags_path, class: "rounded-lg px-3 py-2 text-sm font-medium transition-colors #{request.path.include?('/tags') ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
-              Topics
+              Latest News
             <% end %>
             <%= link_to games_path, class: "rounded-lg px-3 py-2 text-sm font-medium transition-colors #{request.path.include?('/games') ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
               Games
             <% end %>
             <%= link_to genres_path, class: "rounded-lg px-3 py-2 text-sm font-medium transition-colors #{request.path.include?('/genres') ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
               Genres
+            <% end %>
+            <%= link_to tags_path, class: "rounded-lg px-3 py-2 text-sm font-medium transition-colors #{request.path.include?('/tags') ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
+              Topics
             <% end %>
           </div>
         </div>
@@ -117,16 +117,16 @@
 
     <div class="space-y-1 px-2 pb-3 pt-1">
       <%= link_to root_path, class: "block rounded-lg px-3 py-2 text-base font-medium transition-colors #{request.path == root_path ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
-        Home
-      <% end %>
-      <%= link_to tags_path, class: "block rounded-lg px-3 py-2 text-base font-medium transition-colors #{request.path.include?('/tags') ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
-        Topics
+        Latest News
       <% end %>
       <%= link_to games_path, class: "block rounded-lg px-3 py-2 text-base font-medium transition-colors #{request.path.include?('/games') ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
         Games
       <% end %>
       <%= link_to genres_path, class: "block rounded-lg px-3 py-2 text-base font-medium transition-colors #{request.path.include?('/genres') ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
         Genres
+      <% end %>
+      <%= link_to tags_path, class: "block rounded-lg px-3 py-2 text-base font-medium transition-colors #{request.path.include?('/tags') ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
+        Topics
       <% end %>
     </div>
   </div>
