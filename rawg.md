@@ -30,6 +30,7 @@ Run this after deploying RAWG migrations, or when rebuilding RAWG data:
 RAILS_ENV=production bin/rails db:migrate
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_genres
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_games
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_game_details
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_screenshots
 RAILS_ENV=production bin/rails rawg:sync_game_genres
 RAILS_ENV=production bin/rails games:populate_name_tags LIMIT=all
@@ -41,11 +42,12 @@ The order matters:
 
 1. `rawg:import_genres` imports full genre records, including `image_background`.
 2. `rawg:import_games` imports Nintendo Switch games and links them to genres from the game payload.
-3. `rawg:import_screenshots` imports per-game screenshot galleries from RAWG.
-4. `rawg:sync_game_genres` backfills or repairs `game_genres` from stored `games.rawg_genres`.
-5. `games:populate_name_tags` fills `Game` name tags used by the news/game matcher.
-6. `games:link_entries` links news entries to imported games.
-7. `whenever --update-crontab` installs the cron schedule that keeps new entries linked over time.
+3. `rawg:import_game_details` enriches each imported game with the full RAWG detail payload.
+4. `rawg:import_screenshots` imports per-game screenshot galleries from RAWG.
+5. `rawg:sync_game_genres` backfills or repairs `game_genres` from stored `games.rawg_genres`.
+6. `games:populate_name_tags` fills `Game` name tags used by the news/game matcher.
+7. `games:link_entries` links news entries to imported games.
+8. `whenever --update-crontab` installs the cron schedule that keeps new entries linked over time.
 
 After deploying view/style changes for `/games`, `/genres`, or game detail pages, also rebuild assets:
 
@@ -126,6 +128,61 @@ Newly imported games also get a default `name_tags` value when the game has no n
 
 This task does not fetch gallery screenshots. RAWG exposes screenshots through one request per game, so screenshot
 sync runs separately to keep the core game import fast and predictable.
+
+### `rawg:import_game_details`
+
+Imports full detail payloads for already imported games from `/api/games/:rawg_id`.
+
+```bash
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_game_details
+```
+
+Optional variables:
+
+```bash
+GAME='cyberpunk-2077'
+GAME_ID=123
+START_ID=3175
+BATCH_SIZE=100
+```
+
+Examples:
+
+```bash
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_game_details GAME='cyberpunk-2077'
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_game_details START_ID=3175
+```
+
+This task enriches existing `games` rows with fields that are not present in the paginated `/api/games` list response,
+including:
+
+- `name_original`
+- `description`
+- `background_image_additional`
+- `website`
+- `metacritic_platforms`
+- `ratings`
+- `reactions`
+- `added`
+- `added_by_status`
+- `screenshots_count`
+- `movies_count`
+- `creators_count`
+- `achievements_count`
+- `parent_achievements_count`
+- `reddit_*`
+- `twitch_count`
+- `youtube_count`
+- `reviews_text_count`
+- `suggestions_count`
+- `alternative_names`
+- `metacritic_url`
+- `parents_count`
+- `additions_count`
+- `game_series_count`
+- `esrb_rating`
+
+Reruns are safe because games are updated in place by existing `games.id` / `rawg_id`, not recreated.
 
 ### `rawg:import_screenshots`
 

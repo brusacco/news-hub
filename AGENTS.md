@@ -52,6 +52,7 @@ Guidance for AI coding agents working in this Rails application.
 - Important game tasks:
   - `rawg:import_genres`
   - `rawg:import_games`
+  - `rawg:import_game_details`
   - `rawg:import_screenshots`
   - `rawg:sync_game_genres`
   - `games:populate_name_tags`

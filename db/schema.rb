@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_06_22_010000) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_22_020000) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -126,6 +126,35 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_22_010000) do
     t.text "raw_data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name_original"
+    t.text "description"
+    t.text "metacritic_platforms"
+    t.string "background_image_additional"
+    t.string "website"
+    t.text "ratings"
+    t.text "reactions"
+    t.integer "added"
+    t.text "added_by_status"
+    t.integer "screenshots_count"
+    t.integer "movies_count"
+    t.integer "creators_count"
+    t.integer "achievements_count"
+    t.string "parent_achievements_count"
+    t.string "reddit_url"
+    t.string "reddit_name"
+    t.text "reddit_description"
+    t.string "reddit_logo"
+    t.integer "reddit_count"
+    t.string "twitch_count"
+    t.string "youtube_count"
+    t.string "reviews_text_count"
+    t.integer "suggestions_count"
+    t.text "alternative_names"
+    t.string "metacritic_url"
+    t.integer "parents_count"
+    t.integer "additions_count"
+    t.integer "game_series_count"
+    t.text "esrb_rating"
     t.index ["rawg_id"], name: "index_games_on_rawg_id", unique: true
     t.index ["released"], name: "index_games_on_released"
     t.index ["slug"], name: "index_games_on_slug", unique: true

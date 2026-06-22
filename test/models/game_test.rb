@@ -18,11 +18,15 @@ class GameTest < ActiveSupport::TestCase
       name: 'Cyberpunk 2077',
       slug: 'cyberpunk-2077',
       platforms: [{ 'platform' => { 'id' => 7, 'name' => 'Nintendo Switch' } }],
-      rawg_genres: [{ 'id' => 4, 'name' => 'Action' }]
+      rawg_genres: [{ 'id' => 4, 'name' => 'Action' }],
+      alternative_names: ['CP2077'],
+      esrb_rating: { 'id' => 4, 'name' => 'Mature' }
     )
 
     assert_equal 'Nintendo Switch', game.reload.platforms.first.dig('platform', 'name')
     assert_equal 'Action', game.rawg_genres.first['name']
+    assert_equal ['CP2077'], game.alternative_names
+    assert_equal 'Mature', game.esrb_rating['name']
   end
 
   test 'has many genres' do
