@@ -2,9 +2,9 @@
 
 This app imports Nintendo Switch game metadata from the RAWG API.
 
-The RAWG integration stores games in `games`, genres in `genres`, game-to-genre links in `game_genres`, and
-news-to-game links in `entry_games`. RAWG payloads are also kept in JSON columns so we can backfill relations or add
-fields later without re-fetching everything.
+The RAWG integration stores games in `games`, screenshots in `screenshots`, genres in `genres`, game-to-genre links
+in `game_genres`, and news-to-game links in `entry_games`. RAWG payloads are also kept in JSON columns so we can
+backfill relations or add fields later without re-fetching everything.
 
 ## Environment
 
@@ -30,6 +30,7 @@ Run this after deploying RAWG migrations, or when rebuilding RAWG data:
 RAILS_ENV=production bin/rails db:migrate
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_genres
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_games
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_screenshots
 RAILS_ENV=production bin/rails rawg:sync_game_genres
 RAILS_ENV=production bin/rails games:populate_name_tags LIMIT=all
 RAILS_ENV=production bin/rails games:link_entries LIMIT=all
@@ -40,10 +41,11 @@ The order matters:
 
 1. `rawg:import_genres` imports full genre records, including `image_background`.
 2. `rawg:import_games` imports Nintendo Switch games and links them to genres from the game payload.
-3. `rawg:sync_game_genres` backfills or repairs `game_genres` from stored `games.rawg_genres`.
-4. `games:populate_name_tags` fills `Game` name tags used by the news/game matcher.
-5. `games:link_entries` links news entries to imported games.
-6. `whenever --update-crontab` installs the cron schedule that keeps new entries linked over time.
+3. `rawg:import_screenshots` imports per-game screenshot galleries from RAWG.
+4. `rawg:sync_game_genres` backfills or repairs `game_genres` from stored `games.rawg_genres`.
+5. `games:populate_name_tags` fills `Game` name tags used by the news/game matcher.
+6. `games:link_entries` links news entries to imported games.
+7. `whenever --update-crontab` installs the cron schedule that keeps new entries linked over time.
 
 After deploying view/style changes for `/games`, `/genres`, or game detail pages, also rebuild assets:
 
@@ -121,6 +123,41 @@ It also stores the genre payload in `games.rawg_genres` and syncs `game_genres` 
 
 Newly imported games also get a default `name_tags` value when the game has no name tags yet. This uses
 `Game.default_name_tag_for(game.name)` and preserves manually curated name tags.
+
+This task does not fetch gallery screenshots. RAWG exposes screenshots through one request per game, so screenshot
+sync runs separately to keep the core game import fast and predictable.
+
+### `rawg:import_screenshots`
+
+Imports screenshots for already imported games from `/api/games/:rawg_id/screenshots`.
+
+```bash
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_screenshots
+```
+
+Optional variables:
+
+```bash
+GAME='cyberpunk-2077'
+GAME_ID=123
+BATCH_SIZE=100
+REPLACE=false
+```
+
+Examples:
+
+```bash
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_screenshots GAME='cyberpunk-2077'
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_screenshots BATCH_SIZE=25
+```
+
+By default, reruns are safe and idempotent:
+
+- screenshots are upserted by `game_id + rawg_id`
+- screenshots missing from the latest RAWG response are removed for that game
+- games are not recreated or duplicated
+
+Use `REPLACE=false` only when you want additive imports without pruning stale rows.
 
 ### `games:populate_name_tags`
 

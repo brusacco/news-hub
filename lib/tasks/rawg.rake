@@ -43,3 +43,27 @@ namespace :rawg do
     puts "Synced genre relations for #{result.data} games"
   end
 end
+
+namespace :rawg do
+  desc 'Import RAWG screenshots for imported games. Set RAWG_API_KEY and optional GAME, GAME_ID, BATCH_SIZE.'
+  task import_screenshots: :environment do
+    scope = Game.all
+
+    if ENV['GAME_ID'].present?
+      scope = scope.where(id: ENV['GAME_ID'])
+    elsif ENV['GAME'].present?
+      scope = scope.where(slug: ENV['GAME'])
+    end
+
+    result = RawgServices::ImportGameScreenshots.call(
+      api_key: ENV.fetch('RAWG_API_KEY', nil),
+      scope:,
+      batch_size: ENV.fetch('BATCH_SIZE', RawgServices::ImportGameScreenshots::DEFAULT_BATCH_SIZE),
+      replace: ENV.fetch('REPLACE', 'true') != 'false'
+    )
+
+    abort "RAWG screenshots import failed: #{result.error}" unless result.success?
+
+    puts "Imported #{result.data} screenshots from RAWG"
+  end
+end

@@ -53,4 +53,12 @@ class GameTest < ActiveSupport::TestCase
 
     assert_equal ['Cyberpunk 2077'], game.reload.name_tag_list
   end
+
+  test 'has many screenshots' do
+    game = Game.create!(rawg_id: 1, name: 'Cyberpunk 2077', slug: 'cyberpunk-2077')
+
+    game.screenshots.create!(rawg_id: 77, image: 'https://cdn.test/shot.jpg', position: 0)
+
+    assert_equal [77], game.reload.screenshots.pluck(:rawg_id)
+  end
 end

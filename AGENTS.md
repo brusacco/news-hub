@@ -22,7 +22,7 @@ Guidance for AI coding agents working in this Rails application.
 
 - Public article routes live under `/news`, backed by [config/routes.rb](config/routes.rb).
 - Core news models are [app/models/entry.rb](app/models/entry.rb), [app/models/tag.rb](app/models/tag.rb), [app/models/site.rb](app/models/site.rb), and [app/models/topic.rb](app/models/topic.rb).
-- RAWG game models are [app/models/game.rb](app/models/game.rb), [app/models/genre.rb](app/models/genre.rb), [app/models/game_genre.rb](app/models/game_genre.rb), and [app/models/entry_game.rb](app/models/entry_game.rb).
+- RAWG game models are [app/models/game.rb](app/models/game.rb), [app/models/screenshot.rb](app/models/screenshot.rb), [app/models/genre.rb](app/models/genre.rb), [app/models/game_genre.rb](app/models/game_genre.rb), and [app/models/entry_game.rb](app/models/entry_game.rb).
 - Admin lives in [app/admin](app/admin) with Devise + ActiveAdmin.
 - Business logic is primarily in [app/services](app/services).
 - Scheduled tasks are defined in [config/schedule.rb](config/schedule.rb) using `whenever`.
@@ -44,6 +44,7 @@ Guidance for AI coding agents working in this Rails application.
 - RAWG imports are implemented in [app/services/rawg_services](app/services/rawg_services) and [lib/tasks/rawg.rake](lib/tasks/rawg.rake).
 - Public game routes are `/games`, `/games/:slug`, `/genres`, and `/genres/:slug`.
 - `Game` and `Genre` rows are upserted by `rawg_id`; rerunning imports should not duplicate them.
+- `Screenshot` rows are upserted by `game_id + rawg_id`; rerunning screenshot imports should not duplicate them.
 - `GameGenre` links games to genres. `EntryGame` links news entries to games and stores `match_source`, `confidence`, and `matched_text`.
 - `GameMatcher` in [app/services/game_matcher.rb](app/services/game_matcher.rb) links entries to games using exact word-boundary matches against `game.name` and `game.name_tags`.
 - Game matching is deterministic and does not call AI or RAWG. Keep it strict: short game names should only match high-signal sources like title, `ai_title`, tags, or title tags.
@@ -51,6 +52,7 @@ Guidance for AI coding agents working in this Rails application.
 - Important game tasks:
   - `rawg:import_genres`
   - `rawg:import_games`
+  - `rawg:import_screenshots`
   - `rawg:sync_game_genres`
   - `games:populate_name_tags`
   - `games:populate_name_tag`

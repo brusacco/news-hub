@@ -64,6 +64,34 @@
           </section>
         <% end %>
 
+        <% if @game.screenshots.any? %>
+          <section class="<%= @game.genres.any? ? 'mt-12' : '' %>">
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900"><%= @game.name %> Screenshots</h2>
+            <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
+              In-game screenshots imported from RAWG for <%= @game.name %>.
+            </p>
+            <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <% @game.screenshots.each do |screenshot| %>
+                <a
+                  href="<%= screenshot.image %>"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="group overflow-hidden rounded-xl bg-slate-100 shadow-sm ring-1 ring-slate-200"
+                >
+                  <%= image_tag(
+                    screenshot.image,
+                    alt: "#{@game.name} screenshot #{screenshot.position + 1}",
+                    class: "h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]",
+                    loading: "lazy",
+                    width: screenshot.width.presence || 800,
+                    height: screenshot.height.presence || 450
+                  ) %>
+                </a>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
+
         <% if @related_games.any? %>
           <section class="mt-12">
             <h2 class="text-2xl font-bold tracking-tight text-slate-900">More Games Like <%= @game.name %></h2>

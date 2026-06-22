@@ -7,6 +7,7 @@ class Game < ApplicationRecord
   has_many :genres, through: :game_genres
   has_many :entry_games, dependent: :destroy
   has_many :entries, through: :entry_games
+  has_many :screenshots, -> { ordered }, dependent: :destroy, inverse_of: :game
 
   serialize :platforms, coder: JSON
   serialize :rawg_genres, coder: JSON
@@ -37,6 +38,6 @@ class Game < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    %w[entries entry_games game_genres genres name_tags]
+    %w[entries entry_games game_genres genres name_tags screenshots]
   end
 end

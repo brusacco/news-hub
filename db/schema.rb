@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_06_21_203000) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_22_010000) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -144,6 +144,22 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_21_203000) do
     t.index ["slug"], name: "index_genres_on_slug", unique: true
   end
 
+  create_table "screenshots", force: :cascade do |t|
+    t.integer "game_id", null: false
+    t.integer "rawg_id", null: false
+    t.string "image", null: false
+    t.integer "width"
+    t.integer "height"
+    t.boolean "is_deleted", default: false, null: false
+    t.integer "position", default: 0, null: false
+    t.text "raw_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id", "position"], name: "index_screenshots_on_game_id_and_position"
+    t.index ["game_id", "rawg_id"], name: "index_screenshots_on_game_id_and_rawg_id", unique: true
+    t.index ["game_id"], name: "index_screenshots_on_game_id"
+  end
+
   create_table "sites", force: :cascade do |t|
     t.string "name", null: false
     t.string "url", null: false
@@ -206,5 +222,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_21_203000) do
   add_foreign_key "entry_games", "games"
   add_foreign_key "game_genres", "games"
   add_foreign_key "game_genres", "genres"
+  add_foreign_key "screenshots", "games"
   add_foreign_key "taggings", "tags"
 end

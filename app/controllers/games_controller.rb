@@ -30,7 +30,7 @@ class GamesController < ApplicationController
   end
 
   def show
-    @game = Game.includes(:genres).find_by!(slug: params[:id])
+    @game = Game.includes(:genres, :screenshots).find_by!(slug: params[:id])
     @related_games = related_games(@game)
     @related_entries = related_entries(@game)
 
