@@ -32,6 +32,7 @@ class GamesController < ApplicationController
   def show
     @game = Game.includes(:genres).find_by!(slug: params[:id])
     @related_games = related_games(@game)
+    @related_entries = related_entries(@game)
 
     title = game_meta_title(@game)
     description = game_description(@game)
@@ -70,6 +71,14 @@ class GamesController < ApplicationController
       .distinct
       .recent
       .limit(8)
+  end
+
+  def related_entries(game)
+    game.entries
+        .includes(:tags, :site)
+        .where.not(published_at: nil)
+        .recent
+        .limit(8)
   end
 
   def game_meta_title(game)

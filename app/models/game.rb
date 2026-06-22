@@ -3,6 +3,8 @@
 class Game < ApplicationRecord
   has_many :game_genres, dependent: :destroy
   has_many :genres, through: :game_genres
+  has_many :entry_games, dependent: :destroy
+  has_many :entries, through: :entry_games
 
   serialize :platforms, coder: JSON
   serialize :rawg_genres, coder: JSON
@@ -25,6 +27,6 @@ class Game < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    %w[game_genres genres]
+    %w[entries entry_games game_genres genres]
   end
 end

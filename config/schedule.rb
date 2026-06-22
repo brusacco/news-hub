@@ -11,6 +11,7 @@ every :hour do
   rake 'tagger'
   rake 'tagger:title_tags'
   rake 'tagger:untagged'
+  rake 'games:link_entries'
   rake 'update_stats'
   rake 'update_content'
   rake 'update_entries'

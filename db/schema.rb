@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_06_21_195717) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_21_203000) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -69,6 +69,21 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_21_195717) do
     t.index ["site_id"], name: "index_entries_on_site_id"
     t.index ["slug"], name: "index_entries_on_slug", unique: true
     t.index ["source_url"], name: "index_entries_on_source_url", unique: true
+  end
+
+  create_table "entry_games", force: :cascade do |t|
+    t.integer "entry_id", null: false
+    t.integer "game_id", null: false
+    t.string "match_source", null: false
+    t.integer "confidence", default: 0, null: false
+    t.string "matched_text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["confidence"], name: "index_entry_games_on_confidence"
+    t.index ["entry_id", "game_id"], name: "index_entry_games_on_entry_id_and_game_id", unique: true
+    t.index ["entry_id"], name: "index_entry_games_on_entry_id"
+    t.index ["game_id"], name: "index_entry_games_on_game_id"
+    t.index ["match_source"], name: "index_entry_games_on_match_source"
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
@@ -187,6 +202,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_21_195717) do
   end
 
   add_foreign_key "entries", "sites"
+  add_foreign_key "entry_games", "entries"
+  add_foreign_key "entry_games", "games"
   add_foreign_key "game_genres", "games"
   add_foreign_key "game_genres", "genres"
   add_foreign_key "taggings", "tags"

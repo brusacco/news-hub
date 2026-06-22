@@ -20,12 +20,19 @@ module TaggerTask
 
   def tag_entries(entries, tag_id: nil, include_entities: true, replace: true)
     matcher_context = build_matcher_context(tag_id)
+    game_matcher_context = build_game_matcher_context
 
     entries.each do |entry|
       retries = 0
 
       begin
-        tag_entry(entry, tag_id:, include_entities:, replace:, matcher_context:)
+        tag_entry(
+          entry,
+          tag_id:,
+          include_entities:,
+          replace:,
+          contexts: matcher_contexts(matcher_context, game_matcher_context)
+        )
       rescue StandardError => e
         retries += 1
         puts e.message
@@ -42,12 +49,13 @@ module TaggerTask
 
   def tag_title_entries(entries, tag_id: nil, replace: true)
     matcher_context = build_matcher_context(tag_id)
+    game_matcher_context = build_game_matcher_context
 
     entries.each do |entry|
       retries = 0
 
       begin
-        tag_title_entry(entry, tag_id:, replace:, matcher_context:)
+        tag_title_entry(entry, tag_id:, replace:, matcher_context:, game_matcher_context:)
       rescue StandardError => e
         retries += 1
         puts e.message
@@ -62,31 +70,46 @@ module TaggerTask
     end
   end
 
-  def tag_entry(entry, tag_id: nil, include_entities: true, replace: true, matcher_context: nil)
-    matcher_context ||= build_matcher_context(tag_id)
+  def tag_entry(entry, tag_id: nil, include_entities: true, replace: true, contexts: {})
+    matcher_context = contexts[:tags] || build_matcher_context(tag_id)
+    game_matcher_context = contexts[:games] || build_game_matcher_context
 
     title_tag_names = normalize_tags(extracted_title_tags(entry, tag_id:, matcher_context:))
     tag_names = normalize_tags(
       candidate_tags(entry, title_tag_names, tag_id:, include_entities:, matcher_context:)
     )
-    return if tag_names.blank?
-
-    changed = apply_tags(entry, tag_names, replace:)
-    changed = apply_title_tags(entry, title_tag_names, replace:) || changed
-    return unless changed
+    return link_games(entry, game_matcher_context:) if tag_names.blank?
+    return link_games(entry, game_matcher_context:) unless apply_entry_tags(entry, tag_names, title_tag_names, replace:)
 
     entry.save!
+    link_games(entry.reload, game_matcher_context:)
     log_tagged_entry(entry)
   end
 
-  def tag_title_entry(entry, tag_id: nil, replace: true, matcher_context: nil)
+  def matcher_contexts(matcher_context, game_matcher_context)
+    {
+      tags: matcher_context,
+      games: game_matcher_context
+    }
+  end
+
+  def tag_title_entry(entry, tag_id: nil, replace: true, matcher_context: nil, game_matcher_context: nil)
     matcher_context ||= build_matcher_context(tag_id)
+    game_matcher_context ||= build_game_matcher_context
 
     title_tag_names = normalize_tags(extracted_title_tags(entry, tag_id:, matcher_context:))
-    return if title_tag_names.blank?
-    return unless apply_title_tags(entry, title_tag_names, replace:)
+    if title_tag_names.blank?
+      link_games(entry, game_matcher_context:)
+      return
+    end
+
+    unless apply_title_tags(entry, title_tag_names, replace:)
+      link_games(entry, game_matcher_context:)
+      return
+    end
 
     entry.save!
+    link_games(entry.reload, game_matcher_context:)
     log_tagged_entry(entry)
   end
 
@@ -132,6 +155,11 @@ module TaggerTask
     true
   end
 
+  def apply_entry_tags(entry, tag_names, title_tag_names, replace:)
+    changed = apply_tags(entry, tag_names, replace:)
+    apply_title_tags(entry, title_tag_names, replace:) || changed
+  end
+
   def apply_title_tags(entry, title_tags, replace:)
     return false if title_tags.blank?
 
@@ -149,6 +177,19 @@ module TaggerTask
       tags: tags,
       compiled_tags: WebExtractorServices::TagMatcher.compile(tags)
     }
+  end
+
+  def build_game_matcher_context
+    games = Game.select(:id, :name).load
+
+    {
+      games: games,
+      compiled_games: GameMatcher.compile(games)
+    }
+  end
+
+  def link_games(entry, game_matcher_context:)
+    GameMatcher.link_entry!(entry, **game_matcher_context)
   end
 
   def matching_tags(tag_id = nil)

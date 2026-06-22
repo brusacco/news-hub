@@ -9,6 +9,8 @@ class Entry < ApplicationRecord
 
   acts_as_taggable_on :tags, :title_tags
   belongs_to :site
+  has_many :entry_games, dependent: :destroy
+  has_many :games, through: :entry_games
 
   validates :title, :source_url, presence: true
   validates :source_url, uniqueness: true
@@ -37,7 +39,7 @@ class Entry < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    ['site']
+    %w[entry_games games site]
   end
 
   def self.ransackable_attributes(_auth_object = nil)

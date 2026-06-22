@@ -34,10 +34,19 @@ class EntriesController < ApplicationController
   def show
     @entry = Entry.with_tags.with_site.friendly.find(params[:id])
     @entries = find_related_entries
+    @games = related_games
     set_entry_meta_tags
   end
 
   private
+
+  def related_games
+    @entry.entry_games
+          .includes(game: :genres)
+          .strongest_first
+          .limit(6)
+          .map(&:game)
+  end
 
   def find_related_entries
     base_scope = Entry.tagger_scope.where.not(id: @entry.id)

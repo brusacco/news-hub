@@ -31,6 +31,7 @@ RAILS_ENV=production bin/rails db:migrate
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_genres
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_games
 RAILS_ENV=production bin/rails rawg:sync_game_genres
+RAILS_ENV=production bin/rails games:link_entries LIMIT=all
 ```
 
 The order matters:
@@ -38,6 +39,7 @@ The order matters:
 1. `rawg:import_genres` imports full genre records, including `image_background`.
 2. `rawg:import_games` imports Nintendo Switch games and links them to genres from the game payload.
 3. `rawg:sync_game_genres` backfills or repairs `game_genres` from stored `games.rawg_genres`.
+4. `games:link_entries` links news entries to imported games.
 
 ## Tasks
 
@@ -132,6 +134,52 @@ This task does not call RAWG.
 It preserves enriched genre fields. If a game payload only has `id`, `name`, and `slug`, it will not clear an existing
 `genres.image_background`, `genres.games_count`, or full `genres.raw_data`.
 
+### `games:link_entries`
+
+Links news entries to games through the `entry_games` join table.
+
+```bash
+RAILS_ENV=production bin/rails games:link_entries
+```
+
+By default this processes recent entries in the same 4-year scope used by the tagger, capped by `LIMIT=500`.
+
+Optional variables:
+
+```bash
+LIMIT=all
+ALL=true
+GAME_ID=123
+GAME='cyberpunk-2077'
+```
+
+Examples:
+
+```bash
+RAILS_ENV=production bin/rails games:link_entries LIMIT=all
+RAILS_ENV=production bin/rails games:link_entries GAME='cyberpunk-2077' LIMIT=all
+```
+
+Use this after importing games, adding the `entry_games` table, or changing game matching logic.
+
+### `games:link_entry`
+
+Links one entry to games.
+
+```bash
+RAILS_ENV=production bin/rails games:link_entry ENTRY_ID=123
+RAILS_ENV=production bin/rails games:link_entry ENTRY_ID=123 GAME='cyberpunk-2077'
+```
+
+### `games:cleanup_entry_links`
+
+Deletes all entry-game links. This is a dry run by default.
+
+```bash
+RAILS_ENV=production bin/rails games:cleanup_entry_links
+RAILS_ENV=production bin/rails games:cleanup_entry_links DRY_RUN=false
+```
+
 ## Idempotency
 
 These tasks are designed to be rerun.
@@ -139,7 +187,9 @@ These tasks are designed to be rerun.
 - Games are upserted with `Game.find_or_initialize_by(rawg_id: ...)`.
 - Genres are upserted with `Genre.find_or_initialize_by(rawg_id: ...)`.
 - Game-to-genre links are assigned through the `game.genres` association.
+- Entry-to-game links are upserted through `entry_games`.
 - Duplicate `game_genres` rows are prevented by the unique index on `[game_id, genre_id]`.
+- Duplicate `entry_games` rows are prevented by the unique index on `[entry_id, game_id]`.
 
 If RAWG changes metadata, rerunning the import updates local rows.
 
@@ -151,6 +201,13 @@ If RAWG changes metadata, rerunning the import updates local rows.
 - Main fields: `released`, `background_image`, `rating`, `metacritic`, `playtime`
 - JSON payload fields: `platforms`, `rawg_genres`, `stores`, `raw_data`
 - Relation: `has_many :genres, through: :game_genres`
+- Relation: `has_many :entries, through: :entry_games`
+
+`EntryGame`
+
+- Join table between `entries` and `games`
+- Stores `match_source`, `confidence`, and `matched_text`
+- Unique index on `[entry_id, game_id]`
 
 `Genre`
 
