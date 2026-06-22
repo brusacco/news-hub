@@ -85,11 +85,40 @@
     <% if @games.any? %>
       <div class="mt-10 border-t border-slate-200 pt-8">
         <h2 class="text-xl font-semibold text-slate-900 mb-4">Related Games</h2>
-        <p class="text-sm text-slate-600 mb-4">
-          Explore Nintendo Switch games mentioned in this article:
-        </p>
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <%= render partial: 'games/game', collection: @games %>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <% @games.each do |game| %>
+            <%= link_to game_path(game), class: "group flex items-center gap-4 rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200 transition-colors hover:bg-[#FFE5E7] hover:ring-[#E60012]/30" do %>
+              <div class="h-16 w-24 flex-shrink-0 overflow-hidden rounded-md bg-slate-200">
+                <% if game.background_image.present? %>
+                  <%= image_tag(
+                    game.background_image,
+                    alt: "#{game.name} - Nintendo Switch game",
+                    class: "h-full w-full object-cover transition-transform duration-300 group-hover:scale-105",
+                    loading: "lazy",
+                    width: 160,
+                    height: 90
+                  ) %>
+                <% else %>
+                  <img
+                    src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg"
+                    alt="<%= game.name %> - Nintendo Switch game"
+                    class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                    width="160"
+                    height="90"
+                  >
+                <% end %>
+              </div>
+              <div class="min-w-0">
+                <p class="line-clamp-2 text-sm font-semibold leading-5 text-slate-900 group-hover:text-[#E60012]"><%= game.name %></p>
+                <% if game.released.present? || game.genres.any? %>
+                  <p class="mt-1 line-clamp-1 text-xs text-slate-500">
+                    <%= [game.released&.strftime('%Y'), game.genres.first&.name].compact.join(' · ') %>
+                  </p>
+                <% end %>
+              </div>
+            <% end %>
+          <% end %>
         </div>
       </div>
     <% end %>

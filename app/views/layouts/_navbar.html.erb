@@ -4,7 +4,7 @@
       <!-- Logo and Navigation -->
       <div class="flex items-center">
         <%= link_to root_path, class: "flex items-center space-x-2 group" do %>
-          <span class="text-xl font-bold tracking-tight text-[#E60012] transition-colors group-hover:text-[#CC0010]">NintendoNews</span>
+          <span class="text-xl font-bold tracking-tight text-[#E60012] transition-colors group-hover:text-[#CC0010]">NintendoNewsHub</span>
         <% end %>
         <div class="hidden md:ml-10 md:block">
           <div class="flex items-center space-x-1">
@@ -24,7 +24,7 @@
         </div>
       </div>
       <!-- Search -->
-      <div class="flex flex-1 items-center justify-end px-2 lg:ml-6 lg:px-0" data-controller="search" data-search-url-value="<%= search_autocomplete_path %>">
+      <div class="hidden flex-1 items-center justify-end px-2 md:flex lg:ml-6 lg:px-0" data-controller="search" data-search-url-value="<%= search_autocomplete_path %>">
         <div class="relative w-full max-w-lg lg:max-w-xs">
           <form action="<%= search_path %>" method="get" class="relative group">
             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 z-10">
@@ -37,12 +37,12 @@
               name="keyword" 
               data-search-target="input"
               data-action="input->search#search keydown->search#handleKeydown keydown->search#submit"
-            aria-label="Search articles" 
-            aria-expanded="false"
-            aria-haspopup="true"
-            autocomplete="off"
-            class="block w-full rounded-lg border-0 bg-slate-100 py-2 pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E60012] focus:ring-offset-2 sm:text-sm" 
-            placeholder="Search articles..."
+              aria-label="Search news articles"
+              aria-expanded="false"
+              aria-haspopup="true"
+              autocomplete="off"
+              class="block w-full rounded-lg border-0 bg-slate-100 py-2 pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E60012] focus:ring-offset-2 sm:text-sm"
+              placeholder="Search news..."
             />
           </form>
           <!-- Dropdown Results -->
@@ -83,7 +83,39 @@
   </div>
   <!-- Mobile menu -->
   <div id="mobile-menu" class="hidden border-t-2 border-[#E60012] bg-white md:hidden" data-menu-target="mobileMenu">
-    <div class="space-y-1 px-2 pb-3 pt-2">
+    <div class="px-4 pb-3 pt-3" data-controller="search" data-search-url-value="<%= search_autocomplete_path %>">
+      <div class="relative">
+        <form action="<%= search_path %>" method="get" class="relative group">
+          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 z-10">
+            <svg class="h-5 w-5 text-slate-400 group-focus-within:text-[#E60012] transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+          </div>
+          <input
+            type="search"
+            name="keyword"
+            data-search-target="input"
+            data-action="input->search#search keydown->search#handleKeydown keydown->search#submit"
+            aria-label="Search news articles"
+            aria-expanded="false"
+            aria-haspopup="true"
+            autocomplete="off"
+            class="block w-full rounded-lg border-0 bg-slate-100 py-2 pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E60012] focus:ring-offset-2"
+            placeholder="Search news..."
+          />
+        </form>
+        <div
+          data-search-target="dropdown"
+          class="hidden absolute top-full mt-2 w-full rounded-xl bg-white shadow-lg ring-1 ring-[#FF999F] overflow-hidden z-[200]"
+          role="menu"
+          aria-orientation="vertical"
+        >
+          <div data-search-target="results" class="max-h-80 overflow-y-auto"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-1 px-2 pb-3 pt-1">
       <%= link_to root_path, class: "block rounded-lg px-3 py-2 text-base font-medium transition-colors #{request.path == root_path ? 'bg-[#FFE5E7] text-[#E60012] font-semibold' : 'text-slate-700 hover:bg-[#FFE5E7] hover:text-[#E60012]'}" do %>
         Home
       <% end %>

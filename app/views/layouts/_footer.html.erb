@@ -4,7 +4,7 @@
       <!-- Brand -->
       <div class="space-y-8">
         <div>
-          <h3 class="text-lg font-bold tracking-tight text-slate-900">NintendoNews</h3>
+          <h3 class="text-lg font-bold tracking-tight text-slate-900">NintendoNewsHub</h3>
           <p class="mt-4 text-sm leading-6 text-slate-600">
             Your trusted source for the latest Nintendo news, updates, and insights.
           </p>
@@ -26,7 +26,7 @@
                 </li>
               <% end %>
               <li>
-                <%= link_to tags_path, class: "text-sm font-medium leading-6 text-indigo-600 transition-colors hover:text-indigo-500" do %>
+                <%= link_to tags_path, class: "text-sm font-medium leading-6 text-[#E60012] transition-colors hover:text-[#CC0010]" do %>
                   View all topics →
                 <% end %>
               </li>
@@ -71,6 +71,16 @@
                   All Topics
                 <% end %>
               </li>
+              <li>
+                <%= link_to games_path, class: "text-sm leading-6 text-slate-600 transition-colors hover:text-slate-900" do %>
+                  Games
+                <% end %>
+              </li>
+              <li>
+                <%= link_to genres_path, class: "text-sm leading-6 text-slate-600 transition-colors hover:text-slate-900" do %>
+                  Genres
+                <% end %>
+              </li>
             </ul>
           </div>
         </div>
@@ -84,7 +94,7 @@
           &copy; <%= Date.current.year %> NintendoNewsHub.com. All rights reserved.
         </p>
         <p class="text-xs leading-5 text-slate-500">
-          Best Nintendo News Online
+          Nintendo news, games, and topics
         </p>
       </div>
     </div>

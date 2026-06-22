@@ -1,40 +1,51 @@
 <div class="bg-white">
   <!-- Hero Section -->
-  <div class="relative isolate overflow-hidden bg-gradient-to-b from-indigo-50/20 via-white to-white">
-    <div class="mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-32 lg:px-8 lg:pt-16">
+  <div class="relative isolate overflow-hidden bg-gradient-to-b from-red-50/40 via-white to-white">
+    <div class="mx-auto max-w-7xl px-6 pb-14 pt-10 sm:pb-16 lg:px-8 lg:pt-14">
       <div class="mx-auto max-w-2xl text-center">
-        <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
-          Best Nintendo News
-          <span class="text-indigo-600">Online</span>
+        <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+          Nintendo News,
+          <span class="text-[#E60012]">Games & Topics</span>
         </h1>
-        <p class="mt-6 text-lg leading-8 text-slate-600">
-          Stay updated with the latest news, updates, and insights from the world of Nintendo. 
-          Your trusted source for everything Nintendo.
+        <p class="mt-5 text-lg leading-8 text-slate-600">
+          Follow the latest Nintendo stories, browse Switch games, and explore related topics in one place.
         </p>
+        <div class="mt-7 flex flex-wrap justify-center gap-3">
+          <%= link_to 'Latest News', root_path(anchor: 'latest-news'), class: "inline-flex items-center rounded-full bg-[#E60012] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#CC0010]" %>
+          <%= link_to 'Games', games_path, class: "inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-200 transition-colors hover:bg-[#FFE5E7] hover:text-[#E60012]" %>
+          <%= link_to 'Genres', genres_path, class: "inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-200 transition-colors hover:bg-[#FFE5E7] hover:text-[#E60012]" %>
+          <%= link_to 'Topics', tags_path, class: "inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-200 transition-colors hover:bg-[#FFE5E7] hover:text-[#E60012]" %>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Main Content -->
-  <div class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+  <div id="latest-news" class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
     <!-- Section Header -->
     <div class="mb-12">
       <h2 class="text-3xl font-bold tracking-tight text-slate-900">Latest News</h2>
-      <p class="mt-2 text-base text-slate-600">Discover the most recent articles and updates</p>
+      <p class="mt-2 text-base text-slate-600">The newest Nintendo stories, ordered by publication date.</p>
     </div>
 
     <!-- Articles Grid -->
-    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      <%= render partial: 'entries/entry', collection: @entries %>
-    </div>
+    <% if @entries.any? %>
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <%= render partial: 'entries/entry', collection: @entries %>
+      </div>
+    <% else %>
+      <p class="rounded-lg bg-slate-50 p-6 text-slate-700 ring-1 ring-slate-200">
+        No news articles are available right now.
+      </p>
+    <% end %>
 
     <!-- Pagination -->
     <% if @pagy.pages > 1 %>
-      <div class="mt-12 flex justify-center">
+      <nav class="mt-12 flex justify-center" aria-label="Pagination">
         <div class="rounded-lg bg-white px-4 py-3 shadow-sm ring-1 ring-slate-200">
           <%== pagy_nav(@pagy) %>
         </div>
-      </div>
+      </nav>
     <% end %>
   </div>
 </div>

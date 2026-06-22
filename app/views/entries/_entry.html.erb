@@ -1,10 +1,10 @@
-<article class="group relative flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition-all duration-300 hover:shadow-lg hover:ring-slate-300" itemscope itemtype="https://schema.org/NewsArticle">
-  <%= link_to entry_path(entry), class: "block", itemprop: "url", aria: { label: "Read: #{entry.final_title}" } do %>
+<%= link_to entry_path(entry), class: "group block h-full", itemprop: "url", aria: { label: "Read: #{entry.final_title}" } do %>
+  <article class="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition-all duration-300 group-hover:shadow-lg group-hover:ring-slate-300" itemscope itemtype="https://schema.org/NewsArticle">
     <div class="aspect-[16/9] w-full overflow-hidden bg-slate-100 relative">
       <% if !entry.image_url || entry.image_url.empty? || entry.site.id == 11 %>
-        <img 
-          src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg" 
-          alt="<%= entry.final_title %> - Nintendo News" 
+        <img
+          src="https://assets.nintendo.com/image/upload/v1643742733/ncom/global/social-share.jpg"
+          alt="<%= entry.final_title %> - Nintendo News"
           class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
           width="400"
@@ -12,94 +12,64 @@
         >
       <% else %>
         <%= image_tag(
-          entry.image_url, 
-          alt: "#{entry.final_title} - Nintendo News Article", 
-          class: "h-full w-full object-cover transition-transform duration-300 group-hover:scale-105", 
+          entry.image_url,
+          alt: "#{entry.final_title} - Nintendo News Article",
+          class: "h-full w-full object-cover transition-transform duration-300 group-hover:scale-105",
           loading: "lazy",
           width: 400,
           height: 225
         ) %>
       <% end %>
     </div>
-  <% end %>
-  
-  <div class="flex flex-1 flex-col p-6">
-    <% excerpt_source = entry.final_description.presence || entry.ai_summary.presence || entry.description.to_s %>
-    <% plain_excerpt = strip_tags(excerpt_source).squish %>
-    <% sentence_excerpt = plain_excerpt.split(/(?<=[.!?])\s+/).first(2).join(' ') %>
-    <% excerpt = truncate(sentence_excerpt.presence || plain_excerpt, length: 220, separator: ' ') %>
 
-    <div class="flex-1">
-      <h3 class="text-xl font-semibold leading-7 text-slate-900 line-clamp-2" itemprop="headline">
-        <%= link_to entry.final_title, entry_path(entry), class: "transition-colors hover:text-[#E60012]", itemprop: "url" %>
-      </h3>
-      <% if excerpt.present? %>
-        <p class="mt-3 text-sm leading-6 text-slate-600 line-clamp-3"><%= excerpt %></p>
-      <% end %>
-    </div>
+    <div class="flex flex-1 flex-col p-6">
+      <% excerpt_source = entry.final_description.presence || entry.ai_summary.presence || entry.description.to_s %>
+      <% plain_excerpt = strip_tags(excerpt_source).squish %>
+      <% sentence_excerpt = plain_excerpt.split(/(?<=[.!?])\s+/).first(2).join(' ') %>
+      <% excerpt = truncate(sentence_excerpt.presence || plain_excerpt, length: 170, separator: ' ') %>
 
-    <meta itemprop="description" content="<%= excerpt %>">
-    
-    <!-- Metadata: Date and Category -->
-    <div class="mt-4 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3 text-xs text-slate-500">
-        <% if entry.published_at.present? %>
-          <time datetime="<%= entry.published_at.iso8601 %>" class="flex items-center gap-1.5" itemprop="datePublished">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-            </svg>
-            <%= entry.published_at.strftime('%b %d, %Y') %>
-          </time>
+      <div class="flex-1">
+        <h3 class="text-xl font-semibold leading-7 text-slate-900 line-clamp-2" itemprop="headline">
+          <span class="transition-colors group-hover:text-[#E60012]"><%= entry.final_title %></span>
+        </h3>
+        <% if excerpt.present? %>
+          <p class="mt-3 text-sm leading-6 text-slate-600 line-clamp-3"><%= excerpt %></p>
         <% end %>
       </div>
-      
-      <% if entry.category.present? %>
-        <span class="inline-flex items-center rounded-full bg-[#FFE5E7] px-3 py-1 text-xs font-medium text-[#E60012] ring-1 ring-inset ring-[#E60012]/20 flex-shrink-0">
-          <%= entry.category %>
-        </span>
-      <% end %>
-    </div>
-    
-    <!-- Social Indicators -->
-    <% if entry.total_count > 0 || entry.reaction_count > 0 || entry.comment_count > 0 || entry.share_count > 0 %>
-      <div class="mt-4 flex items-center gap-4 pt-4 border-t border-slate-100">
-        <% if entry.reaction_count > 0 %>
-          <div class="flex items-center gap-1.5 text-xs text-slate-600" title="Reactions">
-            <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c.828 0 1.867.39 2.25 1.25a2.25 2.25 0 0 0 2.5 1.25A2.25 2.25 0 0 1 18 7.75v1.5a2.25 2.25 0 0 1-2.25 2.25h-1.5a2.25 2.25 0 0 0-2.25 2.25v1.5a2.25 2.25 0 0 1-2.25 2.25H9.75a2.25 2.25 0 0 1-2.25-2.25v-1.5a2.25 2.25 0 0 0-.75-1.688 2.25 2.25 0 0 1-.75-1.688v-1.5a2.25 2.25 0 0 1 2.25-2.25Z" />
-            </svg>
-            <span class="font-medium"><%= number_with_delimiter(entry.reaction_count) %></span>
-          </div>
+
+      <meta itemprop="description" content="<%= excerpt %>">
+
+      <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3 text-xs text-slate-500">
+          <% if entry.published_at.present? %>
+            <time datetime="<%= entry.published_at.iso8601 %>" class="flex items-center gap-1.5" itemprop="datePublished">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+              </svg>
+              <%= entry.published_at.strftime('%b %d, %Y') %>
+            </time>
+          <% end %>
+        </div>
+
+        <% if entry.category.present? %>
+          <span class="inline-flex flex-shrink-0 items-center rounded-full bg-[#FFE5E7] px-3 py-1 text-xs font-medium text-[#E60012] ring-1 ring-inset ring-[#E60012]/20">
+            <%= entry.category %>
+          </span>
         <% end %>
-        
-        <% if entry.comment_count > 0 %>
-          <div class="flex items-center gap-1.5 text-xs text-slate-600" title="Comments">
-            <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-            </svg>
-            <span class="font-medium"><%= number_with_delimiter(entry.comment_count) %></span>
-          </div>
-        <% end %>
-        
-        <% if entry.share_count > 0 %>
-          <div class="flex items-center gap-1.5 text-xs text-slate-600" title="Shares">
-            <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.935-2.186 2.25 2.25 0 0 0-3.935 2.186Z" />
-            </svg>
-            <span class="font-medium"><%= number_with_delimiter(entry.share_count) %></span>
-          </div>
-        <% end %>
-        
-        <% if entry.total_count > 0 && entry.reaction_count == 0 && entry.comment_count == 0 && entry.share_count == 0 %>
-          <div class="flex items-center gap-1.5 text-xs text-slate-600" title="Total Engagement">
+      </div>
+
+      <% engagement_count = entry.total_count.to_i.positive? ? entry.total_count : [entry.reaction_count, entry.comment_count, entry.share_count].compact.sum %>
+      <% if engagement_count.positive? %>
+        <div class="mt-4 border-t border-slate-100 pt-4">
+          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500" title="Engagement">
             <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
-            <span class="font-medium"><%= number_with_delimiter(entry.total_count) %></span>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-</article>
+            <%= number_with_delimiter(engagement_count) %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+  </article>
+<% end %>

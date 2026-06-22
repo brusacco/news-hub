@@ -3,12 +3,23 @@
     <%= render 'layouts/breadcrumbs' %>
   </div>
 
-  <section class="relative isolate overflow-hidden bg-gradient-to-b from-red-50/30 via-white to-white">
-    <div class="mx-auto max-w-7xl px-6 pb-20 pt-10 sm:pb-24 lg:px-8 lg:pt-16">
+  <section class="relative isolate overflow-hidden <%= @genre.image_background.present? ? 'bg-slate-950' : 'bg-gradient-to-b from-red-50/30 via-white to-white' %>">
+    <% if @genre.image_background.present? %>
+      <%= image_tag(
+        @genre.image_background,
+        alt: "#{@genre.name} Nintendo Switch games",
+        class: "absolute inset-0 -z-10 h-full w-full object-cover opacity-45",
+        width: 1600,
+        height: 900
+      ) %>
+      <div class="absolute inset-0 -z-10 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/40"></div>
+    <% end %>
+
+    <div class="mx-auto max-w-7xl px-6 pb-16 pt-10 sm:pb-20 lg:px-8 lg:pt-16">
       <div class="mx-auto max-w-3xl text-center">
-        <p class="text-sm font-semibold uppercase tracking-wide text-[#E60012]">Game Genre</p>
-        <h1 class="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl"><%= @genre.name %> Games</h1>
-        <p class="mt-6 text-lg leading-8 text-slate-600">
+        <p class="text-sm font-semibold uppercase tracking-wide <%= @genre.image_background.present? ? 'text-[#FFCCCF]' : 'text-[#E60012]' %>">Game Genre</p>
+        <h1 class="mt-3 text-4xl font-bold tracking-tight <%= @genre.image_background.present? ? 'text-white' : 'text-slate-900' %> sm:text-5xl"><%= @genre.name %> Games</h1>
+        <p class="mt-6 text-lg leading-8 <%= @genre.image_background.present? ? 'text-slate-200' : 'text-slate-600' %>">
           Browse <%= @genre.name %> Nintendo Switch games with release dates, images, related genres, and score
           details where available.
         </p>
