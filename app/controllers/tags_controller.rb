@@ -35,23 +35,37 @@ class TagsController < ApplicationController
     @tag = Tag.friendly.find(params[:id])
     @entries = entries_for_tag(@tag)
     @pagy, @entries = pagy(@entries, limit: 60)
-    article_count = @pagy.count
+    @related_games = related_games_for_tag(@tag)
+    set_tag_meta_tags(@tag, @pagy.count)
+  end
 
-    # SEO-optimized title with keyword at the beginning
-    title = optimized_title("#{@tag.name} News - Latest Updates & Articles | Nintendo News Hub")
-    description = tag_description(@tag, article_count)
+  private
+
+  def related_games_for_tag(tag)
+    Game
+      .joins(entries: :tags)
+      .where(tags: { id: tag.id })
+      .includes(:genres)
+      .distinct
+      .recent
+      .limit(6)
+  end
+
+  def set_tag_meta_tags(tag, article_count)
+    title = optimized_title("#{tag.name} News - Latest Updates & Articles | Nintendo News Hub")
+    description = tag_description(tag, article_count)
 
     set_default_meta_tags(
       title: title,
       description: description,
-      keywords: tag_keywords(@tag),
-      canonical: tag_url(@tag),
+      keywords: tag_keywords(tag),
+      canonical: tag_url(tag),
       robots: article_count.positive? ? 'index, follow' : 'noindex, follow',
       og: {
         title: title,
         description: description,
         type: 'website',
-        url: tag_url(@tag)
+        url: tag_url(tag)
       },
       twitter: {
         card: 'summary_large_image',
@@ -60,8 +74,6 @@ class TagsController < ApplicationController
       }
     )
   end
-
-  private
 
   def tag_description(tag, article_count)
     article_text = if article_count.positive?

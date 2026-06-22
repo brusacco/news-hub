@@ -33,11 +33,24 @@ class GenresController < ApplicationController
   def show
     @genre = Genre.find_by!(slug: params[:id])
     @pagy, @games = pagy(@genre.games.includes(:genres).recent, limit: INDEX_LIMIT)
+    @related_entries = related_entries(@genre)
 
     set_default_meta_tags(genre_meta_tags(@genre, @pagy.count))
   end
 
   private
+
+  def related_entries(genre)
+    return Entry.none if genre.game_ids.blank?
+
+    Entry
+      .joins(:entry_games)
+      .where(entry_games: { game_id: genre.game_ids })
+      .includes(:tags, :site)
+      .distinct
+      .recent
+      .limit(6)
+  end
 
   def genre_meta_tags(genre, game_count)
     title = "#{genre.name} Nintendo Switch Games - Releases, Ratings & Details"
