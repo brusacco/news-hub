@@ -24,7 +24,11 @@ module AiServices
     private
 
     def parse_response(data)
-      JSON.parse(data)
+      JSON.parse(clean_json_response(data))
+    end
+
+    def clean_json_response(data)
+      data.to_s.strip.gsub(/\A```(?:json)?\s*|\s*```\z/, '')
     end
   end
 end
