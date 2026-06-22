@@ -15,7 +15,23 @@ SitemapGenerator::Sitemap.create do
   #
   # Examples:
   #
+  add games_path, priority: 0.8, changefreq: 'daily'
+  add genres_path, priority: 0.7, changefreq: 'daily'
+  add developers_path, priority: 0.7, changefreq: 'daily'
   add tags_path, priority: 0.7, changefreq: 'daily'
+
+  Game.find_each do |game|
+    add game_path(game), lastmod: game.updated_at, priority: 0.8, changefreq: 'weekly'
+  end
+
+  Genre.find_each do |genre|
+    add genre_path(genre), lastmod: genre.updated_at, priority: 0.7, changefreq: 'weekly'
+  end
+
+  Developer.find_each do |developer|
+    add developer_path(developer), lastmod: developer.updated_at, priority: 0.7, changefreq: 'weekly'
+  end
+
   Tag.find_each do |tag|
     add tag_path(tag), lastmod: Time.zone.now, changefreq: 'daily', priority: 0.8
   end

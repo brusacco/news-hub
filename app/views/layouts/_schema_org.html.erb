@@ -130,6 +130,33 @@
 </script>
 <% end %>
 
+<%# Schema.org for Developer pages %>
+<% if defined?(@developer) && @developer.present? %>
+<script type="application/ld+json">
+<%=
+  raw(
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: @developer.name,
+      url: developer_url(@developer),
+      description: @developer.description.presence || "Nintendo Switch games developed by #{@developer.name}.",
+      image: @developer.image_background.presence,
+      sameAs: "https://rawg.io/developers/#{@developer.slug}",
+      knowsAbout: @games&.flat_map(&:genres)&.uniq(&:id)&.map(&:name),
+      subjectOf: @games&.first(8)&.map do |game|
+        {
+          '@type': 'VideoGame',
+          name: game.name,
+          url: game_url(game)
+        }
+      end
+    }.compact.to_json
+  )
+%>
+</script>
+<% end %>
+
 <%# Schema.org para BreadcrumbList %>
 <% if defined?(@entry) && @entry.present? %>
 <script type="application/ld+json">
@@ -241,6 +268,37 @@
   )
 %>
 </script>
+<% elsif defined?(@developer) && @developer.present? %>
+<script type="application/ld+json">
+<%=
+  raw(
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: root_url
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Developers',
+          item: developers_url
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: @developer.name,
+          item: developer_url(@developer)
+        }
+      ]
+    }.to_json
+  )
+%>
+</script>
 <% end %>
 
 <%# Schema.org para CollectionPage (páginas de listado) %>
@@ -328,7 +386,15 @@
       mainEntity: {
         '@type': 'ItemList',
         name: 'Nintendo Switch Game Genres',
-        numberOfItems: @pagy&.count
+        numberOfItems: @pagy&.count,
+        itemListElement: @genres&.each_with_index&.map do |genre, index|
+          {
+            '@type': 'ListItem',
+            position: index + 1,
+            url: genre_url(genre),
+            name: genre.name
+          }
+        end
       }
     }.to_json
   )
@@ -342,7 +408,7 @@
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       name: "#{@genre.name} Nintendo Switch Games",
-      description: "Browse #{@genre.name} Nintendo Switch games with release dates, images, and score details.",
+      description: "Browse #{@genre.name} Nintendo Switch games with ratings, images, and score details.",
       url: genre_url(@genre),
       about: {
         '@type': 'Thing',
@@ -351,6 +417,105 @@
       mainEntity: {
         '@type': 'ItemList',
         name: "#{@genre.name} Nintendo Switch Games",
+        numberOfItems: @pagy&.count,
+        itemListElement: @games&.each_with_index&.map do |game, index|
+          {
+            '@type': 'ListItem',
+            position: index + 1,
+            url: game_url(game),
+            name: game.name
+          }
+        end
+      }
+    }.to_json
+  )
+%>
+</script>
+<% elsif controller_name == 'developers' && action_name == 'index' %>
+<script type="application/ld+json">
+<%=
+  raw(
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: 'Nintendo Switch Game Developers - Browse Studios and Teams',
+      description: 'Browse Nintendo Switch game developers and studios.',
+      url: developers_url,
+      breadcrumb: {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: root_url
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Developers',
+            item: developers_url
+          }
+        ]
+      },
+      mainEntity: {
+        '@type': 'ItemList',
+        name: 'Nintendo Switch Game Developers',
+        numberOfItems: @pagy&.count,
+        itemListElement: @developers&.each_with_index&.map do |developer, index|
+          {
+            '@type': 'ListItem',
+            position: index + 1,
+            url: developer_url(developer),
+            name: developer.name
+          }
+        end
+      }
+    }.to_json
+  )
+%>
+</script>
+<% elsif defined?(@developer) && @developer.present? %>
+<script type="application/ld+json">
+<%=
+  raw(
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: "#{@developer.name} Nintendo Switch Games",
+      description: "Browse Nintendo Switch games by #{@developer.name}, with ratings, images, genres, and related coverage.",
+      url: developer_url(@developer),
+      about: {
+        '@type': 'Organization',
+        name: @developer.name,
+        url: developer_url(@developer)
+      },
+      breadcrumb: {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: root_url
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Developers',
+            item: developers_url
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: @developer.name,
+            item: developer_url(@developer)
+          }
+        ]
+      },
+      mainEntity: {
+        '@type': 'ItemList',
+        name: "#{@developer.name} Nintendo Switch Games",
         numberOfItems: @pagy&.count,
         itemListElement: @games&.each_with_index&.map do |game, index|
           {
