@@ -30,7 +30,9 @@ Run this after deploying RAWG migrations, or when rebuilding RAWG data:
 ```bash
 RAILS_ENV=production bin/rails db:migrate
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_genres
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_genre_details
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_games
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_developer_details
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_game_details
 RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_screenshots
 RAILS_ENV=production bin/rails rawg:sync_game_genres
@@ -43,15 +45,17 @@ RAILS_ENV=production bundle exec whenever --update-crontab
 The order matters:
 
 1. `rawg:import_genres` imports full genre records, including `image_background`.
-2. `rawg:import_games` imports Nintendo Switch games and links them to genres from the game payload.
-3. `rawg:import_game_details` enriches each imported game with the full RAWG detail payload.
-4. `rawg:import_screenshots` imports per-game screenshot galleries from RAWG.
-5. `rawg:sync_game_genres` backfills or repairs `game_genres` from stored `games.rawg_genres`.
-6. `rawg:sync_game_developers` backfills cached game developer fields and `game_developers` from stored
+2. `rawg:import_genre_details` enriches imported genres with fields like `description`.
+3. `rawg:import_games` imports Nintendo Switch games and links them to genres from the game payload.
+4. `rawg:import_developer_details` enriches imported developers with fields like `description`.
+5. `rawg:import_game_details` enriches each imported game with the full RAWG detail payload.
+6. `rawg:import_screenshots` imports per-game screenshot galleries from RAWG.
+7. `rawg:sync_game_genres` backfills or repairs `game_genres` from stored `games.rawg_genres`.
+8. `rawg:sync_game_developers` backfills cached game developer fields and `game_developers` from stored
    `games.raw_data['developers']`.
-7. `games:populate_name_tags` fills `Game` name tags used by the news/game matcher.
-8. `games:link_entries` links news entries to imported games.
-9. `whenever --update-crontab` installs the cron schedule that keeps new entries linked over time.
+9. `games:populate_name_tags` fills `Game` name tags used by the news/game matcher.
+10. `games:link_entries` links news entries to imported games.
+11. `whenever --update-crontab` installs the cron schedule that keeps new entries linked over time.
 
 After deploying view/style changes for `/games`, `/genres`, `/developers`, or game detail pages, also rebuild assets:
 
@@ -98,6 +102,42 @@ This task updates:
 Use this task when genre cards show fallback images. The games endpoint often only sends `id`, `name`, and `slug` for
 genres; the genres endpoint sends the image payload.
 
+### `rawg:import_genre_details`
+
+Imports full detail payloads for already imported genres from `/api/genres/:rawg_id`.
+
+```bash
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_genre_details
+```
+
+Optional variables:
+
+```bash
+GENRE='action'
+GENRE_ID=123
+START_ID=1
+BATCH_SIZE=100
+```
+
+Examples:
+
+```bash
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_genre_details GENRE='action'
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_genre_details START_ID=10
+```
+
+This importer automatically retries transient RAWG upstream failures for status `429`, `500`, `502`, `503`, and
+`504`, with a short backoff of `1s`, `2s`, and `3s` across up to 3 retry attempts.
+
+This task enriches existing `genres` rows with fields from the detail endpoint, including:
+
+- `description`
+- `games_count`
+- `image_background`
+- `raw_data`
+
+Reruns are safe because genres are updated in place by existing `genres.id` / `rawg_id`, not recreated.
+
 ### `rawg:import_games`
 
 Imports Nintendo Switch games from `/api/games` with `platforms=7`.
@@ -132,6 +172,42 @@ Newly imported games also get a default `name_tags` value when the game has no n
 
 This task does not fetch gallery screenshots. RAWG exposes screenshots through one request per game, so screenshot
 sync runs separately to keep the core game import fast and predictable.
+
+### `rawg:import_developer_details`
+
+Imports full detail payloads for imported developers from `/api/developers/:rawg_id`.
+
+```bash
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_developer_details
+```
+
+Optional variables:
+
+```bash
+DEVELOPER='capcom'
+DEVELOPER_ID=123
+START_ID=1
+BATCH_SIZE=100
+```
+
+Examples:
+
+```bash
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_developer_details DEVELOPER='capcom'
+RAILS_ENV=production RAWG_API_KEY='your-key' bin/rails rawg:import_developer_details START_ID=10
+```
+
+This importer automatically retries transient RAWG upstream failures for status `429`, `500`, `502`, `503`, and
+`504`, with a short backoff of `1s`, `2s`, and `3s` across up to 3 retry attempts.
+
+This task enriches existing `developers` rows with fields from the detail endpoint, including:
+
+- `description`
+- `games_count`
+- `image_background`
+- `raw_data`
+
+Reruns are safe because developers are updated in place by existing `developers.id` / `rawg_id`, not recreated.
 
 ### `rawg:import_game_details`
 

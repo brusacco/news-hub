@@ -16,6 +16,32 @@ namespace :rawg do
 end
 
 namespace :rawg do
+  desc 'Import detailed RAWG payloads for imported genres. ' \
+       'Set RAWG_API_KEY and optional GENRE, GENRE_ID, START_ID, BATCH_SIZE.'
+  task import_genre_details: :environment do
+    scope = Genre.all
+
+    if ENV['GENRE_ID'].present?
+      scope = scope.where(id: ENV['GENRE_ID'])
+    elsif ENV['GENRE'].present?
+      scope = scope.where(slug: ENV['GENRE'])
+    elsif ENV['START_ID'].present?
+      scope = scope.where(id: ENV['START_ID'].to_i..)
+    end
+
+    result = RawgServices::ImportGenreDetails.call(
+      api_key: ENV.fetch('RAWG_API_KEY', nil),
+      scope:,
+      batch_size: ENV.fetch('BATCH_SIZE', RawgServices::ImportGenreDetails::DEFAULT_BATCH_SIZE)
+    )
+
+    abort "RAWG genre details import failed: #{result.error}" unless result.success?
+
+    puts "Imported details for #{result.data} genres from RAWG"
+  end
+end
+
+namespace :rawg do
   desc 'Import Nintendo Switch games from RAWG. Set RAWG_API_KEY, PAGES, PAGE_SIZE, and ORDERING.'
   task import_games: :environment do
     result = RawgServices::ImportNintendoSwitchGames.call(
@@ -65,6 +91,32 @@ namespace :rawg do
     abort "RAWG game developer sync failed: #{result.error}" unless result.success?
 
     puts "Synced developer relations for #{result.data} games"
+  end
+end
+
+namespace :rawg do
+  desc 'Import detailed RAWG payloads for imported developers. ' \
+       'Set RAWG_API_KEY and optional DEVELOPER, DEVELOPER_ID, START_ID, BATCH_SIZE.'
+  task import_developer_details: :environment do
+    scope = Developer.all
+
+    if ENV['DEVELOPER_ID'].present?
+      scope = scope.where(id: ENV['DEVELOPER_ID'])
+    elsif ENV['DEVELOPER'].present?
+      scope = scope.where(slug: ENV['DEVELOPER'])
+    elsif ENV['START_ID'].present?
+      scope = scope.where(id: ENV['START_ID'].to_i..)
+    end
+
+    result = RawgServices::ImportDeveloperDetails.call(
+      api_key: ENV.fetch('RAWG_API_KEY', nil),
+      scope:,
+      batch_size: ENV.fetch('BATCH_SIZE', RawgServices::ImportDeveloperDetails::DEFAULT_BATCH_SIZE)
+    )
+
+    abort "RAWG developer details import failed: #{result.error}" unless result.success?
+
+    puts "Imported details for #{result.data} developers from RAWG"
   end
 end
 
