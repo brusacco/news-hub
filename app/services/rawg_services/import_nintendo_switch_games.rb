@@ -73,6 +73,7 @@ module RawgServices
     def import_game(game_data)
       Game.find_or_initialize_by(rawg_id: game_data.fetch('id')).tap do |game|
         game.assign_attributes(attributes_for(game_data))
+        game.name_tag_list = [Game.default_name_tag_for(game.name)] if game.name_tag_list.blank?
         game.save!
         SyncGameGenres.sync_game!(game, Array(game_data['genres']))
       end

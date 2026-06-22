@@ -28,6 +28,18 @@ class GameMatcherTest < ActiveSupport::TestCase
     assert_empty entry.entry_games
   end
 
+  test 'matches game name tag as an alternate exact term' do
+    game = create_game(name: 'The Legend of Zelda: Breath of the Wild', slug: 'zelda-breath-of-the-wild')
+    game.name_tag_list = ['Breath of the Wild']
+    game.save!
+    entry = create_entry(title: 'Breath of the Wild update arrives today')
+
+    matches = GameMatcher.link_entry!(entry, games: Game.where(id: game.id))
+
+    assert_equal [game.id], matches.map(&:game_id)
+    assert_equal 'Breath of the Wild', entry.entry_games.first.matched_text
+  end
+
   test 'does not match short game names from body content' do
     game = create_game(name: 'Ys', slug: 'ys')
     entry = create_entry(content: 'Nintendo says this update is available now.')

@@ -39,4 +39,18 @@ class GameTest < ActiveSupport::TestCase
 
     assert_equal 'cyberpunk-2077', game.to_param
   end
+
+  test 'builds default name tag from name' do
+    assert_equal 'Cyberpunk 2077', Game.default_name_tag_for('Cyberpunk 2077 Nintendo Switch')
+    assert_equal 'Metroid Prime 4', Game.default_name_tag_for('Metroid Prime 4 - Nintendo Switch')
+  end
+
+  test 'has many name tags' do
+    game = Game.create!(rawg_id: 1, name: 'Cyberpunk 2077', slug: 'cyberpunk-2077')
+
+    game.name_tag_list = ['Cyberpunk 2077']
+    game.save!
+
+    assert_equal ['Cyberpunk 2077'], game.reload.name_tag_list
+  end
 end

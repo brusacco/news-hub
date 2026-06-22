@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class GameMatcher < ApplicationService
-  CompiledGame = Struct.new(:id, :name, :pattern, :content_matchable, keyword_init: true)
+  CompiledGame = Struct.new(:id, :name, :term, :pattern, :content_matchable, keyword_init: true)
   Match = Struct.new(:game_id, :game_name, :match_source, :confidence, :matched_text, keyword_init: true)
 
   SOURCE_WEIGHTS = {
@@ -19,20 +19,10 @@ class GameMatcher < ApplicationService
   MIN_CONTENT_MATCH_LENGTH = 4
 
   def self.compile(games)
-    games.filter_map do |game|
-      name = game.name.to_s.strip
-      next if name.blank?
-
-      CompiledGame.new(
-        id: game.id,
-        name: name,
-        pattern: pattern_for(name),
-        content_matchable: name.gsub(/[^\p{Alnum}]+/, '').length >= MIN_CONTENT_MATCH_LENGTH
-      )
-    end
+    games.flat_map { |game| compiled_terms_for(game) }
   end
 
-  def self.link_entry!(entry, games: Game.select(:id, :name), compiled_games: nil, replace: true)
+  def self.link_entry!(entry, games: Game.includes(:name_tags), compiled_games: nil, replace: true)
     matcher = new(entry, games:, compiled_games:)
     matches = matcher.matches
 
@@ -44,8 +34,20 @@ class GameMatcher < ApplicationService
     matches
   end
 
-  def self.pattern_for(name)
-    /(^|[^\p{Alnum}_])#{Regexp.escape(name)}(?=$|[^\p{Alnum}_])/i
+  def self.compiled_terms_for(game)
+    terms_for(game).map do |term|
+      CompiledGame.new(
+        id: game.id,
+        name: game.name,
+        term: term,
+        pattern: /(^|[^\p{Alnum}_])#{Regexp.escape(term)}(?=$|[^\p{Alnum}_])/i,
+        content_matchable: term.gsub(/[^\p{Alnum}]+/, '').length >= MIN_CONTENT_MATCH_LENGTH
+      )
+    end
+  end
+
+  def self.terms_for(game)
+    [game.name, game.name_tags.map(&:name)].flatten.filter_map { |term| term.to_s.strip.presence }.uniq
   end
 
   def self.upsert_entry_game(entry, match)
@@ -59,7 +61,7 @@ class GameMatcher < ApplicationService
     end
   end
 
-  def initialize(entry, games: Game.select(:id, :name), compiled_games: nil)
+  def initialize(entry, games: Game.includes(:name_tags), compiled_games: nil)
     @entry = entry
     @compiled_games = compiled_games || self.class.compile(games)
   end
@@ -88,9 +90,7 @@ class GameMatcher < ApplicationService
     end
   end
 
-  def source_allows_game?(source, game)
-    STRICT_SOURCES.include?(source) || game.content_matchable
-  end
+  def source_allows_game?(source, game) = STRICT_SOURCES.include?(source) || game.content_matchable
 
   def build_match(game, source)
     Match.new(
@@ -98,7 +98,7 @@ class GameMatcher < ApplicationService
       game_name: game.name,
       match_source: source.to_s,
       confidence: SOURCE_WEIGHTS.fetch(source),
-      matched_text: game.name
+      matched_text: game.term
     )
   end
 

@@ -180,7 +180,7 @@ module TaggerTask
   end
 
   def build_game_matcher_context
-    games = Game.select(:id, :name).load
+    games = Game.includes(:name_tags).load
 
     {
       games: games,

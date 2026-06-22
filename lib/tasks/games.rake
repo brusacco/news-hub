@@ -37,7 +37,8 @@ module GameLinkerTask
   end
 
   def matching_games(game_id = nil)
-    game_id.present? ? Game.where(id: game_id) : Game.all
+    scope = Game.includes(:name_tags)
+    game_id.present? ? scope.where(id: game_id) : scope
   end
 
   def selected_entry
@@ -61,6 +62,38 @@ module GameLinkerTask
     puts entry.source_url
     puts "Games: #{matches.map(&:game_name).join(', ')}"
     puts '---------------------------------------------------'
+  end
+
+  def populate_name_tags(scope, force: false)
+    scope.find_each do |game|
+      next if game.name_tag_list.present? && !force
+
+      game.name_tag_list = [Game.default_name_tag_for(game.name)]
+      game.save!
+      puts "#{game.id}: #{game.name} -> #{game.name_tag_list.join(', ')}"
+    end
+  end
+end
+
+namespace :games do
+  desc 'Populate game name_tags. Set FORCE=true to overwrite existing values; LIMIT=all for no cap.'
+  task populate_name_tags: :environment do
+    GameLinkerTask.populate_name_tags(
+      GameLinkerTask.limit_scope(Game.order(:id)),
+      force: ENV.fetch('FORCE', 'false') == 'true'
+    )
+  end
+end
+
+namespace :games do
+  desc 'Populate one game name_tags list. Set GAME_ID=123 or GAME=slug; FORCE=true overwrites existing value.'
+  task populate_name_tag: :environment do
+    game = GameLinkerTask.selected_game || raise(ArgumentError, 'Set GAME_ID=123 or GAME=slug')
+
+    GameLinkerTask.populate_name_tags(
+      Game.where(id: game.id),
+      force: ENV.fetch('FORCE', 'false') == 'true'
+    )
   end
 end
 

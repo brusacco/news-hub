@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Game < ApplicationRecord
+  acts_as_taggable_on :name_tags
+
   has_many :game_genres, dependent: :destroy
   has_many :genres, through: :game_genres
   has_many :entry_games, dependent: :destroy
@@ -17,6 +19,14 @@ class Game < ApplicationRecord
   scope :released, -> { where.not(released: nil) }
   scope :recent, -> { order(released: :desc, name: :asc) }
 
+  def self.default_name_tag_for(name)
+    name.to_s
+        .delete_suffix(' - Nintendo Switch')
+        .delete_suffix(' Nintendo Switch')
+        .delete_suffix(' Switch')
+        .squish
+  end
+
   def to_param
     slug
   end
@@ -27,6 +37,6 @@ class Game < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    %w[entries entry_games game_genres genres]
+    %w[entries entry_games game_genres genres name_tags]
   end
 end
