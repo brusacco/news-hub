@@ -3,6 +3,9 @@
 class TagsController < ApplicationController
   include Pagy::Backend
   include MetaTagsConcern
+  include TagPageIntentConcern
+
+  MIN_INDEXABLE_ARTICLES = 3
 
   def index
     @pagy, @tags = pagy(Tag.popular, limit: 100)
@@ -36,6 +39,7 @@ class TagsController < ApplicationController
     @entries = entries_for_tag(@tag)
     @pagy, @entries = pagy(@entries, limit: 60)
     @related_games = related_games_for_tag(@tag)
+    load_matching_entities_for_tag(@tag)
     set_tag_meta_tags(@tag, @pagy.count)
   end
 
@@ -60,7 +64,7 @@ class TagsController < ApplicationController
       description: description,
       keywords: tag_keywords(tag),
       canonical: tag_url(tag),
-      robots: article_count.positive? ? 'index, follow' : 'noindex, follow',
+      robots: article_count >= MIN_INDEXABLE_ARTICLES ? 'index, follow' : 'noindex, follow',
       og: {
         title: title,
         description: description,
@@ -83,9 +87,8 @@ class TagsController < ApplicationController
                    end
 
     optimized_description(
-      "Stay updated with the latest #{tag.name} news, updates, and articles. " \
-      "Discover #{article_text}articles about #{tag.name} on Nintendo News Hub. " \
-      "Your trusted source for #{tag.name} gaming news, releases, and insights."
+      "#{tag.name} news archive and topic page on Nintendo News Hub. " \
+      "Discover #{article_text}articles about #{tag.name}, including Nintendo coverage, updates, and related releases."
     )
   end
 

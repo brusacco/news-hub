@@ -373,6 +373,33 @@
   }
 }
 </script>
+<% elsif controller_name == 'games' && action_name == 'index' %>
+<script type="application/ld+json">
+<%=
+  raw(
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: 'Nintendo Switch Games - Popular Games, Ratings & Details',
+      description: 'Browse popular Nintendo Switch games with ratings, release dates, and game metadata.',
+      url: games_url,
+      mainEntity: {
+        '@type': 'ItemList',
+        name: 'Nintendo Switch Games',
+        numberOfItems: @pagy&.count,
+        itemListElement: @games&.each_with_index&.map do |game, index|
+          {
+            '@type': 'ListItem',
+            position: index + 1,
+            url: game_url(game),
+            name: game.name
+          }
+        end
+      }
+    }.to_json
+  )
+%>
+</script>
 <% elsif controller_name == 'genres' && action_name == 'index' %>
 <script type="application/ld+json">
 <%=

@@ -12,6 +12,8 @@
   <% section_links << ['About', 'about'] if @game.description.present? %>
   <% section_links << ['Developers', 'developers'] if @game.developers.any? %>
   <% section_links << ['Genres', 'genres'] if @game.genres.any? %>
+  <% section_links << ['More From This Developer', 'more-from-developer'] if @more_from_developers.any? %>
+  <% section_links << ['More In This Genre', 'more-in-genre'] if @more_in_genres.any? %>
   <% section_links << ['Screenshots', 'screenshots'] if @game.screenshots.any? %>
   <% section_links << ['More Games Like This', 'related-games'] if @related_games.any? %>
   <% section_links << ['News', 'related-news'] if @related_entries.any? %>
@@ -207,6 +209,32 @@
                   ></figcaption>
                 </figure>
               </div>
+            </div>
+          </section>
+        <% end %>
+
+        <% if @more_from_developers.any? %>
+          <section id="more-from-developer" class="mt-12 scroll-mt-28 border-t border-slate-200 pt-8">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E60012]">Developer Catalog</p>
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900">More From This Developer</h2>
+            <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
+              Browse other Nintendo Switch games by the same developer behind <%= @game.name %>.
+            </p>
+            <div class="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
+              <%= render partial: 'games/game', collection: @more_from_developers %>
+            </div>
+          </section>
+        <% end %>
+
+        <% if @more_in_genres.any? %>
+          <section id="more-in-genre" class="mt-12 scroll-mt-28 border-t border-slate-200 pt-8">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E60012]">Genre Catalog</p>
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900">More In This Genre</h2>
+            <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
+              Explore other Nintendo Switch games that share one or more genres with <%= @game.name %>.
+            </p>
+            <div class="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
+              <%= render partial: 'games/game', collection: @more_in_genres %>
             </div>
           </section>
         <% end %>

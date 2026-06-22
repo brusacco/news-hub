@@ -28,11 +28,45 @@
   </section>
 
   <section class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16" aria-label="<%= @genre.name %> Nintendo Switch games listing">
-    <% if @genre.description.present? %>
+    <% if @matching_tag.present? %>
+      <section class="mb-10 rounded-2xl bg-slate-50 px-6 py-8 ring-1 ring-slate-200">
+        <h2 class="text-2xl font-bold tracking-tight text-slate-900">Genre Page vs. News Topic</h2>
+        <p class="mt-4 text-base leading-7 text-slate-600">
+          This page is the Nintendo Switch genre catalog for <strong class="font-semibold text-slate-900"><%= @genre.name %></strong>,
+          focused on game discovery, ratings, and related developers. For the article archive and ongoing coverage, see
+          <%= link_to "#{@matching_tag.name} news topic", tag_path(@matching_tag), class: "font-medium text-[#E60012] hover:text-[#CC0010]" %>.
+        </p>
+      </section>
+    <% end %>
+
+    <% if @genre.description.present? || @genre_supporting_copy.any? %>
       <section class="mb-10 rounded-2xl bg-slate-50 px-6 py-8 ring-1 ring-slate-200">
         <h2 class="text-2xl font-bold tracking-tight text-slate-900">About <%= @genre.name %></h2>
-        <div class="prose prose-slate mt-4 max-w-none">
-          <%= sanitize(@genre.description, tags: %w[p br strong em b i ul ol li a blockquote h2 h3], attributes: %w[href rel target]) %>
+        <% if @genre.description.present? %>
+          <div class="prose prose-slate mt-4 max-w-none">
+            <%= sanitize(@genre.description, tags: %w[p br strong em b i ul ol li a blockquote h2 h3], attributes: %w[href rel target]) %>
+          </div>
+        <% end %>
+        <% if @genre_supporting_copy.any? %>
+          <div class="prose prose-slate mt-4 max-w-none">
+            <% @genre_supporting_copy.each do |paragraph| %>
+              <p><%= paragraph %></p>
+            <% end %>
+          </div>
+        <% end %>
+      </section>
+    <% end %>
+
+    <% if @top_developers.any? %>
+      <section class="mb-10 rounded-2xl bg-white px-6 py-8 shadow-sm ring-1 ring-slate-200">
+        <h2 class="text-2xl font-bold tracking-tight text-slate-900">Top Developers in <%= @genre.name %></h2>
+        <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
+          Browse studios that appear most often on this <%= @genre.name.downcase %> Nintendo Switch page.
+        </p>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <% @top_developers.each do |developer| %>
+            <%= link_to developer.name, developer_path(developer), class: "inline-flex items-center rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 ring-1 ring-inset ring-slate-200 transition-colors hover:bg-[#FFE5E7] hover:text-[#E60012]" %>
+          <% end %>
         </div>
       </section>
     <% end %>

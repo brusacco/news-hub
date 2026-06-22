@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class DevelopersController < ApplicationController
+  include DeveloperPageContentConcern
   include Pagy::Backend
   include MetaTagsConcern
 
@@ -36,13 +37,20 @@ class DevelopersController < ApplicationController
 
   def show
     @developer = Developer.find_by!(slug: params[:id])
-    @pagy, @games = pagy(@developer.games.includes(:genres, :developers).popular_first, limit: INDEX_LIMIT)
-    @related_entries = related_entries(@developer)
+    load_developer_page_data
 
     set_default_meta_tags(developer_meta_tags(@developer, @pagy.count))
   end
 
   private
+
+  def load_developer_page_data
+    @pagy, @games = pagy(@developer.games.includes(:genres, :developers).popular_first, limit: INDEX_LIMIT)
+    @related_entries = related_entries(@developer)
+    @top_genres = top_genres(@developer)
+    @developer_supporting_copy = developer_supporting_copy(@developer, @games.to_a.first(3), @top_genres)
+    @matching_tag = matching_tag(@developer.name)
+  end
 
   def related_entries(developer)
     return Entry.none if developer.game_ids.blank?
@@ -65,7 +73,7 @@ class DevelopersController < ApplicationController
       description: description,
       keywords: "#{developer.name} Nintendo Switch games, #{developer.name} games, Nintendo Switch developers",
       canonical: developer_url(developer),
-      robots: game_count.positive? ? 'index, follow' : 'noindex, follow',
+      robots: indexable_developer_page?(developer, game_count) ? 'index, follow' : 'noindex, follow',
       og: {
         title: title,
         description: description,
@@ -87,5 +95,9 @@ class DevelopersController < ApplicationController
 
     "Browse #{count_text}Nintendo Switch games by #{developer.name}, with ratings, images, genres, " \
       'and related news coverage.'
+  end
+
+  def matching_tag(name)
+    Tag.find_by('LOWER(name) = ?', name.downcase)
   end
 end

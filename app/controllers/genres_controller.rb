@@ -2,6 +2,7 @@
 
 class GenresController < ApplicationController
   include Pagy::Backend
+  include GenrePageContentConcern
   include MetaTagsConcern
 
   INDEX_LIMIT = 60
@@ -32,13 +33,20 @@ class GenresController < ApplicationController
 
   def show
     @genre = Genre.find_by!(slug: params[:id])
-    @pagy, @games = pagy(@genre.games.includes(:genres).popular_first, limit: INDEX_LIMIT)
-    @related_entries = related_entries(@genre)
+    load_genre_page_data
 
     set_default_meta_tags(genre_meta_tags(@genre, @pagy.count))
   end
 
   private
+
+  def load_genre_page_data
+    @pagy, @games = pagy(@genre.games.includes(:genres).popular_first, limit: INDEX_LIMIT)
+    @related_entries = related_entries(@genre)
+    @top_developers = top_developers(@genre)
+    @genre_supporting_copy = genre_supporting_copy(@genre, @games.to_a.first(3), @top_developers)
+    @matching_tag = matching_tag(@genre.name)
+  end
 
   def related_entries(genre)
     return Entry.none if genre.game_ids.blank?
@@ -61,7 +69,7 @@ class GenresController < ApplicationController
       description: description,
       keywords: "#{genre.name} Nintendo Switch games, #{genre.name} games, Nintendo game genres",
       canonical: genre_url(genre),
-      robots: game_count.positive? ? 'index, follow' : 'noindex, follow',
+      robots: indexable_genre_page?(genre, game_count) ? 'index, follow' : 'noindex, follow',
       og: genre_open_graph_tags(genre, title, description),
       twitter: genre_twitter_tags(genre, title, description)
     }
@@ -91,5 +99,9 @@ class GenresController < ApplicationController
 
     "Browse #{count_text}#{genre.name} Nintendo Switch games with ratings, images, Metacritic scores, " \
       'and related game genres.'
+  end
+
+  def matching_tag(name)
+    Tag.find_by('LOWER(name) = ?', name.downcase)
   end
 end

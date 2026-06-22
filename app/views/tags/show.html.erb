@@ -24,6 +24,32 @@
 
   <!-- Main Content -->
   <div class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <% if @matching_developer.present? || @matching_genre.present? %>
+      <section class="mb-14 rounded-2xl bg-slate-50 px-6 py-8 ring-1 ring-slate-200">
+        <h2 class="text-2xl font-bold tracking-tight text-slate-900">About This Topic Page</h2>
+        <div class="mt-4 space-y-4 text-base leading-7 text-slate-600">
+          <p>
+            This page is the Nintendo news archive for <strong class="font-semibold text-slate-900"><%= @tag.name %></strong>.
+            It is designed to collect articles and updates connected to this topic over time.
+          </p>
+          <% if @matching_developer.present? %>
+            <p>
+              Looking for the Nintendo Switch developer catalog instead of the news archive?
+              <%= link_to "#{@matching_developer.name} developer page", developer_path(@matching_developer), class: "font-medium text-[#E60012] hover:text-[#CC0010]" %>
+              lists the studio profile, linked games, and genre coverage separately.
+            </p>
+          <% end %>
+          <% if @matching_genre.present? %>
+            <p>
+              Looking for the Nintendo Switch genre landing page instead of the topic archive?
+              <%= link_to "#{@matching_genre.name} genre page", genre_path(@matching_genre), class: "font-medium text-[#E60012] hover:text-[#CC0010]" %>
+              focuses on game discovery, ratings, and related developers.
+            </p>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
     <% if @related_games.any? %>
       <section class="mb-14">
         <div class="mb-8">

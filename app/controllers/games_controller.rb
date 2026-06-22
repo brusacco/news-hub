@@ -32,8 +32,7 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.includes(:genres, :developers, :screenshots).find_by!(slug: params[:id])
-    @related_games = related_games(@game)
-    @related_entries = related_entries(@game)
+    load_game_page_relations
 
     title = game_meta_title(@game)
     description = game_description(@game)
@@ -61,6 +60,13 @@ class GamesController < ApplicationController
 
   private
 
+  def load_game_page_relations
+    @related_games = related_games(@game)
+    @more_from_developers = more_from_developers(@game)
+    @more_in_genres = more_in_genres(@game)
+    @related_entries = related_entries(@game)
+  end
+
   def related_games(game)
     return Game.none if game.genre_ids.blank?
 
@@ -83,5 +89,31 @@ class GamesController < ApplicationController
         .where.not(published_at: nil)
         .recent
         .limit(8)
+  end
+
+  def more_from_developers(game)
+    return Game.none if game.developer_ids.blank?
+
+    Game
+      .joins(:developers)
+      .where(developers: { id: game.developer_ids })
+      .where.not(id: game.id)
+      .includes(:genres, :developers)
+      .distinct
+      .popular_first
+      .limit(8)
+  end
+
+  def more_in_genres(game)
+    return Game.none if game.genre_ids.blank?
+
+    Game
+      .joins(:genres)
+      .where(genres: { id: game.genre_ids })
+      .where.not(id: game.id)
+      .includes(:genres, :developers)
+      .distinct
+      .popular_first
+      .limit(8)
   end
 end
