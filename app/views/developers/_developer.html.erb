@@ -20,26 +20,18 @@
         height="225"
         itemprop="image"
       >
-    <% end %>
-  </div>
-
-  <div class="flex flex-1 flex-col p-6">
-    <div class="flex-1">
-      <h3 class="text-xl font-semibold leading-7 text-slate-900 line-clamp-2" itemprop="name">
-        <%= developer.name %>
-      </h3>
-    </div>
-
-    <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-600">
-      <span class="inline-flex items-center rounded-full bg-[#FFE5E7] px-3 py-1 text-xs font-medium text-[#E60012] ring-1 ring-inset ring-[#E60012]/20">
-        <%= pluralize(developer.local_games_count.to_i, 'imported game') %>
-      </span>
-
-      <% if developer.games_count.present? && developer.games_count.positive? %>
-        <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200">
-          <%= number_with_delimiter(developer.games_count) %> on RAWG
-        </span>
       <% end %>
     </div>
-  </div>
-<% end %>
+    <div class="flex flex-1 flex-col p-6">
+      <div class="flex-1">
+        <h3 class="text-xl font-semibold leading-7 text-slate-900 line-clamp-2" itemprop="name">
+          <%= developer.name %>
+        </h3>
+      </div>
+      <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-600">
+        <span class="inline-flex items-center rounded-full bg-[#FFE5E7] px-3 py-1 text-xs font-medium text-[#E60012] ring-1 ring-inset ring-[#E60012]/20">
+          <%= pluralize(developer.local_games_count.to_i, 'game') %>
+        </span>
+      </div>
+    </div>
+  <% end %>
