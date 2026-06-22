@@ -32,7 +32,7 @@ class GenresController < ApplicationController
 
   def show
     @genre = Genre.find_by!(slug: params[:id])
-    @pagy, @games = pagy(@genre.games.includes(:genres).recent, limit: INDEX_LIMIT)
+    @pagy, @games = pagy(@genre.games.includes(:genres).popular_first, limit: INDEX_LIMIT)
     @related_entries = related_entries(@genre)
 
     set_default_meta_tags(genre_meta_tags(@genre, @pagy.count))

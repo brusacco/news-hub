@@ -65,4 +65,11 @@ class GameTest < ActiveSupport::TestCase
 
     assert_equal [77], game.reload.screenshots.pluck(:rawg_id)
   end
+
+  test 'orders popular games first' do
+    lower = Game.create!(rawg_id: 1, name: 'Lower', slug: 'lower', ratings_count: 100, rating: 4.2, metacritic: 80)
+    higher = Game.create!(rawg_id: 2, name: 'Higher', slug: 'higher', ratings_count: 500, rating: 4.0, metacritic: 70)
+
+    assert_equal [higher, lower], Game.popular_first.where(id: [lower.id, higher.id]).to_a
+  end
 end

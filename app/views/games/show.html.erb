@@ -1,4 +1,11 @@
 <div class="bg-white">
+  <% section_links = [] %>
+  <% section_links << ['About', 'about'] if @game.description.present? %>
+  <% section_links << ['Genres', 'genres'] if @game.genres.any? %>
+  <% section_links << ['Screenshots', 'screenshots'] if @game.screenshots.any? %>
+  <% section_links << ['More Games Like This', 'related-games'] if @related_games.any? %>
+  <% section_links << ['News', 'related-news'] if @related_entries.any? %>
+
   <div class="mx-auto max-w-7xl px-6 pt-12 lg:px-8">
     <%= render 'layouts/breadcrumbs' %>
   </div>
@@ -48,10 +55,29 @@
   </section>
 
   <section class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <% if section_links.any? %>
+      <nav aria-label="On this page" class="mb-10 border-b border-slate-200 pb-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E60012]">On This Page</p>
+            <p class="mt-2 text-sm text-slate-600">Jump to the section you want without scanning the full page.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <% section_links.each do |label, anchor| %>
+              <%= link_to "##{anchor}", class: "inline-flex items-center rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 ring-1 ring-inset ring-slate-200 transition-colors hover:bg-[#FFE5E7] hover:text-[#E60012]" do %>
+                <%= label %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </nav>
+    <% end %>
+
     <div class="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
       <main>
         <% if @game.description.present? %>
-          <section class="mb-12">
+          <section id="about" class="scroll-mt-28 border-t border-slate-200 pt-8">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E60012]">Overview</p>
             <h2 class="text-2xl font-bold tracking-tight text-slate-900">About <%= @game.name %></h2>
             <div class="prose prose-slate mt-4 max-w-none">
               <%= sanitize(@game.description, tags: %w[p br strong em b i ul ol li a blockquote h2 h3], attributes: %w[href rel target]) %>
@@ -60,7 +86,8 @@
         <% end %>
 
         <% if @game.genres.any? %>
-          <section class="<%= @game.description.present? ? 'mt-12' : '' %>">
+          <section id="genres" class="<%= @game.description.present? ? 'mt-12' : '' %> scroll-mt-28 border-t border-slate-200 pt-8">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E60012]">Categories</p>
             <h2 class="text-2xl font-bold tracking-tight text-slate-900"><%= @game.name %> Genres</h2>
             <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
               Explore more Nintendo Switch games in categories related to <%= @game.name %>.
@@ -74,7 +101,8 @@
         <% end %>
 
         <% if @game.screenshots.any? %>
-          <section class="<%= @game.genres.any? ? 'mt-12' : '' %>" data-controller="screenshot-lightbox">
+          <section id="screenshots" class="<%= @game.genres.any? ? 'mt-12' : '' %> scroll-mt-28 border-t border-slate-200 pt-8" data-controller="screenshot-lightbox">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E60012]">Gallery</p>
             <h2 class="text-2xl font-bold tracking-tight text-slate-900"><%= @game.name %> Screenshots</h2>
             <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
               In-game screenshots imported from RAWG for <%= @game.name %>.
@@ -159,7 +187,8 @@
         <% end %>
 
         <% if @related_games.any? %>
-          <section class="mt-12">
+          <section id="related-games" class="mt-12 scroll-mt-28 border-t border-slate-200 pt-8">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E60012]">Recommendations</p>
             <h2 class="text-2xl font-bold tracking-tight text-slate-900">More Games Like <%= @game.name %></h2>
             <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
               Browse other Nintendo Switch games that share genres with <%= @game.name %>.
@@ -171,7 +200,8 @@
         <% end %>
 
         <% if @related_entries.any? %>
-          <section class="mt-12">
+          <section id="related-news" class="mt-12 scroll-mt-28 border-t border-slate-200 pt-8">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E60012]">Coverage</p>
             <h2 class="text-2xl font-bold tracking-tight text-slate-900"><%= @game.name %> News</h2>
             <p class="mt-2 max-w-3xl text-base leading-7 text-slate-600">
               Read Nintendo news articles connected to <%= @game.name %>.
@@ -184,6 +214,19 @@
       </main>
 
       <aside class="space-y-6">
+        <% if section_links.any? %>
+          <section class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+            <h2 class="text-lg font-semibold text-slate-900">Navigate</h2>
+            <div class="mt-4 flex flex-col gap-2">
+              <% section_links.each do |label, anchor| %>
+                <%= link_to "##{anchor}", class: "text-sm font-medium text-slate-600 transition-colors hover:text-[#E60012]" do %>
+                  <%= label %>
+                <% end %>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
+
         <section class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
           <h2 class="text-lg font-semibold text-slate-900">Game Details</h2>
           <dl class="mt-4 space-y-4 text-sm">
@@ -274,6 +317,9 @@
           <div class="mt-4 flex flex-col gap-3">
             <%= link_to 'All Nintendo Switch Games', games_path, class: "text-sm font-medium text-[#E60012] hover:text-[#CC0010]" %>
             <%= link_to 'Nintendo Switch Genres', genres_path, class: "text-sm font-medium text-[#E60012] hover:text-[#CC0010]" %>
+            <% @game.genres.each do |genre| %>
+              <%= link_to "#{genre.name} Games", genre_path(genre), class: "text-sm font-medium text-[#E60012] hover:text-[#CC0010]" %>
+            <% end %>
           </div>
         </section>
 

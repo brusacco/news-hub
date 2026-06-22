@@ -25,6 +25,9 @@ class Game < ApplicationRecord
 
   scope :released, -> { where.not(released: nil) }
   scope :recent, -> { order(released: :desc, name: :asc) }
+  scope :popular_first, lambda {
+    order(ratings_count: :desc, rating: :desc, metacritic: :desc, released: :desc, name: :asc)
+  }
 
   def self.default_name_tag_for(name)
     name.to_s
